@@ -9,7 +9,7 @@ public class GameFrame extends JFrame {
 
   public GameFrame( AnimationPanel panel ) {
 
-    setTitle( "Single Buffer Example" );
+    setTitle( "Tank Game" );
     setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
     setVisible( true );
     setResizable( false );

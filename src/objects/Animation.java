@@ -9,18 +9,23 @@ public class Animation implements Observer {
 
   private int x;
   private int y;
+  private int rotation;
+
   protected int currentFrame;
 
   protected boolean completed;
 
+  private int counter = 0;
+
   public Animation() {
   }
 
-  public Animation( Sprite sprite, int x, int y ) {
+  public Animation( Sprite sprite, int x, int y, int currentFrame, int rotation ) {
     this.sprite = sprite;
     this.x = x;
     this.y = y;
-    this.currentFrame = 0;
+    this.rotation = rotation;
+    this.currentFrame = currentFrame;
     this.completed = false;
   }
 

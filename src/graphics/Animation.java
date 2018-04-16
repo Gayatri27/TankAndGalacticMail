@@ -1,7 +1,5 @@
 package graphics;
 
-import objects.Sprite;
-
 import java.awt.*;
 
 /**

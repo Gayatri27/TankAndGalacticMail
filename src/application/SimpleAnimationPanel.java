@@ -13,62 +13,86 @@ public class SimpleAnimationPanel extends AnimationPanel implements KeyListener 
     this.setFocusable( true );
   }
 
-
-
   @Override
   public void run() {
 
-    System.out.println("Runing");
+    System.out.println("Running");
 
-    while( true ) {
-      tank2.setX(( tank2.getX() + STEP ) % WIDTH );
-      tank2.setY(( tank2.getY() + STEP ) % HEIGHT );
+    while(true) {
+      //tank2.setX(( tank2.getX() + STEP ) % WIDTH );
+      //tank2.setY(( tank2.getY() + STEP ) % HEIGHT );
 
       this.repaint();
-
       try {
-        Thread.sleep( 250 );
-      } catch ( InterruptedException interrupted ) {
+        Thread.sleep(50);
+      } catch (InterruptedException interrupted) {
 
       }
     }
-
-
-
   }
 
 
   @Override
-  public void keyPressed( KeyEvent e ) {
+  public void keyPressed(KeyEvent e) {
 
-    switch( e.getKeyCode() ) {
+    switch(e.getKeyCode()) {
 
 
       case KeyEvent.VK_LEFT:
-        tank.setX(( tank.getX() - STEP ) % WIDTH );
+        if(tank.getRotation() != 180) {
+          addAnimation(tank.rotate(180));
+        } else {
+          tank.setX(( tank.getX() - STEP ) % WIDTH );
+        }
         break;
       case KeyEvent.VK_RIGHT:
-        tank.setX(( tank.getX() + STEP ) % WIDTH );
+        if(tank.getRotation() != 0) {
+          addAnimation(tank.rotate(0));
+        } else {
+          tank.setX(( tank.getX() + STEP ) % WIDTH );
+        }
         break;
       case KeyEvent.VK_UP:
-        tank.setY(( tank.getY() - STEP ) % HEIGHT );
+        if(tank.getRotation() != 90) {
+          addAnimation(tank.rotate(90));
+        } else {
+          tank.setY(( tank.getY() - STEP ) % HEIGHT );
+        }
         break;
       case KeyEvent.VK_DOWN:
-        tank.setY(( tank.getY() + STEP ) % HEIGHT );
+        if(tank.getRotation() != 270) {
+          addAnimation(tank.rotate(270));
+        } else {
+          tank.setY(( tank.getY() + STEP ) % HEIGHT );
+        }
         break;
-
-
       case 65: //A
-        tank2.setX(( tank2.getX() - STEP ) % WIDTH );
+        if(tank2.getRotation() != 180) {
+          addAnimation(tank2.rotate(180));
+        } else {
+          tank2.setX(( tank2.getX() - STEP ) % WIDTH );
+        }
         break;
       case 68: //D
-        tank2.setX(( tank2.getX() + STEP ) % WIDTH );
+        if(tank2.getRotation() != 0) {
+          addAnimation(tank2.rotate(0));
+        } else {
+          tank2.setX(( tank2.getX() + STEP ) % WIDTH );
+        }
         break;
       case 87: // W
-        tank2.setY(( tank2.getY() - STEP ) % HEIGHT );
+        if(tank2.getRotation() != 90) {
+          addAnimation(tank2.rotate(90));
+        } else {
+          tank2.setY(( tank2.getY() - STEP ) % HEIGHT );
+        }
         break;
       case 83: // S
-        tank2.setY(( tank2.getY() + STEP ) % HEIGHT );
+        if(tank2.getRotation() != 270) {
+          addAnimation(tank2.rotate(270));
+        } else {
+          tank2.setY(( tank2.getY() + STEP ) % HEIGHT );
+        }
         break;
 
 

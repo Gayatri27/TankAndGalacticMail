@@ -39,6 +39,4 @@ public class Sprite {
   public int frameCount() {
     return this.images.length;
   }
-
-
 }

@@ -1,7 +1,8 @@
 package application;
 
-import graphics.Animation;
+import objects.Animation;
 import graphics.GameObject;
+import objects.Sprite;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,8 +22,6 @@ public abstract class AnimationPanel extends JPanel implements Runnable {
 
 
   private BufferedImage bimg;
-
-
 
   protected Dimension dimension;
 
@@ -72,11 +71,12 @@ public abstract class AnimationPanel extends JPanel implements Runnable {
     for( int counter = 0; counter < animations.size(); counter++ ) {
       animation = animations.get( counter );
 
-      if( animation.isStopped() ) {
-        animations.remove( counter );
-      } else {
-        animation.repaint( graphics );
-      }
+//      if( animation.isStopped() ) {
+//        animations.remove( counter );
+//      } else {
+//        animation.repaint( graphics );
+//      }
+      animation.repaint( graphics );
     }
 
     tank.repaint( graphics );
@@ -87,8 +87,10 @@ public abstract class AnimationPanel extends JPanel implements Runnable {
 
   public AnimationPanel() {
     try {
-      this.tank = new GameObject( TANK_IMAGE );
-      this.tank2 = new GameObject( TANK_IMAGE );
+      Sprite sprite = new Sprite("resources/Tank_blue_basic_strip60.png", 60);
+      Sprite sprite2 = new Sprite("resources/Tank_red_basic_strip60.png", 60);
+      this.tank = new GameObject( sprite, 0, 270, 100, 0 );
+      this.tank2 = new GameObject( sprite2, 32, 270, 450, 180 );
       this.background = new GameObject( BACKGROUND_IMAGE );
     } catch( IOException exception ) {
       System.err.println( "Failed to load sprite." );
@@ -106,6 +108,6 @@ public abstract class AnimationPanel extends JPanel implements Runnable {
 
 
   protected void addAnimation( Animation animation ) {
-    animations.add( animation );
+    // animations.add( animation );
   }
 }
