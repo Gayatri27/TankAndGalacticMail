@@ -7,7 +7,7 @@ import javax.swing.*;
  */
 public class GameFrame extends JFrame {
 
-  public GameFrame( AnimationPanel panel ) {
+  public GameFrame( World panel ) {
 
     setTitle( "Tank Game" );
     setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
@@ -17,7 +17,7 @@ public class GameFrame extends JFrame {
     add( panel );
     pack();
 
-    Thread thread = new Thread( panel );
+    Thread thread = new Thread( panel.getClock() );
     thread.start();
   }
 }

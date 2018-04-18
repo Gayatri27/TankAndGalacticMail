@@ -1,9 +1,8 @@
-import application.GameFrame;
-import application.SimpleAnimationPanel;
+import application.*;
 
 public class Main {
 
     public static void main(String[] args) {
-        new GameFrame( new SimpleAnimationPanel() );
+        new GameFrame( new World() );
     }
 }

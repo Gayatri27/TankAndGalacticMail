@@ -1,11 +1,11 @@
-package objects;
+package application;
 
 import java.util.Observable;
 
 import static java.lang.Thread.sleep;
 
-public class GameClock extends Observable implements Runnable {
-  private final int DURATION = 25;
+public class Clock extends Observable implements Runnable {
+  private final int DURATION = 2000; // testing
 
   @Override
   public void run() {
@@ -13,6 +13,9 @@ public class GameClock extends Observable implements Runnable {
     while (true) {
       try {
         sleep(DURATION);
+
+
+        System.out.println("game clock running");
 
         setChanged();
         notifyObservers();
