@@ -1,4 +1,4 @@
-package graphics;
+package objects;
 
 import objects.Sprite;
 import objects.Animation;

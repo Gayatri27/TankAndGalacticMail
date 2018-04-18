@@ -11,10 +11,11 @@ import java.util.Observer;
 
 
 public class World  extends JPanel implements Observer {
+
   public static final int WIDTH = 640;
   public static final int HEIGHT = 640;
 
-  private GameClock clock;
+  //private GameClock clock;
 
   private Dimension dimension;
 
@@ -22,19 +23,19 @@ public class World  extends JPanel implements Observer {
 
   public World(Animation[] animations ) {
     this.dimension = new Dimension( WIDTH, HEIGHT );
-    this.clock = new GameClock();
+    //this.clock = new GameClock();
 
 
-    this.clock.addObserver( this );
+    //this.clock.addObserver( this );
 
     this.animations = new ArrayList<>();
 
     for( Animation animation : animations ) {
-      this.clock.addObserver( animation );
+      //this.clock.addObserver( animation );
       this.animations.add( animation );
     }
 
-    new Thread( this.clock ).start();
+    //new Thread( this.clock ).start();
   }
 
   @Override
@@ -59,4 +60,5 @@ public class World  extends JPanel implements Observer {
       }
     }
   }
+
 }
