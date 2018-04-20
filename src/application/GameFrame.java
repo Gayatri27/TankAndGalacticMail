@@ -1,23 +1,38 @@
 package application;
 
+import static java.lang.Thread.sleep;
+
 import javax.swing.*;
 
-/**
- * Created by jrob on 4/9/17.
- */
-public class GameFrame extends JFrame {
+public class GameFrame extends JFrame implements Runnable {
 
-  public GameFrame( World panel ) {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 8815532421606947532L;
+    private final int DURATION = 35; // testing
+    private World panel;
 
-    setTitle( "Tank Game" );
-    setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-    setVisible( true );
-    setResizable( false );
+    public GameFrame(World panel) {
+        this.panel = panel;
+        setTitle("Tank Game");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setVisible(true);
+        setResizable(false);
 
-    add( panel );
-    pack();
+        add(panel);
+        pack();
+    }
 
-    Thread thread = new Thread( panel.getClock() );
-    thread.start();
-  }
+    @Override
+    public void run() {
+        while (true) {
+            panel.repaint();
+            try {
+                sleep(DURATION);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
