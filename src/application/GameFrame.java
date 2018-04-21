@@ -1,19 +1,20 @@
 package application;
 
+import static java.lang.Thread.sleep;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyListener;
 
-/**
- * Created by jrob on 4/9/17.
- */
-public class GameFrame extends JFrame {
+public class GameFrame extends JFrame implements Runnable {
 
   JPanel currentPanel;
 
   Menu menu;
   World world;
 
+ 
+  
   public GameFrame() {
 
     setTitle( "Tank Game" );
@@ -63,6 +64,26 @@ public class GameFrame extends JFrame {
       this.removeKeyListener( (KeyListener) currentPanel);
     }
   }
+    /**
+     * 
+     
+    private static final long serialVersionUID = 8815532421606947532L;
+    private final int DURATION = 35; // testing
+    private World panel;
 
 
+
+    @Override
+    public void run() {
+        while (true) {
+            panel.repaint();
+            try {
+                sleep(DURATION);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    */
 }
