@@ -15,8 +15,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
-public class World extends JPanel {
+public class World extends JPanel implements Observer {
 
   /**
    * 
@@ -44,9 +46,18 @@ public class World extends JPanel {
 
   protected ArrayList<Animation> animations;
 
+  private Clock clock;
+
   GameFrame gameFrame;
 
   public World(GameFrame gameFrame) {
+
+    clock = new Clock();
+    clock.addObserver(this);
+
+    Thread thread = new Thread(clock);
+    thread.start();
+
     this.gameFrame = gameFrame;
 
     gameEvents = new GameEvents();
@@ -55,10 +66,10 @@ public class World extends JPanel {
       this.background = new GameObject(BACKGROUND_IMAGE);
       Image tank1 = ImageIO.read(new File("resources/Tank_blue_basic_strip60.png"));
       Image tank2 = ImageIO.read(new File("resources/Tank_red_basic_strip60.png"));
-
-      this.tank1 = new Tank(tank1, 100, 300, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D,
+//KeyEvent.VK_W
+      this.tank1 = new Tank(tank1, 300, 300, 87, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D,
           KeyEvent.VK_C);
-      this.tank2 = new Tank(tank2, 100, 600, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L,
+      this.tank2 = new Tank(tank2, 100, 300, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L,
           KeyEvent.VK_N);
     } catch (IOException exception) {
       System.err.println("Failed to load sprite.");
@@ -111,7 +122,7 @@ public class World extends JPanel {
 
     Graphics2D g2 = bimg.createGraphics();
 
-
+/*
     int tank1_x = tank1.getX() - windowSize.width / 4 + tank1.getWidth()/2;
     if(tank1_x < 0) tank1_x = 0;
     int tank1_y = tank1.getY() - windowSize.height / 2  + tank1.getHeight()/2;
@@ -122,7 +133,18 @@ public class World extends JPanel {
 
     int tank2_y = tank2.getY() - windowSize.height / 2 + tank1.getHeight()/2;
     if(tank2_y < 0) tank2_y = 0;
+*/
 
+    int tank1_x = tank1.getTankCenterX() - windowSize.width / 4 ;
+    if(tank1_x < 0) tank1_x = 0;
+    int tank1_y = tank1.getTankCenterY() - windowSize.height;
+    if(tank1_y < 0) tank1_y = 0;
+
+    int tank2_x = tank2.getTankCenterX() - windowSize.width / 4 ;
+    if(tank2_x < 0) tank2_x = 0;
+
+    int tank2_y = tank2.getTankCenterY() - windowSize.height;
+    if(tank2_y < 0) tank2_y = 0;
 
     BufferedImage player_1_window = main_bimg.getSubimage(tank1_x, tank1_y,windowSize.width / 2, windowSize.height);
 
@@ -130,6 +152,18 @@ public class World extends JPanel {
 
     g2.drawImage(player_1_window, 0, 0, this);
     g2.drawImage(player_2_window, windowSize.width / 2, 0, this);
+
+    try{
+      File outputfile = new File("resources/output_mainbimg.jpg");
+      ImageIO.write(main_bimg, "jpg", outputfile);
+
+      File outputfile2 = new File("resources/output_bimg.jpg");
+      ImageIO.write(bimg, "jpg", outputfile2);
+
+
+    }catch (Exception e){
+
+    }
 
 
     g.drawImage(bimg, 0, 0, this);
@@ -157,10 +191,13 @@ public class World extends JPanel {
     return this.dimension;
   }
 
+  @Override
+  public void update(Observable o, Object arg) {
+     repaint();
+  }
+
   public class KeyControl extends KeyAdapter {
     public void keyPressed(KeyEvent e) {
-
-      System.out.println("key pressed");
       gameEvents.setValue(e);
     }
 

@@ -5,7 +5,7 @@ import java.util.Observable;
 import static java.lang.Thread.sleep;
 
 public class Clock extends Observable implements Runnable {
-  private final int DURATION = 2000; // testing
+  private final int DURATION = 35; // testing
 
   @Override
   public void run() {
@@ -14,14 +14,36 @@ public class Clock extends Observable implements Runnable {
       try {
         sleep(DURATION);
 
-
-        System.out.println("game clock running");
-
         setChanged();
         notifyObservers();
+
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
     }
   }
 }
+
+
+/**
+ *
+
+ private static final long serialVersionUID = 8815532421606947532L;
+ private final int DURATION = 35; // testing
+ private World panel;
+
+
+
+ @Override
+ public void run() {
+ while (true) {
+ panel.repaint();
+ try {
+ sleep(DURATION);
+ } catch (InterruptedException e) {
+ e.printStackTrace();
+ }
+ }
+ }
+
+ */

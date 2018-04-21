@@ -67,26 +67,5 @@ public class GameFrame extends JFrame {
       this.removeKeyListener( (KeyListener) currentPanel);
     }
   }
-    /**
-     * 
-     
-    private static final long serialVersionUID = 8815532421606947532L;
-    private final int DURATION = 35; // testing
-    private World panel;
 
-
-
-    @Override
-    public void run() {
-        while (true) {
-            panel.repaint();
-            try {
-                sleep(DURATION);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    
-    */
 }

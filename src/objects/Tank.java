@@ -34,6 +34,7 @@ public class Tank extends GameObject {
 
 	@Override
 	public void update(Observable obj, Object arg) {
+
 		GameEvents gameEvents = (GameEvents) arg;
 		KeyEvent e = (KeyEvent) gameEvents.event;
 		if (e.getKeyCode() == forwardKey) {
