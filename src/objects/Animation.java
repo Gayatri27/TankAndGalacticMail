@@ -6,12 +6,13 @@ import java.util.Observer;
 
 public class Animation implements Observer {
   protected Sprite sprite;
+  private GameObject gameObject;
 
   private int x;
   private int y;
-  private int rotation;
 
-  protected int currentFrame;
+  private int startingFrame = 0;
+  private int endingFrame = 0;
 
   protected boolean completed;
 
@@ -20,12 +21,13 @@ public class Animation implements Observer {
   public Animation() {
   }
 
-  public Animation( Sprite sprite, int x, int y, int currentFrame, int rotation ) {
+  public Animation(GameObject gameObject, Sprite sprite, int x, int y, int startingFrame, int endingFrame ) {
+    this.gameObject = gameObject;
     this.sprite = sprite;
     this.x = x;
     this.y = y;
-    this.rotation = rotation;
-    this.currentFrame = currentFrame;
+    this.startingFrame = startingFrame;
+    this.endingFrame = endingFrame;
     this.completed = false;
   }
 
@@ -35,15 +37,28 @@ public class Animation implements Observer {
 
   @Override
   public void update(Observable o, Object arg) {
-    currentFrame = ( currentFrame + 1 ) % this.sprite.frameCount();
+    // currentFrame = ( currentFrame + 1 ) % this.sprite.frameCount();
     x = ( x + 1 ) % World.WIDTH;
     y = ( y + 1 ) % World.HEIGHT;
+    System.out.println("MSR ");
   }
 
   public void repaint( Graphics graphics ) {
-    graphics.drawImage(
-      this.sprite.getFrame( currentFrame ),
-      x, y, null
-    );
+    System.out.println("ABC ABC ABC " + startingFrame + " " + endingFrame);
+    if(startingFrame > endingFrame) {
+      for(int i = startingFrame; i >= endingFrame; i--) {
+        System.out.println("ABC " + i);
+        this.gameObject.setImage(this.sprite.getFrame( i ));
+      }
+    } else {
+      for(int i= startingFrame; i <= endingFrame; i++) {
+        System.out.println("PQR " + i);
+        this.gameObject.setImage(this.sprite.getFrame( i ));
+      }
+    }
+
+    //graphics.drawImage(
+    //this.sprite.getFrame( currentFrame ),
+    //x, y, null);
   }
 }
