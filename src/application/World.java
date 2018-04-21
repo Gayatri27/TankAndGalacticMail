@@ -44,7 +44,11 @@ public class World extends JPanel {
 
   protected ArrayList<Animation> animations;
 
-  public World() {
+  GameFrame gameFrame;
+
+  public World(GameFrame gameFrame) {
+    this.gameFrame = gameFrame;
+
     gameEvents = new GameEvents();
 
     try {
@@ -67,9 +71,12 @@ public class World extends JPanel {
     this.dimension = new Dimension(WIDTH, HEIGHT);
 
     KeyControl key = new KeyControl();
-    addKeyListener(key);
+    //addKeyListener(key);
+
+    gameFrame.addKeyListener(key);
 
     this.setFocusable(true);
+
   }
 
   public Graphics2D createGraphics2D(int w, int h) {
@@ -105,15 +112,15 @@ public class World extends JPanel {
     Graphics2D g2 = bimg.createGraphics();
 
 
-    int tank1_x = tank.getX() - windowSize.width / 4 + tank.getWidth()/2;
+    int tank1_x = tank1.getX() - windowSize.width / 4 + tank1.getWidth()/2;
     if(tank1_x < 0) tank1_x = 0;
-    int tank1_y = tank.getY() - windowSize.height / 2  + tank.getHeight()/2;
+    int tank1_y = tank1.getY() - windowSize.height / 2  + tank1.getHeight()/2;
     if(tank1_y < 0) tank1_y = 0;
 
-    int tank2_x = tank2.getX() - windowSize.width / 4  + tank.getWidth()/2;
+    int tank2_x = tank2.getX() - windowSize.width / 4  + tank1.getWidth()/2;
     if(tank2_x < 0) tank2_x = 0;
 
-    int tank2_y = tank2.getY() - windowSize.height / 2 + tank.getHeight()/2;
+    int tank2_y = tank2.getY() - windowSize.height / 2 + tank1.getHeight()/2;
     if(tank2_y < 0) tank2_y = 0;
 
 
@@ -152,6 +159,8 @@ public class World extends JPanel {
 
   public class KeyControl extends KeyAdapter {
     public void keyPressed(KeyEvent e) {
+
+      System.out.println("key pressed");
       gameEvents.setValue(e);
     }
 

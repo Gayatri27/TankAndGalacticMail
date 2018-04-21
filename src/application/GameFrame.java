@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyListener;
 
-public class GameFrame extends JFrame implements Runnable {
+public class GameFrame extends JFrame {
 
   JPanel currentPanel;
 
@@ -51,8 +51,11 @@ public class GameFrame extends JFrame implements Runnable {
 
   public void startGame(){
     removeCurrent();
-    world = new World();
-    this.addKeyListener(world);
+    world = new World(this);
+    // this.addKeyListener(world);
+
+    System.out.println("starting game from game frame");
+
     add(world);
     revalidate();
     currentPanel = world;
