@@ -1,9 +1,6 @@
 package application;
 
-import objects.Animation;
-import objects.GameEvents;
-import objects.GameObject;
-import objects.Tank;
+import objects.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -20,9 +17,6 @@ import java.util.Observer;
 
 public class World extends JPanel implements Observer {
 
-  /**
-   * 
-   */
   private static final long serialVersionUID = -7437242000932772800L;
   private GameEvents gameEvents;
 
@@ -33,44 +27,43 @@ public class World extends JPanel implements Observer {
   protected final String TANK_IMAGE = "resources/Tank_grey_basic.png";
 
   private BufferedImage main_bimg;
-
-
-
   private BufferedImage bimg;
+  private BufferedImage bg_buffer;
 
   protected Dimension dimension;
-
   protected Tank tank1;
   protected Tank tank2;
-  protected GameObject background;
 
   protected ArrayList<Animation> animations;
 
   private Clock clock;
+  ArrayList<Wall> walls;
 
-  GameFrame gameFrame;
+  public World(GameFrame frame) {
 
-  public World(GameFrame gameFrame) {
+    KeyControl key = new KeyControl();
 
-    clock = new Clock();
-    clock.addObserver(this);
-
-    Thread thread = new Thread(clock);
-    thread.start();
-
-    this.gameFrame = gameFrame;
+    frame.addKeyListener(key);
 
     gameEvents = new GameEvents();
 
     try {
-      this.background = new GameObject(BACKGROUND_IMAGE);
       Image tank1 = ImageIO.read(new File("resources/Tank_blue_basic_strip60.png"));
       Image tank2 = ImageIO.read(new File("resources/Tank_red_basic_strip60.png"));
-//KeyEvent.VK_W
-      this.tank1 = new Tank(tank1, 300, 300, 87, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D,
+      this.tank1 = new Tank(tank1, 300, 300, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D,
           KeyEvent.VK_C);
       this.tank2 = new Tank(tank2, 100, 300, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L,
           KeyEvent.VK_N);
+
+      Image wallImage = ImageIO.read(new File("resources/wall.png"));
+      walls = new ArrayList<Wall>();
+      walls.add(new Wall(wallImage,0,0, false));
+      walls.add(new Wall(wallImage,100,100,false));
+      walls.add(new Wall(wallImage,100,132,false));
+      walls.add(new Wall(wallImage,200,200, false));
+      walls.add(new Wall(wallImage,232,200, false));
+
+
     } catch (IOException exception) {
       System.err.println("Failed to load sprite.");
       exception.printStackTrace();
@@ -81,12 +74,11 @@ public class World extends JPanel implements Observer {
     this.animations = new ArrayList<>();
     this.dimension = new Dimension(WIDTH, HEIGHT);
 
-    KeyControl key = new KeyControl();
-    //addKeyListener(key);
-
-    gameFrame.addKeyListener(key);
-
     this.setFocusable(true);
+
+    clock = new Clock();
+    clock.addObserver(this);
+    clock.start();
 
   }
 
@@ -108,8 +100,6 @@ public class World extends JPanel implements Observer {
     //create the main image
     Graphics2D main_g2 = createGraphics2D(MAIN_WIDTH, MAIN_HEIGHT);
 
-
-
 //    if(players.size()!=0)
 //      clock.tick();
 
@@ -121,6 +111,9 @@ public class World extends JPanel implements Observer {
     bimg = (BufferedImage) createImage(windowSize.width, windowSize.height);
 
     Graphics2D g2 = bimg.createGraphics();
+
+
+
 
 /*
     int tank1_x = tank1.getX() - windowSize.width / 4 + tank1.getWidth()/2;
@@ -153,40 +146,56 @@ public class World extends JPanel implements Observer {
     g2.drawImage(player_1_window, 0, 0, this);
     g2.drawImage(player_2_window, windowSize.width / 2, 0, this);
 
-    try{
-      File outputfile = new File("resources/output_mainbimg.jpg");
-      ImageIO.write(main_bimg, "jpg", outputfile);
-
-      File outputfile2 = new File("resources/output_bimg.jpg");
-      ImageIO.write(bimg, "jpg", outputfile2);
-
-
-    }catch (Exception e){
-
-    }
-
-
     g.drawImage(bimg, 0, 0, this);
+
+
   }
 
   public void drawFrame(int w, int h, Graphics2D graphics) {
-    for (int x = 0; x < WIDTH; x += background.getWidth()) {
-      for (int y = 0; y < HEIGHT; y += background.getHeight()) {
-        background.setX(x);
-        background.setY(y);
-        background.repaint(graphics);
-      }
-    }
+
+    if(bg_buffer == null) drawBackground();
+    graphics.drawImage(bg_buffer, 0, 0, this);
 
     tank1.draw(this, graphics);
     tank1.updateMove();
     tank2.draw(this, graphics);
     tank2.updateMove();
+
+  }
+
+
+  public void drawBackground() {
+    try{
+
+      bg_buffer = (BufferedImage) createImage(MAIN_WIDTH, MAIN_HEIGHT);
+
+      Graphics2D bg_g2 = bg_buffer.createGraphics();
+
+      BufferedImage bg = ImageIO.read(new File(BACKGROUND_IMAGE));
+      TexturePaint paint = new TexturePaint(bg, new Rectangle(bg.getWidth(),bg.getHeight()));
+      bg_g2.setPaint(paint);
+      bg_g2.fillRect(0, 0, MAIN_WIDTH, MAIN_HEIGHT);
+
+      for(Wall w : walls){
+        w.draw(this, bg_g2);
+      }
+
+      /*
+      File outputfile = new File("resources/ooo.jpg");
+      ImageIO.write(bg_buffer, "jpg", outputfile);
+
+      System.out.println("drawbackground done");
+      */
+
+    }catch(Exception e){
+      e.getStackTrace();
+      System.out.println(e.getMessage());
+    }
   }
 
 
 
-  @Override
+    @Override
   public Dimension getPreferredSize() {
     return this.dimension;
   }

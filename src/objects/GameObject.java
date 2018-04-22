@@ -17,6 +17,8 @@ public class GameObject implements Observer {
   public Image image;
   private ImageObserver observer;
 
+  public  GameObject(){}
+
   public GameObject(String resourceLocation) throws IOException {
     this(resourceLocation, null);
   }
@@ -65,7 +67,7 @@ public class GameObject implements Observer {
   }
 
   public void repaint(Graphics graphics) {
-    graphics.drawImage(image, x, y, observer);
+    //graphics.drawImage(image, x, y, observer);
   }
 
   public Animation rotate(int rotation) {
@@ -77,7 +79,13 @@ public class GameObject implements Observer {
 
   }
 
-  public void draw(ImageObserver obs, Graphics2D g) {
+  public void draw(ImageObserver observer, Graphics2D g) {
+
+    System.out.println("calling draw in game object");
+
+
+
+    g.drawImage(image, x, y, observer);
 
   }
 }
