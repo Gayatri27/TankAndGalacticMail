@@ -153,14 +153,17 @@ public class World extends JPanel implements Observer {
 
   public void drawFrame(int w, int h, Graphics2D graphics) {
 
-    if(bg_buffer == null) drawBackground();
+    if (bg_buffer == null)
+      drawBackground();
     graphics.drawImage(bg_buffer, 0, 0, this);
 
     tank1.draw(this, graphics);
-    tank1.updateMove();
     tank2.draw(this, graphics);
-    tank2.updateMove();
-
+    
+    if(GameUtil.noCollision(tank1, tank2) || GameUtil.noCollisionNextMove(tank1, tank2)) {
+      tank1.updateMove();
+      tank2.updateMove();
+    }
   }
 
 
