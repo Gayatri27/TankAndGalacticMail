@@ -2,6 +2,7 @@ package objects;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.image.ImageObserver;
 import java.io.IOException;
@@ -18,10 +19,17 @@ public class Tank extends GameObject {
 
 	private boolean moveLeft, moveRight, moveUp, moveDown;
 	private int angle = 0, coolDown = 0;
+	
+	public int currentX, currentY;
+	public int imageWidth, imageHeight;
+	
+	public int nextX, nextY;
 
 	public Tank(Image image, int x, int y, int forwardKey, int backKey, int leftKey, int rightKey, int fireKey)
 			throws IOException {
 		super(image, x, y, forwardKey, backKey, leftKey, rightKey, fireKey);
+		nextX = x;
+		nextY = y;
 		this.forwardKey = forwardKey;
 		this.backKey = backKey;
 		this.leftKey = leftKey;
@@ -30,8 +38,8 @@ public class Tank extends GameObject {
 	}
 
 	public void draw(ImageObserver obs, Graphics2D g) {
-		int imageWidth = image.getWidth(null);
-		int imageHeight = image.getHeight(null);
+		imageWidth = image.getWidth(null);
+		imageHeight = image.getHeight(null);
 		int imageAngle = angle * IMAGE_ROTATION_STEP;
 
 		// This is drawImage from Graphics class in java
@@ -54,6 +62,9 @@ public class Tank extends GameObject {
 		//	sy2 - the y coordinate of the second corner of the source rectangle.
 		//	observer - object to be notified as more of the image is scaled and converted.
 
+		currentX = x;
+		currentY = y;
+		
 		g.drawImage(image, x, y,
 				x + imageWidth / TOTAL_IMAGES_IN_A_SPRITE, y + imageHeight,
 				imageAngle, 0,
@@ -73,6 +84,8 @@ public class Tank extends GameObject {
 			} else if (e.getID() == KeyEvent.KEY_PRESSED) {
 				moveUp = true;
 			}
+			nextX = nextX + SPEED_STEP_SIZE * 3;
+			nextY = nextY - SPEED_STEP_SIZE * 3;
 		} else if (e.getKeyCode() == backKey) {
 			if (e.getID() == KeyEvent.KEY_RELEASED) {
 				// x -= speed;
@@ -80,6 +93,8 @@ public class Tank extends GameObject {
 			} else if (e.getID() == KeyEvent.KEY_PRESSED) {
 				moveDown = true;
 			}
+			nextX = nextX - SPEED_STEP_SIZE * 3;
+			nextY = nextY + SPEED_STEP_SIZE * 3;
 		} else if (e.getKeyCode() == leftKey) {
 			if (e.getID() == KeyEvent.KEY_RELEASED) {
 				// x -= speed;
@@ -123,15 +138,19 @@ public class Tank extends GameObject {
 		if (moveUp) {
 			double xAngle = SPEED_STEP_SIZE * Math.cos(Math.toRadians(ANGLE_STEP_SIZE * angle));
 			x = x + (int) xAngle;
+			nextX = x;
 			double yAngle = SPEED_STEP_SIZE * Math.sin(Math.toRadians(ANGLE_STEP_SIZE * angle));
 			y = y - (int) yAngle;
+			nextY = y;
 		}
 
 		if (moveDown) {
 			double xAngle = SPEED_STEP_SIZE * Math.cos(Math.toRadians(ANGLE_STEP_SIZE * angle));
 			x = x - (int) xAngle;
+			nextX = x;
 			double yAngle = SPEED_STEP_SIZE * Math.sin(Math.toRadians(ANGLE_STEP_SIZE * angle));
 			y = y + (int) yAngle;
+			nextY = y;
 		}
 
 		// Angle can go only from 0 to 59
@@ -149,5 +168,13 @@ public class Tank extends GameObject {
 			moveUp = false;
 			moveDown = false;
 		}
+	}
+	
+	public Rectangle getTankRectangle() {
+		return new Rectangle(currentX, currentY, imageWidth / TOTAL_IMAGES_IN_A_SPRITE, imageHeight);
+	}
+	
+	public Rectangle getNextMoveTankRectangle() {
+		return new Rectangle(nextX, nextY, imageWidth / TOTAL_IMAGES_IN_A_SPRITE, imageHeight);
 	}
 }
