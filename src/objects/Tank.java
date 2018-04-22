@@ -9,6 +9,11 @@ import java.util.Observable;
 
 public class Tank extends GameObject {
 
+	private final int TOTAL_IMAGES_IN_A_SPRITE = 60;
+	private final int ANGLE_STEP_SIZE = 6;
+	private final int SPEED_STEP_SIZE = 5;
+	private final int IMAGE_ROTATION_STEP = 64;
+
 	private final int forwardKey, backKey, leftKey, rightKey, fireKey;
 
 	private boolean moveLeft, moveRight, moveUp, moveDown;
@@ -25,11 +30,35 @@ public class Tank extends GameObject {
 	}
 
 	public void draw(ImageObserver obs, Graphics2D g) {
-		int imageWidthScaled = image.getWidth(null);
-		int imageHeightScaled = image.getHeight(null);
-		int imageAngleScaled = angle * 64;
-		g.drawImage(image, x, y, x + imageWidthScaled / 60, y + imageHeightScaled, imageAngleScaled, 0,
-				imageAngleScaled + 64, imageHeightScaled, obs);
+		int imageWidth = image.getWidth(null);
+		int imageHeight = image.getHeight(null);
+		int imageAngle = angle * IMAGE_ROTATION_STEP;
+
+		// This is drawImage from Graphics class in java
+		// https://docs.oracle.com/javase/7/docs/api/java/awt/Graphics.html
+		//
+		// 	drawImage(Image img, int dx1, int dy1,
+		//											 int dx2, int dy2,
+		// 											 int sx1, int sy1,
+		//											 int sx2, int sy2,
+		//											 ImageObserver observer)
+		//
+		//	img - the specified image to be drawn. This method does nothing if img is null.
+		//	dx1 - the x coordinate of the first corner of the destination rectangle.
+		//	dy1 - the y coordinate of the first corner of the destination rectangle.
+		//	dx2 - the x coordinate of the second corner of the destination rectangle.
+		//	dy2 - the y coordinate of the second corner of the destination rectangle.
+		//	sx1 - the x coordinate of the first corner of the source rectangle.
+		//	sy1 - the y coordinate of the first corner of the source rectangle.
+		//	sx2 - the x coordinate of the second corner of the source rectangle.
+		//	sy2 - the y coordinate of the second corner of the source rectangle.
+		//	observer - object to be notified as more of the image is scaled and converted.
+
+		g.drawImage(image, x, y,
+				x + imageWidth / TOTAL_IMAGES_IN_A_SPRITE, y + imageHeight,
+				imageAngle, 0,
+				imageAngle + IMAGE_ROTATION_STEP, imageHeight,
+				obs);
 	}
 
 	@Override
@@ -75,7 +104,7 @@ public class Tank extends GameObject {
 	}
 
 	public int getTankCenterX() {
-		return x + ((image.getWidth(null) / 60) / 2);
+		return x + ((image.getWidth(null) / TOTAL_IMAGES_IN_A_SPRITE) / 2);
 	}
 
 	public int getTankCenterY() {
@@ -92,22 +121,26 @@ public class Tank extends GameObject {
 		}
 
 		if (moveUp) {
-			double xAngle = 5 * Math.cos(Math.toRadians(6 * angle));
+			double xAngle = SPEED_STEP_SIZE * Math.cos(Math.toRadians(ANGLE_STEP_SIZE * angle));
 			x = x + (int) xAngle;
-			double yAngle = 5 * Math.sin(Math.toRadians(6 * angle));
+			double yAngle = SPEED_STEP_SIZE * Math.sin(Math.toRadians(ANGLE_STEP_SIZE * angle));
 			y = y - (int) yAngle;
 		}
 
 		if (moveDown) {
-			double xAngle = 5 * Math.cos(Math.toRadians(6 * angle));
+			double xAngle = SPEED_STEP_SIZE * Math.cos(Math.toRadians(ANGLE_STEP_SIZE * angle));
 			x = x - (int) xAngle;
-			double yAngle = 5 * Math.sin(Math.toRadians(6 * angle));
+			double yAngle = SPEED_STEP_SIZE * Math.sin(Math.toRadians(ANGLE_STEP_SIZE * angle));
 			y = y + (int) yAngle;
 		}
 
+		// Angle can go only from 0 to 59
+		//
+		// 360 is the total rotation, and we have 60 images in a sprite,
+		// hence, angle needs to change in steps of 6
 		if (angle == -1)
 			angle = 59;
-		else if (angle == 60)
+		else if (angle == TOTAL_IMAGES_IN_A_SPRITE)
 			angle = 0;
 
 		if (coolDown > 0) {
