@@ -22,6 +22,10 @@ public class World extends JPanel implements Observer {
 
   protected final int MAIN_WIDTH = 2400;
   protected final int MAIN_HEIGHT = 2400;
+
+  protected final int MINI_MAP_WIDTH = 150;
+  protected final int MINI_MAP_HEIGHT = 150;
+
   protected final int STEP = 10;
   protected final String BACKGROUND_IMAGE = "resources/background_tile.png";
   protected final String TANK_IMAGE = "resources/Tank_grey_basic.png";
@@ -50,18 +54,127 @@ public class World extends JPanel implements Observer {
     try {
       Image tank1 = ImageIO.read(new File("resources/Tank_blue_basic_strip60.png"));
       Image tank2 = ImageIO.read(new File("resources/Tank_red_basic_strip60.png"));
-      this.tank1 = new Tank(tank1, 300, 300, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D,
+      this.tank1 = new Tank(tank1, 1000, 150, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D,
           KeyEvent.VK_C);
-      this.tank2 = new Tank(tank2, 100, 300, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L,
+      this.tank2 = new Tank(tank2, 1350, 2250, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L,
           KeyEvent.VK_N);
 
+      walls = new ArrayList<>();
+
       Image wallImage = ImageIO.read(new File("resources/wall.png"));
-      walls = new ArrayList<Wall>();
-      walls.add(new Wall(wallImage,0,0, false));
-      walls.add(new Wall(wallImage,100,100,false));
-      walls.add(new Wall(wallImage,100,132,false));
-      walls.add(new Wall(wallImage,200,200, false));
-      walls.add(new Wall(wallImage,232,200, false));
+
+      int wall_height = wallImage.getHeight(this);
+      int wall_length = wallImage.getWidth(this);
+
+      //  left edge
+      for(int y=0; y <= MAIN_HEIGHT; y = y + wall_height){
+        walls.add(new Wall(0,y, false));
+      }
+
+      // right edge
+      for(int y=0; y <= MAIN_HEIGHT; y = y + wall_height){
+        walls.add(new Wall(MAIN_WIDTH-wall_length,y, false));
+      }
+
+      // top edge
+      for(int x=0; x <= MAIN_WIDTH; x = x + wall_length){
+        walls.add(new Wall(x,0, false));
+      }
+
+      // bottom edge
+      for(int x=0; x <= MAIN_WIDTH; x = x + wall_length){
+        walls.add(new Wall(x,MAIN_HEIGHT - wall_height, false));
+      }
+
+      //center   36 is center
+      int start_center_x = ( (MAIN_WIDTH/2 - wall_length) / wall_length ) * wall_length;
+      int start_center_y = ( (MAIN_HEIGHT/2 - wall_height) / wall_height ) * wall_height ;
+
+      System.out.println(" start_center_x y " + start_center_x + " " + start_center_y);
+
+      for(int y = 16 * wall_height; y <= 59 * wall_height; y = y + wall_height){
+        walls.add(new Wall( start_center_x ,y, true));
+      }
+
+      /*
+      for(int x = 16*wall_length; x <= 59 * wall_length; x=x+wall_length){
+        walls.add(new Wall( x, start_center_y, true));
+      }
+      */
+
+      //center of centers
+      for(int x = 20*wall_length; x <= 52 * wall_length; x=x+wall_length){
+        walls.add(new Wall( x, start_center_y-7*wall_length , true));
+      }
+
+      for(int x = 20*wall_length; x <= 52 * wall_length; x=x+wall_length){
+        walls.add(new Wall( x, start_center_y+7*wall_length , true));
+      }
+
+
+      // extra corners
+
+      for(int x = 46*wall_length; x <= 60 * wall_length; x=x+wall_length){
+        walls.add(new Wall( x, 15*wall_length , true));
+        walls.add(new Wall( x, MAIN_HEIGHT-16*wall_length , true));
+      }
+
+      for(int x = 12*wall_length; x <= 26 * wall_length; x=x+wall_length){
+        walls.add(new Wall( x, 15*wall_length , true));
+        walls.add(new Wall( x, MAIN_HEIGHT-16*wall_length , true));
+      }
+
+      // extra corner vertical walls
+      for(int y = 16 * wall_height; y <= start_center_y-12*wall_length ; y = y + wall_height){
+        walls.add(new Wall( 19 * wall_height ,y, true));
+        walls.add(new Wall( 53 * wall_height ,y, true));
+      }
+
+      for(int y = MAIN_HEIGHT-25*wall_length; y <= MAIN_HEIGHT-17*wall_length ; y = y + wall_height){
+        walls.add(new Wall( 19 * wall_height ,y, true));
+        walls.add(new Wall( 53 * wall_height ,y, true));
+      }
+
+
+
+
+      //first bunker
+      for(int x = start_center_x - 8*wall_length ; x <= start_center_x; x = x + wall_length){
+        walls.add(new Wall( x , 8 * wall_height, false));
+      }
+
+      for(int y = 0; y <= 8 * wall_height; y = y + wall_height){
+        walls.add(new Wall( start_center_x ,y, false));
+      }
+
+
+      //second bunker
+      for(int y = start_center_y; y >= start_center_y-8*wall_length; y = y - wall_height){
+        walls.add(new Wall( MAIN_WIDTH-8*wall_length , y, false));
+      }
+
+      for(int x = MAIN_WIDTH - 8*wall_length ; x <= MAIN_WIDTH; x = x + wall_length){
+        walls.add(new Wall( x , start_center_y, false));
+      }
+
+
+
+      //third bunker
+      for(int x = start_center_x; x <= start_center_x+8*wall_length; x = x + wall_length){
+        walls.add(new Wall( x , 67 * wall_height, false));
+      }
+      for(int y = 67 * wall_height; y <= MAIN_HEIGHT; y = y + wall_height){
+        walls.add(new Wall( start_center_x ,y, false));
+      }
+
+      //fourth bunker
+      for(int y = start_center_y; y <= start_center_y+8*wall_length; y = y + wall_height){
+        walls.add(new Wall(8*wall_length , y, false));
+      }
+
+      for(int x = 0; x <= 8*wall_length; x = x + wall_length){
+        walls.add(new Wall( x , start_center_y, false));
+      }
 
 
     } catch (IOException exception) {
@@ -112,21 +225,24 @@ public class World extends JPanel implements Observer {
 
     Graphics2D g2 = bimg.createGraphics();
 
+    // 64 is tank width and height
+    int tank1_x = tank1.getX() - windowSize.width / 4 + 64/2;
+    if(tank1_x < 0) tank1_x = 0;
+    if(tank1_x + windowSize.width/2 > MAIN_WIDTH) tank1_x = MAIN_WIDTH - windowSize.width/2;
 
+    int tank1_y = tank1.getY() - windowSize.height / 2  + 64/2;
+    if(tank1_y < 0) tank1_y = 0;
+    if(tank1_y + windowSize.height > MAIN_HEIGHT) tank1_y = MAIN_HEIGHT - windowSize.height;
 
+    int tank2_x = tank2.getX() - windowSize.width / 4  + 64/2;
+    if(tank2_x < 0) tank2_x = 0;
+    if(tank2_x + windowSize.width/2 > MAIN_WIDTH) tank2_x = MAIN_WIDTH - windowSize.width/2;
+
+    int tank2_y = tank2.getY() - windowSize.height / 2 + 64/2;
+    if(tank2_y < 0) tank2_y = 0;
+    if(tank2_y + windowSize.height > MAIN_HEIGHT) tank2_y = MAIN_HEIGHT - windowSize.height;
 
 /*
-    int tank1_x = tank1.getX() - windowSize.width / 4 + tank1.getWidth()/2;
-    if(tank1_x < 0) tank1_x = 0;
-    int tank1_y = tank1.getY() - windowSize.height / 2  + tank1.getHeight()/2;
-    if(tank1_y < 0) tank1_y = 0;
-
-    int tank2_x = tank2.getX() - windowSize.width / 4  + tank1.getWidth()/2;
-    if(tank2_x < 0) tank2_x = 0;
-
-    int tank2_y = tank2.getY() - windowSize.height / 2 + tank1.getHeight()/2;
-    if(tank2_y < 0) tank2_y = 0;
-*/
 
     int tank1_x = tank1.getTankCenterX() - windowSize.width / 4 ;
     if(tank1_x < 0) tank1_x = 0;
@@ -138,15 +254,38 @@ public class World extends JPanel implements Observer {
 
     int tank2_y = tank2.getTankCenterY() - windowSize.height;
     if(tank2_y < 0) tank2_y = 0;
+*/
 
     BufferedImage player_1_window = main_bimg.getSubimage(tank1_x, tank1_y,windowSize.width / 2, windowSize.height);
 
     BufferedImage player_2_window = main_bimg.getSubimage(tank2_x, tank2_y,windowSize.width / 2, windowSize.height);
 
+
+
+    BufferedImage miniMap = (BufferedImage) createImage(MINI_MAP_WIDTH, MINI_MAP_HEIGHT);
+    Graphics2D miniMapG = miniMap.createGraphics();
+
+    miniMapG.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+    miniMapG.drawImage(main_bimg, 0, 0, MINI_MAP_WIDTH, MINI_MAP_HEIGHT, 0, 0, MAIN_WIDTH,MAIN_HEIGHT, null);
+    miniMapG.dispose();
+
+
     g2.drawImage(player_1_window, 0, 0, this);
     g2.drawImage(player_2_window, windowSize.width / 2, 0, this);
 
     g.drawImage(bimg, 0, 0, this);
+
+    int miniMapX = windowSize.width / 2 - MINI_MAP_WIDTH/2;
+    int miniMapY = windowSize.height - MINI_MAP_HEIGHT;
+
+    g.drawImage(miniMap, miniMapX, miniMapY, this);
+
+    //System.out.println(MAIN_WIDTH/2 - MINI_MAP_WIDTH/2);
+    //System.out.println(MAIN_HEIGHT-MINI_MAP_HEIGHT);
+    g.drawImage(miniMap, 1125,2250, this);
+
 
 
   }
@@ -183,12 +322,11 @@ public class World extends JPanel implements Observer {
         w.draw(this, bg_g2);
       }
 
-      /*
       File outputfile = new File("resources/ooo.jpg");
       ImageIO.write(bg_buffer, "jpg", outputfile);
 
       System.out.println("drawbackground done");
-      */
+
 
     }catch(Exception e){
       e.getStackTrace();
