@@ -298,8 +298,11 @@ public class World extends JPanel implements Observer {
 
     tank1.draw(this, graphics);
     tank2.draw(this, graphics);
-    
-    if(GameUtil.noCollision(tank1, tank2) || GameUtil.noCollisionNextMove(tank1, tank2)) {
+
+    if(GameUtil.noCollision(tank1, tank2)) {
+      tank1.updateMove();
+      tank2.updateMove();
+    } else if(GameUtil.noCollisionNextMove(tank1, tank2)) {
       tank1.updateMove();
       tank2.updateMove();
     }

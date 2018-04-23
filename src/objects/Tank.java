@@ -19,10 +19,10 @@ public class Tank extends GameObject {
 
 	private boolean moveLeft, moveRight, moveUp, moveDown;
 	private int angle = 0, coolDown = 0;
-	
+
 	public int currentX, currentY;
 	public int imageWidth, imageHeight;
-	
+
 	public int nextX, nextY;
 
 	public Tank(Image image, int x, int y, int forwardKey, int backKey, int leftKey, int rightKey, int fireKey)
@@ -64,7 +64,7 @@ public class Tank extends GameObject {
 
 		currentX = x;
 		currentY = y;
-		
+
 		g.drawImage(image, x, y,
 				x + imageWidth / TOTAL_IMAGES_IN_A_SPRITE, y + imageHeight,
 				imageAngle, 0,
@@ -84,8 +84,12 @@ public class Tank extends GameObject {
 			} else if (e.getID() == KeyEvent.KEY_PRESSED) {
 				moveUp = true;
 			}
-			nextX = nextX + SPEED_STEP_SIZE * 3;
-			nextY = nextY - SPEED_STEP_SIZE * 3;
+
+			double xAngle = SPEED_STEP_SIZE * Math.cos(Math.toRadians(ANGLE_STEP_SIZE * angle));
+			nextX = ++nextX + (int) xAngle;
+			double yAngle = SPEED_STEP_SIZE * Math.sin(Math.toRadians(ANGLE_STEP_SIZE * angle));
+			nextY = --nextY - (int) yAngle;
+
 		} else if (e.getKeyCode() == backKey) {
 			if (e.getID() == KeyEvent.KEY_RELEASED) {
 				// x -= speed;
@@ -93,8 +97,12 @@ public class Tank extends GameObject {
 			} else if (e.getID() == KeyEvent.KEY_PRESSED) {
 				moveDown = true;
 			}
-			nextX = nextX - SPEED_STEP_SIZE * 3;
-			nextY = nextY + SPEED_STEP_SIZE * 3;
+
+			double xAngle = SPEED_STEP_SIZE * Math.cos(Math.toRadians(ANGLE_STEP_SIZE * angle));
+			nextX = --nextX - (int) xAngle;
+			double yAngle = SPEED_STEP_SIZE * Math.sin(Math.toRadians(ANGLE_STEP_SIZE * angle));
+			nextY = --nextY + (int) yAngle;
+
 		} else if (e.getKeyCode() == leftKey) {
 			if (e.getID() == KeyEvent.KEY_RELEASED) {
 				// x -= speed;
@@ -169,12 +177,16 @@ public class Tank extends GameObject {
 			moveDown = false;
 		}
 	}
-	
+
 	public Rectangle getTankRectangle() {
-		return new Rectangle(currentX, currentY, imageWidth / TOTAL_IMAGES_IN_A_SPRITE, imageHeight);
+		int adjustedWidth = imageWidth / TOTAL_IMAGES_IN_A_SPRITE + 1;
+		int adjustedHeight = imageHeight + 1;
+		return new Rectangle(currentX, currentY, adjustedWidth, adjustedHeight);
 	}
-	
+
 	public Rectangle getNextMoveTankRectangle() {
-		return new Rectangle(nextX, nextY, imageWidth / TOTAL_IMAGES_IN_A_SPRITE, imageHeight);
+		int adjustedWidth = imageWidth / TOTAL_IMAGES_IN_A_SPRITE + 1;
+		int adjustedHeight = imageHeight + 1;
+		return new Rectangle(nextX, nextY, adjustedWidth, adjustedHeight);
 	}
 }

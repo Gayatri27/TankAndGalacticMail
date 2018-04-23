@@ -80,11 +80,6 @@ public class GameObject implements Observer {
   }
 
   public void draw(ImageObserver observer, Graphics2D g) {
-
-    System.out.println("calling draw in game object");
-
-
-
     g.drawImage(image, x, y, observer);
 
   }

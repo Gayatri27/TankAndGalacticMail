@@ -10,7 +10,7 @@ public class GameUtil {
 		}
 		return true;
 	}
-	
+
 	public static boolean noCollisionNextMove(Tank tank1, Tank tank2) {
 		if (tank1.getNextMoveTankRectangle().intersects(tank2.getNextMoveTankRectangle())) {
 			return false;
