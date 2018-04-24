@@ -1,3 +1,5 @@
+/*
+
 package application;
 
 
@@ -110,11 +112,11 @@ public class World extends JPanel implements Observer {
 
 			this.tank1 = new Tank(tank1, 1000, 150, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D,
 
-					KeyEvent.VK_C);
+					KeyEvent.VK_C, this);
 
 			this.tank2 = new Tank(tank2, 1350, 2250, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L,
 
-					KeyEvent.VK_N);
+					KeyEvent.VK_N, this);
 
 
 
@@ -202,7 +204,7 @@ public class World extends JPanel implements Observer {
 
 			 * }
 
-			 */
+			 * /
 
 
 
@@ -508,7 +510,7 @@ public class World extends JPanel implements Observer {
 
 		 * < 0) tank2_y = 0;
 
-		 */
+		 * /
 
 
 
@@ -700,7 +702,7 @@ public class World extends JPanel implements Observer {
 
 		 * tank2)) { tank1.updateMove(); tank2.updateMove(); }
 
-		 */
+		 * /
 
 	}
 
@@ -789,3 +791,5 @@ public class World extends JPanel implements Observer {
 	}
 
 }
+
+*/

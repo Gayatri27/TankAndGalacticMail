@@ -1,5 +1,6 @@
 package application;
 
+import javafx.animation.Animation;
 import objects.*;
 import objects.bullets.AbstractBullet;
 
@@ -370,7 +371,7 @@ public class World extends JPanel implements Observer {
      * tank2.updateMove(); } else if (GameUtil.noCollisionNextMove(tank1,
      * tank2)) { tank1.updateMove(); tank2.updateMove(); }
      */
-  }
+
 
   public void drawBackground() {
     try {
