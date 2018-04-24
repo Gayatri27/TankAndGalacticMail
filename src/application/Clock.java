@@ -6,7 +6,7 @@ import static java.lang.Thread.sleep;
 
 public class Clock extends Observable implements Runnable {
 
-  private final int DURATION = 42; // testing
+  private final int DURATION = 45; // testing
   private Thread thread;
 
   Clock(){

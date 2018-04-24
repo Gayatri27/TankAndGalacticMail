@@ -1,4 +1,15 @@
 package objects.bullets;
 
-public abstract class AbstractBullet {
+import objects.GameObject;
+
+import java.util.Observer;
+
+public abstract class AbstractBullet extends GameObject  implements Observer {
+
+  private int strength;
+
+
+
+
+
 }

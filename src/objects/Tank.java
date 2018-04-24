@@ -1,5 +1,7 @@
 package objects;
 
+import objects.weapons.TankWeapon;
+
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -25,8 +27,13 @@ public class Tank extends GameObject {
 
 	public int nextX, nextY;
 
-	public Tank(Image image, int x, int y, int forwardKey, int backKey, int leftKey, int rightKey, int fireKey)
+	private TankWeapon tankWeapon;
+
+	private application.World world;
+
+	public Tank(Image image, int x, int y, int forwardKey, int backKey, int leftKey, int rightKey, int fireKey, application.World world)
 			throws IOException {
+
 		super(image, x, y, forwardKey, backKey, leftKey, rightKey, fireKey);
 		nextX = x;
 		nextY = y;
@@ -35,6 +42,11 @@ public class Tank extends GameObject {
 		this.leftKey = leftKey;
 		this.rightKey = rightKey;
 		this.fireKey = fireKey;
+
+		this.world = world;
+		tankWeapon = new TankWeapon(this, world);
+
+
 	}
 
 	public void draw(ImageObserver obs, Graphics2D g) {
@@ -118,7 +130,7 @@ public class Tank extends GameObject {
 				moveRight = true;
 			}
 		} else if (e.getKeyCode() == fireKey) {
-			System.out.println("ABC");
+			tankWeapon.shoot();
 		}
 	}
 
@@ -150,7 +162,7 @@ public class Tank extends GameObject {
 			double yAngle = SPEED_STEP_SIZE * Math.sin(Math.toRadians(ANGLE_STEP_SIZE * angle));
 			y = y - (int) yAngle;
 			nextY = y;
-		}
+    }
 
 		if (moveDown) {
 			double xAngle = SPEED_STEP_SIZE * Math.cos(Math.toRadians(ANGLE_STEP_SIZE * angle));
@@ -162,7 +174,6 @@ public class Tank extends GameObject {
 		}
 
 		// Angle can go only from 0 to 59
-		//
 		// 360 is the total rotation, and we have 60 images in a sprite,
 		// hence, angle needs to change in steps of 6
 		if (angle == -1)

@@ -1,6 +1,7 @@
 package application;
 
 import objects.*;
+import objects.bullets.AbstractBullet;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -38,6 +39,10 @@ public class World extends JPanel implements Observer {
   protected Tank tank1;
   protected Tank tank2;
 
+  protected ArrayList<Animation> animations;
+
+  protected ArrayList<AbstractBullet> bullets;
+
   private Clock clock;
   ArrayList<Wall> walls;
   ArrayList<Obstacle> obstacles;
@@ -54,9 +59,13 @@ public class World extends JPanel implements Observer {
       Image tank1 = ImageIO.read(new File("resources/Tank_blue_basic_strip60.png"));
       Image tank2 = ImageIO.read(new File("resources/Tank_red_basic_strip60.png"));
       this.tank1 = new Tank(tank1, 1000, 150, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D,
-          KeyEvent.VK_C);
-      this.tank2 = new Tank(tank2, 1350, 2250, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L,
-          KeyEvent.VK_N);
+          KeyEvent.VK_C, this);
+
+
+      this.tank2 = new Tank(tank2, 1350, 200, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L, KeyEvent.VK_N, this);
+
+
+      // this.tank2 = new Tank(tank2, 1350, 2250, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L, KeyEvent.VK_N);
 
       walls = new ArrayList<>();
       obstacles = new ArrayList<>();
@@ -90,7 +99,6 @@ public class World extends JPanel implements Observer {
       int start_center_x = ((MAIN_WIDTH / 2 - wall_length) / wall_length) * wall_length;
       int start_center_y = ((MAIN_HEIGHT / 2 - wall_height) / wall_height) * wall_height;
 
-      System.out.println(" start_center_x y " + start_center_x + " " + start_center_y);
 
       for (int y = 16 * wall_height; y <= 59 * wall_height; y = y + wall_height) {
         walls.add(new Wall(start_center_x, y, true));
@@ -179,6 +187,12 @@ public class World extends JPanel implements Observer {
 
     this.dimension = new Dimension(WIDTH, HEIGHT);
 
+
+    this.animations = new ArrayList<>();
+
+    bullets = new ArrayList<>();
+
+
     this.setFocusable(true);
 
     clock = new Clock();
@@ -186,6 +200,14 @@ public class World extends JPanel implements Observer {
     clock.start();
 
   }
+
+  public void addBullet(AbstractBullet bullet){
+    bullets.add(bullet);
+    clock.addObserver(bullet);
+
+  }
+
+
 
   public Graphics2D createGraphics2D(int w, int h) {
     Graphics2D g2 = null;
@@ -279,9 +301,10 @@ public class World extends JPanel implements Observer {
 
     g.drawImage(miniMap, miniMapX, miniMapY, this);
 
-    // System.out.println(MAIN_WIDTH/2 - MINI_MAP_WIDTH/2);
-    // System.out.println(MAIN_HEIGHT-MINI_MAP_HEIGHT);
-    g.drawImage(miniMap, 1125, 2250, this);
+    //System.out.println(MAIN_WIDTH/2 - MINI_MAP_WIDTH/2);
+    //System.out.println(MAIN_HEIGHT-MINI_MAP_HEIGHT);
+    g.drawImage(miniMap, 1125,2250, this);
+
 
   }
 
@@ -335,6 +358,13 @@ public class World extends JPanel implements Observer {
       tank2.updateMove();
     }
 
+    for(AbstractBullet bullet : bullets){
+      bullet.draw(this, graphics);
+    }
+
+  }
+
+
     /*
      * if (GameUtil.noCollision(tank1, tank2)) { tank1.updateMove();
      * tank2.updateMove(); } else if (GameUtil.noCollisionNextMove(tank1,
@@ -356,9 +386,15 @@ public class World extends JPanel implements Observer {
       // File outputfile = new File("resources/ooo.jpg");
       // ImageIO.write(bg_buffer, "jpg", outputfile);
 
-      // System.out.println("drawbackground done");
 
-    } catch (Exception e) {
+      /*
+      File outputfile = new File("resources/ooo.jpg");
+      ImageIO.write(bg_buffer, "jpg", outputfile);
+*/
+
+
+    }catch(Exception e){
+
       e.getStackTrace();
       System.out.println(e.getMessage());
     }
