@@ -12,6 +12,7 @@ public class GameFrame extends JFrame {
 
   Menu menu;
   World world;
+  EndGameMenu endGameMenu;
 
  
   
@@ -23,8 +24,9 @@ public class GameFrame extends JFrame {
     setResizable( true );
     setSize(800,600);
 
-    startMenu();
+    // startMenu();
 
+    startEndGameMenu();
 
     /*
     JLabel image1 = new JLabel (new ImageIcon("resources/wall.png"));
@@ -57,6 +59,16 @@ public class GameFrame extends JFrame {
     add(world);
     revalidate();
     currentPanel = world;
+  }
+
+
+  public void startEndGameMenu(){
+    removeCurrent();
+    endGameMenu = new EndGameMenu(this);
+    this.addKeyListener(endGameMenu);
+    add(endGameMenu);
+    revalidate();
+    currentPanel = endGameMenu;
   }
 
   private void removeCurrent(){

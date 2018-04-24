@@ -28,6 +28,8 @@ public class MainMenu {
       panel.add(menuItem.label);
     }
 
+    if(! menuItems.get(selectedIndex).hasAction) next();
+
     reColor();
 
   }
@@ -38,6 +40,10 @@ public class MainMenu {
     menuItem.displayText = displayText;
     menuItem.functionName = functionName;
 
+    if(menuItem.functionName == "" ){
+      menuItem.hasAction = false;
+    }
+
     menuItems.add(menuItem);
   }
 
@@ -46,6 +52,7 @@ public class MainMenu {
     if(selectedIndex >= menuItems.size() ){
       selectedIndex = 0;
     }
+    if(! menuItems.get(selectedIndex).hasAction) next();
     reColor();
   }
 
@@ -54,6 +61,9 @@ public class MainMenu {
     if(selectedIndex <= -1 ){
       selectedIndex = menuItems.size() - 1;
     }
+
+    if(! menuItems.get(selectedIndex).hasAction) previous();
+
     reColor();
   }
 
@@ -85,6 +95,7 @@ public class MainMenu {
     String displayText;
     String functionName;
     JLabel label;
+    boolean hasAction = true;
   }
 
 

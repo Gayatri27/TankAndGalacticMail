@@ -65,118 +65,11 @@ public class World extends JPanel implements Observer {
 
       this.tank2 = new Tank(tank2, 1350, 200, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L, KeyEvent.VK_N, this);
 
+      obstacles = new ArrayList<>();
 
       // this.tank2 = new Tank(tank2, 1350, 2250, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L, KeyEvent.VK_N);
 
-      walls = new ArrayList<>();
-      obstacles = new ArrayList<>();
-
-      Image wallImage = ImageIO.read(new File("resources/wall.png"));
-
-      int wall_height = wallImage.getHeight(this);
-      int wall_length = wallImage.getWidth(this);
-
-      // left edge
-      for (int y = 0; y <= MAIN_HEIGHT; y = y + wall_height) {
-        walls.add(new Wall(0, y, false));
-      }
-
-      // right edge
-      for (int y = 0; y <= MAIN_HEIGHT; y = y + wall_height) {
-        walls.add(new Wall(MAIN_WIDTH - wall_length, y, false));
-      }
-
-      // top edge
-      for (int x = 0; x <= MAIN_WIDTH; x = x + wall_length) {
-        walls.add(new Wall(x, 0, false));
-      }
-
-      // bottom edge
-      for (int x = 0; x <= MAIN_WIDTH; x = x + wall_length) {
-        walls.add(new Wall(x, MAIN_HEIGHT - wall_height, false));
-      }
-
-      // center 36 is center
-      int start_center_x = ((MAIN_WIDTH / 2 - wall_length) / wall_length) * wall_length;
-      int start_center_y = ((MAIN_HEIGHT / 2 - wall_height) / wall_height) * wall_height;
-
-
-      for (int y = 16 * wall_height; y <= 59 * wall_height; y = y + wall_height) {
-        walls.add(new Wall(start_center_x, y, true));
-      }
-
-      /*
-       * for(int x = 16*wall_length; x <= 59 * wall_length;
-       * x=x+wall_length){ walls.add(new Wall( x, start_center_y, true));
-       * }
-       */
-
-      // center of centers
-      for (int x = 20 * wall_length; x <= 52 * wall_length; x = x + wall_length) {
-        walls.add(new Wall(x, start_center_y - 7 * wall_length, true));
-      }
-
-      for (int x = 20 * wall_length; x <= 52 * wall_length; x = x + wall_length) {
-        walls.add(new Wall(x, start_center_y + 7 * wall_length, true));
-      }
-
-      // extra corners
-
-      for (int x = 46 * wall_length; x <= 60 * wall_length; x = x + wall_length) {
-        walls.add(new Wall(x, 15 * wall_length, true));
-        walls.add(new Wall(x, MAIN_HEIGHT - 16 * wall_length, true));
-      }
-
-      for (int x = 12 * wall_length; x <= 26 * wall_length; x = x + wall_length) {
-        walls.add(new Wall(x, 15 * wall_length, true));
-        walls.add(new Wall(x, MAIN_HEIGHT - 16 * wall_length, true));
-      }
-
-      // extra corner vertical walls
-      for (int y = 16 * wall_height; y <= start_center_y - 12 * wall_length; y = y + wall_height) {
-        walls.add(new Wall(19 * wall_height, y, true));
-        walls.add(new Wall(53 * wall_height, y, true));
-      }
-
-      for (int y = MAIN_HEIGHT - 25 * wall_length; y <= MAIN_HEIGHT - 17 * wall_length; y = y + wall_height) {
-        walls.add(new Wall(19 * wall_height, y, true));
-        walls.add(new Wall(53 * wall_height, y, true));
-      }
-
-      // first bunker
-      for (int x = start_center_x - 8 * wall_length; x <= start_center_x; x = x + wall_length) {
-        walls.add(new Wall(x, 8 * wall_height, false));
-      }
-
-      for (int y = 0; y <= 8 * wall_height; y = y + wall_height) {
-        walls.add(new Wall(start_center_x, y, false));
-      }
-
-      // second bunker
-      for (int y = start_center_y; y >= start_center_y - 8 * wall_length; y = y - wall_height) {
-        walls.add(new Wall(MAIN_WIDTH - 8 * wall_length, y, false));
-      }
-
-      for (int x = MAIN_WIDTH - 8 * wall_length; x <= MAIN_WIDTH; x = x + wall_length) {
-        walls.add(new Wall(x, start_center_y, false));
-      }
-
-      // third bunker
-      for (int x = start_center_x; x <= start_center_x + 8 * wall_length; x = x + wall_length) {
-        walls.add(new Wall(x, 67 * wall_height, false));
-      }
-      for (int y = 67 * wall_height; y <= MAIN_HEIGHT; y = y + wall_height) {
-        walls.add(new Wall(start_center_x, y, false));
-      }
-
-      // fourth bunker
-      for (int y = start_center_y; y <= start_center_y + 8 * wall_length; y = y + wall_height) {
-        walls.add(new Wall(8 * wall_length, y, false));
-      }
-
-      for (int x = 0; x <= 8 * wall_length; x = x + wall_length) {
-        walls.add(new Wall(x, start_center_y, false));
-      }
+      makeWalls();
 
     } catch (IOException exception) {
       System.err.println("Failed to load sprite.");
@@ -420,4 +313,128 @@ public class World extends JPanel implements Observer {
       gameEvents.setValue(e);
     }
   }
+
+
+
+
+  private void makeWalls() throws IOException{
+
+    walls = new ArrayList<>();
+
+    Image wallImage = ImageIO.read(new File("resources/wall.png"));
+
+    int wall_height = wallImage.getHeight(this);
+    int wall_length = wallImage.getWidth(this);
+
+    // left edge
+    for (int y = 0; y <= MAIN_HEIGHT; y = y + wall_height) {
+      walls.add(new Wall(0, y, false));
+    }
+
+    // right edge
+    for (int y = 0; y <= MAIN_HEIGHT; y = y + wall_height) {
+      walls.add(new Wall(MAIN_WIDTH - wall_length, y, false));
+    }
+
+    // top edge
+    for (int x = 0; x <= MAIN_WIDTH; x = x + wall_length) {
+      walls.add(new Wall(x, 0, false));
+    }
+
+    // bottom edge
+    for (int x = 0; x <= MAIN_WIDTH; x = x + wall_length) {
+      walls.add(new Wall(x, MAIN_HEIGHT - wall_height, false));
+    }
+
+    // center 36 is center
+    int start_center_x = ((MAIN_WIDTH / 2 - wall_length) / wall_length) * wall_length;
+    int start_center_y = ((MAIN_HEIGHT / 2 - wall_height) / wall_height) * wall_height;
+
+
+    for (int y = 16 * wall_height; y <= 59 * wall_height; y = y + wall_height) {
+      walls.add(new Wall(start_center_x, y, true));
+    }
+
+    /*
+     * for(int x = 16*wall_length; x <= 59 * wall_length;
+     * x=x+wall_length){ walls.add(new Wall( x, start_center_y, true));
+     * }
+     */
+
+    // center of centers
+    for (int x = 20 * wall_length; x <= 52 * wall_length; x = x + wall_length) {
+      walls.add(new Wall(x, start_center_y - 7 * wall_length, true));
+    }
+
+    for (int x = 20 * wall_length; x <= 52 * wall_length; x = x + wall_length) {
+      walls.add(new Wall(x, start_center_y + 7 * wall_length, true));
+    }
+
+    // extra corners
+
+    for (int x = 46 * wall_length; x <= 60 * wall_length; x = x + wall_length) {
+      walls.add(new Wall(x, 15 * wall_length, true));
+      walls.add(new Wall(x, MAIN_HEIGHT - 16 * wall_length, true));
+    }
+
+    for (int x = 12 * wall_length; x <= 26 * wall_length; x = x + wall_length) {
+      walls.add(new Wall(x, 15 * wall_length, true));
+      walls.add(new Wall(x, MAIN_HEIGHT - 16 * wall_length, true));
+    }
+
+    // extra corner vertical walls
+    for (int y = 16 * wall_height; y <= start_center_y - 12 * wall_length; y = y + wall_height) {
+      walls.add(new Wall(19 * wall_height, y, true));
+      walls.add(new Wall(53 * wall_height, y, true));
+    }
+
+    for (int y = MAIN_HEIGHT - 25 * wall_length; y <= MAIN_HEIGHT - 17 * wall_length; y = y + wall_height) {
+      walls.add(new Wall(19 * wall_height, y, true));
+      walls.add(new Wall(53 * wall_height, y, true));
+    }
+
+    // first bunker
+    for (int x = start_center_x - 8 * wall_length; x <= start_center_x; x = x + wall_length) {
+      walls.add(new Wall(x, 8 * wall_height, false));
+    }
+
+    for (int y = 0; y <= 8 * wall_height; y = y + wall_height) {
+      walls.add(new Wall(start_center_x, y, false));
+    }
+
+    // second bunker
+    for (int y = start_center_y; y >= start_center_y - 8 * wall_length; y = y - wall_height) {
+      walls.add(new Wall(MAIN_WIDTH - 8 * wall_length, y, false));
+    }
+
+    for (int x = MAIN_WIDTH - 8 * wall_length; x <= MAIN_WIDTH; x = x + wall_length) {
+      walls.add(new Wall(x, start_center_y, false));
+    }
+
+    // third bunker
+    for (int x = start_center_x; x <= start_center_x + 8 * wall_length; x = x + wall_length) {
+      walls.add(new Wall(x, 67 * wall_height, false));
+    }
+    for (int y = 67 * wall_height; y <= MAIN_HEIGHT; y = y + wall_height) {
+      walls.add(new Wall(start_center_x, y, false));
+    }
+
+    // fourth bunker
+    for (int y = start_center_y; y <= start_center_y + 8 * wall_length; y = y + wall_height) {
+      walls.add(new Wall(8 * wall_length, y, false));
+    }
+
+    for (int x = 0; x <= 8 * wall_length; x = x + wall_length) {
+      walls.add(new Wall(x, start_center_y, false));
+    }
+
+  }
+
+
+
+
 }
+
+
+
+
