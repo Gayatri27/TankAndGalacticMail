@@ -1,7 +1,5 @@
 package objects;
 
-import objects.Animation;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.ImageObserver;
@@ -68,10 +66,6 @@ public class GameObject implements Observer {
 
   public void repaint(Graphics graphics) {
     //graphics.drawImage(image, x, y, observer);
-  }
-
-  public Animation rotate(int rotation) {
-    return null;
   }
 
   @Override
