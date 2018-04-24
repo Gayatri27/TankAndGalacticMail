@@ -1,4 +1,13 @@
 package objects.bullets;
 
-public abstract class AbstractBullet {
+import objects.GameObject;
+
+public abstract class AbstractBullet extends GameObject  {
+
+  private int strength;
+
+
+
+
+
 }

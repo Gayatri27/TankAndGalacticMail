@@ -54,8 +54,6 @@ public class GameFrame extends JFrame {
     world = new World(this);
     // this.addKeyListener(world);
 
-    System.out.println("starting game from game frame");
-
     add(world);
     revalidate();
     currentPanel = world;
