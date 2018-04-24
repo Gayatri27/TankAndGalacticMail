@@ -209,6 +209,8 @@ public class World extends JPanel implements Observer {
 
   public void addBullet(AbstractBullet bullet){
     bullets.add(bullet);
+    clock.addObserver(bullet);
+
   }
 
 

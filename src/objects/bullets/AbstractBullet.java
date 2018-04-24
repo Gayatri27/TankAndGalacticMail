@@ -2,7 +2,9 @@ package objects.bullets;
 
 import objects.GameObject;
 
-public abstract class AbstractBullet extends GameObject  {
+import java.util.Observer;
+
+public abstract class AbstractBullet extends GameObject  implements Observer {
 
   private int strength;
 
