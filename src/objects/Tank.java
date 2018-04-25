@@ -31,8 +31,8 @@ public class Tank extends GameObject {
 
 	private application.World world;
 
-	public Tank(Image image, int x, int y, int forwardKey, int backKey, int leftKey, int rightKey, int fireKey, application.World world)
-			throws IOException {
+	public Tank(Image image, int x, int y, int forwardKey, int backKey, int leftKey, int rightKey, int fireKey,
+			application.World world) throws IOException {
 
 		super(image, x, y, forwardKey, backKey, leftKey, rightKey, fireKey);
 		nextX = x;
@@ -46,7 +46,6 @@ public class Tank extends GameObject {
 		this.world = world;
 		tankWeapon = new TankWeapon(this, world);
 
-
 	}
 
 	public void draw(ImageObserver obs, Graphics2D g) {
@@ -57,31 +56,30 @@ public class Tank extends GameObject {
 		// This is drawImage from Graphics class in java
 		// https://docs.oracle.com/javase/7/docs/api/java/awt/Graphics.html
 		//
-		// 	drawImage(Image img, int dx1, int dy1,
-		//											 int dx2, int dy2,
-		// 											 int sx1, int sy1,
-		//											 int sx2, int sy2,
-		//											 ImageObserver observer)
+		// drawImage(Image img, int dx1, int dy1,
+		// int dx2, int dy2,
+		// int sx1, int sy1,
+		// int sx2, int sy2,
+		// ImageObserver observer)
 		//
-		//	img - the specified image to be drawn. This method does nothing if img is null.
-		//	dx1 - the x coordinate of the first corner of the destination rectangle.
-		//	dy1 - the y coordinate of the first corner of the destination rectangle.
-		//	dx2 - the x coordinate of the second corner of the destination rectangle.
-		//	dy2 - the y coordinate of the second corner of the destination rectangle.
-		//	sx1 - the x coordinate of the first corner of the source rectangle.
-		//	sy1 - the y coordinate of the first corner of the source rectangle.
-		//	sx2 - the x coordinate of the second corner of the source rectangle.
-		//	sy2 - the y coordinate of the second corner of the source rectangle.
-		//	observer - object to be notified as more of the image is scaled and converted.
+		// img - the specified image to be drawn. This method does nothing if img is
+		// null.
+		// dx1 - the x coordinate of the first corner of the destination rectangle.
+		// dy1 - the y coordinate of the first corner of the destination rectangle.
+		// dx2 - the x coordinate of the second corner of the destination rectangle.
+		// dy2 - the y coordinate of the second corner of the destination rectangle.
+		// sx1 - the x coordinate of the first corner of the source rectangle.
+		// sy1 - the y coordinate of the first corner of the source rectangle.
+		// sx2 - the x coordinate of the second corner of the source rectangle.
+		// sy2 - the y coordinate of the second corner of the source rectangle.
+		// observer - object to be notified as more of the image is scaled and
+		// converted.
 
 		currentX = x;
 		currentY = y;
 
-		g.drawImage(image, x, y,
-				x + imageWidth / TOTAL_IMAGES_IN_A_SPRITE, y + imageHeight,
-				imageAngle, 0,
-				imageAngle + IMAGE_ROTATION_STEP, imageHeight,
-				obs);
+		g.drawImage(image, x, y, x + imageWidth / TOTAL_IMAGES_IN_A_SPRITE, y + imageHeight, imageAngle, 0,
+				imageAngle + IMAGE_ROTATION_STEP, imageHeight, obs);
 	}
 
 	@Override
@@ -162,7 +160,7 @@ public class Tank extends GameObject {
 			double yAngle = SPEED_STEP_SIZE * Math.sin(Math.toRadians(ANGLE_STEP_SIZE * angle));
 			y = y - (int) yAngle;
 			nextY = y;
-    }
+		}
 
 		if (moveDown) {
 			double xAngle = SPEED_STEP_SIZE * Math.cos(Math.toRadians(ANGLE_STEP_SIZE * angle));
@@ -192,6 +190,12 @@ public class Tank extends GameObject {
 	public Rectangle getTankRectangle() {
 		int adjustedWidth = imageWidth / TOTAL_IMAGES_IN_A_SPRITE + 1;
 		int adjustedHeight = imageHeight + 1;
+		return new Rectangle(currentX, currentY, adjustedWidth, adjustedHeight);
+	}
+
+	public Rectangle getAdjustedTankRectangleForBullets() {
+		int adjustedWidth = imageWidth / TOTAL_IMAGES_IN_A_SPRITE - 1;
+		int adjustedHeight = imageHeight - 1;
 		return new Rectangle(currentX, currentY, adjustedWidth, adjustedHeight);
 	}
 
