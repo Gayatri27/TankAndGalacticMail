@@ -6,7 +6,7 @@ import static java.lang.Thread.sleep;
 
 public class Clock extends Observable implements Runnable {
 
-  private final int DURATION = 45; // testing
+  private final int DURATION = 25; // testing
   private Thread thread;
 
   Clock(){
@@ -33,27 +33,3 @@ public class Clock extends Observable implements Runnable {
     }
   }
 }
-
-
-/**
- *
-
- private static final long serialVersionUID = 8815532421606947532L;
- private final int DURATION = 35; // testing
- private World panel;
-
-
-
- @Override
- public void run() {
- while (true) {
- panel.repaint();
- try {
- sleep(DURATION);
- } catch (InterruptedException e) {
- e.printStackTrace();
- }
- }
- }
-
- */
