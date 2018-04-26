@@ -242,6 +242,7 @@ public  class SpriteTank extends GameObject implements Destroyable {
 
   @Override
   public void reduceHealth(int amount) {
+    new Audio().play();
     health -= amount;
   }
 }
