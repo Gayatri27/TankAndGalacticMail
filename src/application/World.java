@@ -27,8 +27,8 @@ public class World extends JPanel implements Observer {
 	protected final int MAIN_WIDTH = 2400;
 	protected final int MAIN_HEIGHT = 2400;
 
-	protected final int MINI_MAP_WIDTH = 150;
-	protected final int MINI_MAP_HEIGHT = 150;
+	protected final int MINI_MAP_WIDTH = 200;
+	protected final int MINI_MAP_HEIGHT = 200;
 
 	protected final int STEP = 10;
 	protected final String BACKGROUND_IMAGE = "resources/background_tile.png";
@@ -206,6 +206,16 @@ public class World extends JPanel implements Observer {
 		g2.drawImage(player_1_window, 0, 0, this);
 		g2.drawImage(player_2_window, windowSize.width / 2, 0, this);
 
+		g2.setColor(Color.green);
+	  g2.fillRect(20, windowSize.height - 40, 2 * tank1.getHealth(), 20);
+	  g2.setColor(Color.black);
+	  g2.drawRect(20, windowSize.height - 40, 200, 20);
+
+	  g2.setColor(Color.green);
+	  g2.fillRect(windowSize.width - 220, windowSize.height - 40, 2 * tank2.getHealth(), 20);
+	  g2.setColor(Color.black);
+	  g2.drawRect(windowSize.width - 220, windowSize.height - 40, 200, 20);
+
 		g.drawImage(bimg, 0, 0, this);
 
 		int miniMapX = windowSize.width / 2 - MINI_MAP_WIDTH / 2;
@@ -225,9 +235,9 @@ public class World extends JPanel implements Observer {
 			drawBackground();
 		graphics.drawImage(bg_buffer, 0, 0, this);
 
-		if(tank1.getHealth() >= 0)
+		if(tank1.getHealth() > 0)
 			tank1.draw(this, graphics);
-		if(tank2.getHealth() >= 0)
+		if(tank2.getHealth() > 0)
 			tank2.draw(this, graphics);
 
     //graphics.drawRect (tank1.getX(), tank1.getY(), 64, 64);
