@@ -208,13 +208,10 @@ public class World extends JPanel implements Observer {
 
 		g2.setColor(Color.green);
 	  g2.fillRect(20, windowSize.height - 40, 2 * tank1.getHealth(), 20);
+		g2.fillRect(windowSize.width - 220, windowSize.height - 40, 2 * tank2.getHealth(), 20);
 	  g2.setColor(Color.black);
 	  g2.drawRect(20, windowSize.height - 40, 200, 20);
-
-	  g2.setColor(Color.green);
-	  g2.fillRect(windowSize.width - 220, windowSize.height - 40, 2 * tank2.getHealth(), 20);
-	  g2.setColor(Color.black);
-	  g2.drawRect(windowSize.width - 220, windowSize.height - 40, 200, 20);
+		g2.drawRect(windowSize.width - 220, windowSize.height - 40, 200, 20);
 
 		g.drawImage(bimg, 0, 0, this);
 
