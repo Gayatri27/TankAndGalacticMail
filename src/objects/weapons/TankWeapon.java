@@ -7,19 +7,28 @@ import objects.bullets.TankBullet;
 
 public class TankWeapon extends AbstractWeapon {
 
-	private Tank tank;
+	private GameObject tank;
 	private World world;
+	int reloadSpeed = 10;
+	int reloadCounter = 0;
 
-	public TankWeapon(Tank tank, World world) {
+
+	public TankWeapon(GameObject tank, World world) {
 
 		this.tank = tank;
 		this.world = world;
-
+		collisionTracker = world.getCollisionTracker();
 	}
 
 	public void shoot() {
-		TankBullet bullet = new TankBullet(tank, tank.getTankCenterX(), tank.getTankCenterY(), tank.getAngle());
-		world.addBullet(bullet);
+    reloadCounter ++;
+    if(reloadCounter >= reloadSpeed){
+      reloadCounter = 0;
+      //TankBullet bullet = new TankBullet(tank, tank.getTankCenterX(), tank.getTankCenterY(), tank.getAngle());
+      TankBullet bullet = new TankBullet(tank, world);
+      world.addBullet(bullet);
+			// collisionTracker.addMovingObject(bullet);
+    }
 	}
 
 }

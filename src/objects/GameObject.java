@@ -10,9 +10,12 @@ import java.util.Observer;
 
 public class GameObject implements Observer {
 
-	public int x, y;
+  protected double x, y;
 
-	public int health;
+	public int angle;
+
+	//public int health;
+	private Rectangle rectangle;
 
 	public Image image;
 	private ImageObserver observer;
@@ -24,7 +27,7 @@ public class GameObject implements Observer {
 		this(resourceLocation, null);
 	}
 
-	public GameObject(Image image, int x, int y, int forwardKey, int backKey, int leftKey, int rightKey, int fireKey)
+	public GameObject(Image image, double x, double y, int forwardKey, int backKey, int leftKey, int rightKey, int fireKey)
 			throws IOException {
 		this.x = x;
 		this.y = y;
@@ -44,7 +47,7 @@ public class GameObject implements Observer {
 	}
 
 	public int getX() {
-		return this.x;
+		return (int) this.x;
 	}
 
 	public void setY(int y) {
@@ -52,18 +55,25 @@ public class GameObject implements Observer {
 	}
 
 	public int getY() {
-		return this.y;
+		return (int) this.y;
 	}
 
-	public void setHealth(int health) {
-		this.health = health;
+	public int getAngle() {
+		return this.angle;
 	}
 
+
+	/*
 	public int getHealth() {
 		return this.health;
 	}
+  public void setHealth(int health) {
+    this.health = health;
+  }
+*/
 
-	public int getWidth() {
+
+  public int getWidth() {
 		return image.getWidth(null);
 	}
 
@@ -85,7 +95,32 @@ public class GameObject implements Observer {
 	}
 
 	public void draw(ImageObserver observer, Graphics2D g) {
-		g.drawImage(image, x, y, observer);
+		g.drawImage(image, (int) x,  (int) y, observer);
 
 	}
+
+  public Rectangle getRectangle(){
+    return rectangle;
+  }
+
+  public void setRectangle(Rectangle rectangle){
+    this.rectangle = rectangle;
+  }
+
+	public Rectangle getTankRectangle() {
+		return new Rectangle((int)x, (int)y, image.getWidth(null), image.getHeight(null));
+	}
+
+	public Rectangle getNextMoveTankRectangle() { //TODO fix nextY nextX
+		return new Rectangle((int)x, (int)y, image.getWidth(null), image.getHeight(null));
+	}
+
+
+	public Rectangle getAdjustedTankRectangleForBullets() {
+		int adjustedWidth = image.getWidth(null);
+		int adjustedHeight = image.getWidth(null);
+		return new Rectangle((int)x, (int)y, adjustedWidth, adjustedHeight);
+	}
+
+
 }

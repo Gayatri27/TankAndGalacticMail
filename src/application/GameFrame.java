@@ -13,6 +13,7 @@ public class GameFrame extends JFrame {
   Menu menu;
   World world;
   EndGameMenu endGameMenu;
+  public KeyEvents keyEvents;
 
  
   
@@ -26,7 +27,11 @@ public class GameFrame extends JFrame {
 
     // startMenu();
 
-    startEndGameMenu();
+    keyEvents = new KeyEvents();
+
+    this.addKeyListener(keyEvents);
+
+    startGame();
 
     /*
     JLabel image1 = new JLabel (new ImageIcon("resources/wall.png"));

@@ -1,6 +1,7 @@
 package application;
 
 import objects.*;
+import objects.bullets.AbstractBullet;
 import objects.bullets.TankBullet;
 
 import javax.imageio.ImageIO;
@@ -21,7 +22,7 @@ import java.util.Observer;
 public class World extends JPanel implements Observer {
 
 	private static final long serialVersionUID = -7437242000932772800L;
-	private GameEvents gameEvents;
+	// private GameEvents gameEvents;
 
 	protected final int MAIN_WIDTH = 2400;
 	protected final int MAIN_HEIGHT = 2400;
@@ -38,8 +39,8 @@ public class World extends JPanel implements Observer {
 	private BufferedImage bg_buffer;
 
 	protected Dimension dimension;
-	protected Tank tank1;
-	protected Tank tank2;
+	protected SpriteTank tank1;
+	protected SpriteTank tank2;
 
 	protected ArrayList<TankBullet> bullets;
 
@@ -47,16 +48,20 @@ public class World extends JPanel implements Observer {
 	ArrayList<Wall> walls;
 	ArrayList<Obstacle> obstacles;
 
+	public CollisionTracker collisionTracker;
+
 	public World(GameFrame frame) {
 
-		KeyControl key = new KeyControl();
+		collisionTracker = new CollisionTracker();
+		//KeyControl key = new KeyControl();
 
-		frame.addKeyListener(key);
+		//frame.addKeyListener(key);
 
-		gameEvents = new GameEvents();
+		//gameEvents = new GameEvents();
 
 		try {
 
+			/*
 			Image tank1 = ImageIO.read(new File("resources/Tank_blue_basic_strip60.png"));
 			Image tank2 = ImageIO.read(new File("resources/Tank_red_basic_strip60.png"));
 			this.tank1 = new Tank(tank1, 1000, 150, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D,
@@ -65,6 +70,16 @@ public class World extends JPanel implements Observer {
 			this.tank2 = new Tank(tank2, 1350, 200, KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L,
 					KeyEvent.VK_N, this);
 			this.tank2.setHealth(30);
+			*/
+
+			Sprite tankSprite1 = new Sprite("resources/Tank_blue_basic_strip60.png", 64);
+			Sprite tankSprite2 = new Sprite("resources/Tank_red_basic_strip60.png", 64);
+
+			tank1 = new SpriteTank(tankSprite1, 1000, 150, 0, this);
+			tank2 = new SpriteTank(tankSprite2, 1350, 200, 1, this);
+
+			frame.keyEvents.addObserver(tank1);
+			frame.keyEvents.addObserver(tank2);
 
 			obstacles = new ArrayList<>();
 
@@ -78,8 +93,8 @@ public class World extends JPanel implements Observer {
 			exception.printStackTrace();
 		}
 
-		gameEvents.addObserver(tank1);
-		gameEvents.addObserver(tank2);
+		//gameEvents.addObserver(tank1);
+		//gameEvents.addObserver(tank2);
 
 		this.dimension = new Dimension(WIDTH, HEIGHT);
 
@@ -89,15 +104,22 @@ public class World extends JPanel implements Observer {
 
 		clock = new Clock();
 		clock.addObserver(this);
+		//clock.addObserver(tank1);
+		//clock.addObserver(tank2);
 		clock.start();
 
 	}
 
-	public void addBullet(TankBullet bullet) {
-		bullets.add(bullet);
-		clock.addObserver(bullet);
+  public void addBullet(TankBullet bullet) {
+    bullets.add(bullet);
+    clock.addObserver(bullet);
 
-	}
+  }
+
+  public void removeBullet(TankBullet bullet) {
+    bullets.remove(bullet);
+    clock.deleteObserver(bullet);
+  }
 
 	public Graphics2D createGraphics2D(int w, int h) {
 		Graphics2D g2 = null;
@@ -208,13 +230,20 @@ public class World extends JPanel implements Observer {
 		if(tank2.getHealth() >= 0)
 			tank2.draw(this, graphics);
 
-		boolean noTankCollision = GameUtil.noCollision(tank1, tank2);
+    //graphics.drawRect (tank1.getX(), tank1.getY(), 64, 64);
+
+    boolean noTankCollision = GameUtil.noCollision(tank1, tank2);
 		boolean noTankCollisionNextMove = GameUtil.noCollisionNextMove(tank1, tank2);
 		boolean noTank1WallCollision = true;
 		boolean noTank1WallCollisionNextMove = true;
 		boolean noTank2WallCollision = true;
 		boolean noTank2WallCollisionNextMove = true;
 
+    for (Wall wall : walls) {
+      wall.draw(this, graphics);
+    }
+
+		/*
 		for (Wall wall : walls) {
 			int wallWidth = wall.image.getWidth(null);
 			int wallHeight = wall.image.getHeight(null);
@@ -236,18 +265,25 @@ public class World extends JPanel implements Observer {
 				noTank2WallCollisionNextMove = false;
 			}
 		}
+		*/
 
-		if (noTankCollision && noTank1WallCollision) {
+		//if (noTankCollision && noTank1WallCollision) {
 			tank1.updateMove();
-		} else if (noTankCollisionNextMove && noTank1WallCollisionNextMove) {
-			tank1.updateMove();
-		}
+		//} else if (noTankCollisionNextMove && noTank1WallCollisionNextMove) {
+		//	tank1.updateMove();
+		//}
 
-		if (noTankCollision && noTank2WallCollision) {
+		//if (noTankCollision && noTank2WallCollision) {
 			tank2.updateMove();
-		} else if (noTankCollisionNextMove && noTank2WallCollisionNextMove) {
-			tank2.updateMove();
-		}
+		//} else if (noTankCollisionNextMove && noTank2WallCollisionNextMove) {
+		//	tank2.updateMove();
+		//}
+
+    for (AbstractBullet bullet : bullets) {
+      bullet.draw(this, graphics);
+    }
+
+/*
 
 		Iterator<TankBullet> bulletsIterator = bullets.iterator();
 		while (bulletsIterator.hasNext()) {
@@ -277,7 +313,7 @@ public class World extends JPanel implements Observer {
 			Iterator<Wall> wallsIterator = walls.iterator();
 			while(wallsIterator.hasNext()) {
 				Wall wall = wallsIterator.next();
-				boolean wallCollision = !GameUtil.noCollision(new Rectangle(wall.x, wall.y, wall.getWidth(), wall.getHeight()), bulletRectangle);
+				boolean wallCollision = !GameUtil.noCollision(new Rectangle(wall.getX(), wall.getY(), wall.getWidth(), wall.getHeight()), bulletRectangle);
 				if(wallCollision) {
 					try {
 						bulletsIterator.remove();
@@ -295,6 +331,9 @@ public class World extends JPanel implements Observer {
 				}
 			}
 		}
+		*/
+
+
 	}
 
 	/*
@@ -339,6 +378,7 @@ public class World extends JPanel implements Observer {
 		repaint();
 	}
 
+	/*
 	public class KeyControl extends KeyAdapter {
 		public void keyPressed(KeyEvent e) {
 			gameEvents.setValue(e);
@@ -348,117 +388,121 @@ public class World extends JPanel implements Observer {
 			gameEvents.setValue(e);
 		}
 	}
+*/
+
+
+  public void removeWall(Wall wall) {
+    walls.remove(wall);
+  }
+
 
 	private void makeWalls() throws IOException {
 
 		walls = new ArrayList<>();
-		int INITIAL_WALL_HEALTH = 5;
 
 		Image wallImage = ImageIO.read(new File("resources/wall.png"));
 
 		int wall_height = wallImage.getHeight(this);
 		int wall_length = wallImage.getWidth(this);
 
+    // center 36 is center
+    int start_center_x = ((MAIN_WIDTH / 2 - wall_length) / wall_length) * wall_length;
+    int start_center_y = ((MAIN_HEIGHT / 2 - wall_height) / wall_height) * wall_height;
+
 		// left edge
 		for (int y = 0; y <= MAIN_HEIGHT; y = y + wall_height) {
-			walls.add(new Wall(0, y, INITIAL_WALL_HEALTH, false));
+			walls.add(new Wall(0, y, this));
 		}
 
 		// right edge
 		for (int y = 0; y <= MAIN_HEIGHT; y = y + wall_height) {
-			walls.add(new Wall(MAIN_WIDTH - wall_length, y, INITIAL_WALL_HEALTH, false));
+			walls.add(new Wall(MAIN_WIDTH - wall_length, y, this));
 		}
 
 		// top edge
 		for (int x = 0; x <= MAIN_WIDTH; x = x + wall_length) {
-			walls.add(new Wall(x, 0, INITIAL_WALL_HEALTH, false));
+			walls.add(new Wall(x, 0, this));
 		}
 
 		// bottom edge
 		for (int x = 0; x <= MAIN_WIDTH; x = x + wall_length) {
-			walls.add(new Wall(x, MAIN_HEIGHT - wall_height, INITIAL_WALL_HEALTH, false));
+			walls.add(new Wall(x, MAIN_HEIGHT - wall_height, this));
 		}
 
-		// center 36 is center
-		int start_center_x = ((MAIN_WIDTH / 2 - wall_length) / wall_length) * wall_length;
-		int start_center_y = ((MAIN_HEIGHT / 2 - wall_height) / wall_height) * wall_height;
-
+    // center
 		for (int y = 16 * wall_height; y <= 59 * wall_height; y = y + wall_height) {
-			walls.add(new Wall(start_center_x, y, INITIAL_WALL_HEALTH, true));
+			walls.add(new DestructibleWall(start_center_x, y, this));
 		}
-
-		/*
-		 * for(int x = 16*wall_length; x <= 59 * wall_length; x=x+wall_length){
-		 * walls.add(new Wall( x, start_center_y, true)); }
-		 */
 
 		// center of centers
 		for (int x = 20 * wall_length; x <= 52 * wall_length; x = x + wall_length) {
-			walls.add(new Wall(x, start_center_y - 7 * wall_length, INITIAL_WALL_HEALTH, true));
+			walls.add(new DestructibleWall(x, start_center_y - 7 * wall_length, this));
+		}
+		for (int x = 20 * wall_length; x <= 52 * wall_length; x = x + wall_length) {
+			walls.add(new DestructibleWall(x, start_center_y + 7 * wall_length, this));
 		}
 
-		for (int x = 20 * wall_length; x <= 52 * wall_length; x = x + wall_length) {
-			walls.add(new Wall(x, start_center_y + 7 * wall_length, INITIAL_WALL_HEALTH, true));
-		}
 
 		// extra corners
-
 		for (int x = 46 * wall_length; x <= 60 * wall_length; x = x + wall_length) {
-			walls.add(new Wall(x, 15 * wall_length, INITIAL_WALL_HEALTH, true));
-			walls.add(new Wall(x, MAIN_HEIGHT - 16 * wall_length, INITIAL_WALL_HEALTH, true));
+			walls.add(new DestructibleWall(x, 15 * wall_length, this));
+			walls.add(new DestructibleWall(x, MAIN_HEIGHT - 16 * wall_length,this));
+		}
+		for (int x = 12 * wall_length; x <= 26 * wall_length; x = x + wall_length) {
+			walls.add(new DestructibleWall(x, 15 * wall_length,this));
+			walls.add(new DestructibleWall(x, MAIN_HEIGHT - 16 * wall_length,this));
 		}
 
-		for (int x = 12 * wall_length; x <= 26 * wall_length; x = x + wall_length) {
-			walls.add(new Wall(x, 15 * wall_length, INITIAL_WALL_HEALTH, true));
-			walls.add(new Wall(x, MAIN_HEIGHT - 16 * wall_length, INITIAL_WALL_HEALTH, true));
-		}
+
 
 		// extra corner vertical walls
 		for (int y = 16 * wall_height; y <= start_center_y - 12 * wall_length; y = y + wall_height) {
-			walls.add(new Wall(19 * wall_height, y, INITIAL_WALL_HEALTH, true));
-			walls.add(new Wall(53 * wall_height, y, INITIAL_WALL_HEALTH, true));
+			walls.add(new DestructibleWall(19 * wall_height, y,this));
+			walls.add(new DestructibleWall(53 * wall_height, y,this));
 		}
-
 		for (int y = MAIN_HEIGHT - 25 * wall_length; y <= MAIN_HEIGHT - 17 * wall_length; y = y + wall_height) {
-			walls.add(new Wall(19 * wall_height, y, INITIAL_WALL_HEALTH, true));
-			walls.add(new Wall(53 * wall_height, y, INITIAL_WALL_HEALTH, true));
+			walls.add(new DestructibleWall(19 * wall_height, y,this));
+			walls.add(new DestructibleWall(53 * wall_height, y, this));
 		}
 
 		// first bunker
 		for (int x = start_center_x - 8 * wall_length; x <= start_center_x; x = x + wall_length) {
-			walls.add(new Wall(x, 8 * wall_height, INITIAL_WALL_HEALTH, false));
+			walls.add(new Wall(x, 8 * wall_height, this));
 		}
-
 		for (int y = 0; y <= 8 * wall_height; y = y + wall_height) {
-			walls.add(new Wall(start_center_x, y, INITIAL_WALL_HEALTH, false));
+			walls.add(new Wall(start_center_x, y, this));
 		}
 
 		// second bunker
 		for (int y = start_center_y; y >= start_center_y - 8 * wall_length; y = y - wall_height) {
-			walls.add(new Wall(MAIN_WIDTH - 8 * wall_length, y, INITIAL_WALL_HEALTH, false));
+			walls.add(new Wall(MAIN_WIDTH - 8 * wall_length, y,this));
 		}
-
 		for (int x = MAIN_WIDTH - 8 * wall_length; x <= MAIN_WIDTH; x = x + wall_length) {
-			walls.add(new Wall(x, start_center_y, INITIAL_WALL_HEALTH, false));
+			walls.add(new Wall(x, start_center_y,this));
 		}
 
 		// third bunker
 		for (int x = start_center_x; x <= start_center_x + 8 * wall_length; x = x + wall_length) {
-			walls.add(new Wall(x, 67 * wall_height, INITIAL_WALL_HEALTH, false));
+			walls.add(new Wall(x, 67 * wall_height,this));
 		}
 		for (int y = 67 * wall_height; y <= MAIN_HEIGHT; y = y + wall_height) {
-			walls.add(new Wall(start_center_x, y, INITIAL_WALL_HEALTH, false));
+			walls.add(new Wall(start_center_x, y, this));
 		}
 
 		// fourth bunker
 		for (int y = start_center_y; y <= start_center_y + 8 * wall_length; y = y + wall_height) {
-			walls.add(new Wall(8 * wall_length, y, INITIAL_WALL_HEALTH, false));
+			walls.add(new Wall(8 * wall_length, y,this));
+		}
+		for (int x = 0; x <= 8 * wall_length; x = x + wall_length) {
+			walls.add(new Wall(x, start_center_y, this));
 		}
 
-		for (int x = 0; x <= 8 * wall_length; x = x + wall_length) {
-			walls.add(new Wall(x, start_center_y, INITIAL_WALL_HEALTH, false));
-		}
 
 	}
+
+
+	public CollisionTracker getCollisionTracker(){
+	  return collisionTracker;
+  }
 
 }

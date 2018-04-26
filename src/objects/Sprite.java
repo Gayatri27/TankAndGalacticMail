@@ -31,6 +31,10 @@ public class Sprite {
     return this.images[frame];
   }
 
+  public int getTileSize() {
+    return this.tileSize;
+  }
+
   public int frameCount() {
     return this.images.length;
   }

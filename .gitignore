@@ -1,2 +1,4 @@
 *.class
 .idea
+out/*
+term-project-team-b.iml

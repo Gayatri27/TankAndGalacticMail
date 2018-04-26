@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Observable;
 
 public class Tank extends GameObject {
-
+/*
 	private final int TOTAL_IMAGES_IN_A_SPRITE = 60;
 	private final int ANGLE_STEP_SIZE = 6;
 	private final int SPEED_STEP_SIZE = 5;
@@ -204,4 +204,5 @@ public class Tank extends GameObject {
 		int adjustedHeight = imageHeight + 1;
 		return new Rectangle(nextX, nextY, adjustedWidth, adjustedHeight);
 	}
+	*/
 }
