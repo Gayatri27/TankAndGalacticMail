@@ -111,12 +111,14 @@ public class World extends JPanel implements Observer {
 	}
 
   public void addBullet(TankBullet bullet) {
+		new Audio().play();
     bullets.add(bullet);
     clock.addObserver(bullet);
 
   }
 
   public void removeBullet(TankBullet bullet) {
+		new Audio().play();
     bullets.remove(bullet);
     clock.deleteObserver(bullet);
   }
