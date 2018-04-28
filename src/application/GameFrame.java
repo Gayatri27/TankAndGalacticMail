@@ -25,13 +25,13 @@ public class GameFrame extends JFrame {
     setResizable( true );
     setSize(800,600);
 
-    // startMenu();
+    startMenu();
 
     keyEvents = new KeyEvents();
 
     this.addKeyListener(keyEvents);
 
-    startGame();
+    // startGame();
 
     /*
     JLabel image1 = new JLabel (new ImageIcon("resources/wall.png"));
@@ -61,15 +61,16 @@ public class GameFrame extends JFrame {
     world = new World(this);
     // this.addKeyListener(world);
 
+
     add(world);
     revalidate();
     currentPanel = world;
   }
 
 
-  public void startEndGameMenu(){
+  public void startEndGameMenu(String resultText){
     removeCurrent();
-    endGameMenu = new EndGameMenu(this);
+    endGameMenu = new EndGameMenu(this, resultText);
     this.addKeyListener(endGameMenu);
     add(endGameMenu);
     revalidate();
@@ -79,7 +80,8 @@ public class GameFrame extends JFrame {
   private void removeCurrent(){
     if(currentPanel != null){
       remove(currentPanel);
-      this.removeKeyListener( (KeyListener) currentPanel);
+      if(!(currentPanel instanceof World))
+        this.removeKeyListener( (KeyListener) currentPanel);
     }
   }
 
