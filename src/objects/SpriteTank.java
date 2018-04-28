@@ -24,6 +24,7 @@ public  class SpriteTank extends GameObject implements Destroyable {
   private final int SPEED_TURNING = 6;
   private static CollisionTracker collisionTracker;
   private int health = 100;
+  private World world;
 
   HashMap<Integer, Boolean> keyStates  = new HashMap<>(5);
 
@@ -44,6 +45,7 @@ public  class SpriteTank extends GameObject implements Destroyable {
 
     collisionTracker = world.getCollisionTracker();
     collisionTracker.addMovingObject(this);
+    this.world = world;
 
     keyStates.put(KEY_FORWARD, false);
     keyStates.put(KEY_BACK, false);
@@ -63,7 +65,7 @@ public  class SpriteTank extends GameObject implements Destroyable {
         KEY_BACK = KeyEvent.VK_S;;
         KEY_RIGHT = KeyEvent.VK_D;;
         KEY_LEFT = KeyEvent.VK_A;;
-        KEY_FIRE = KeyEvent.VK_C;;
+        KEY_FIRE = KeyEvent.VK_SPACE;;
         break;
 
       case 1:
@@ -71,7 +73,7 @@ public  class SpriteTank extends GameObject implements Destroyable {
         KEY_BACK = KeyEvent.VK_K;;
         KEY_RIGHT = KeyEvent.VK_L;;
         KEY_LEFT = KeyEvent.VK_J;;
-        KEY_FIRE = KeyEvent.VK_P;;
+        KEY_FIRE = KeyEvent.VK_ENTER;;
         break;
 
       case 2:
@@ -116,37 +118,7 @@ public  class SpriteTank extends GameObject implements Destroyable {
 
     } else if(observable instanceof Clock){
 
-
-      if (keyStates.get(KEY_RIGHT)) {
-        if(angle - SPEED_TURNING <= 0){
-          angle = 359;
-        }else{
-          angle -= SPEED_TURNING;
-        }
-      }
-
-      if (keyStates.get(KEY_LEFT)) {
-        if(angle + SPEED_TURNING >= 360){
-          angle = 0;
-        }else{
-          angle += SPEED_TURNING;
-        }
-      }
-
-      if (keyStates.get(KEY_FORWARD)) {
-        x += 1 * SPEED_MOVING * Math.cos(Math.toRadians(angle));
-        y += -1 * SPEED_MOVING * Math.sin(Math.toRadians(angle));
-      }
-
-      if (keyStates.get(KEY_BACK)) {
-        x -= 1 * SPEED_MOVING * Math.cos(Math.toRadians(angle));
-        y -= -1 * SPEED_MOVING * Math.sin(Math.toRadians(angle));
-
-      }
-
-      if (keyStates.get(KEY_FIRE)) {
-        weapon.shoot();
-      }
+      updateMove();
 
     }
 
@@ -189,10 +161,10 @@ public  class SpriteTank extends GameObject implements Destroyable {
       moveTheTank(dx, dy);
     }
 
-
     if (keyStates.get(KEY_FIRE)) {
       weapon.shoot();
     }
+
   }
 
   public void moveTheTank(double dx, double dy){
@@ -242,7 +214,10 @@ public  class SpriteTank extends GameObject implements Destroyable {
 
   @Override
   public void reduceHealth(int amount) {
-    new Audio().play();
     health -= amount;
+
+    if(health <= 0){
+      world.endGame();
+    }
   }
 }

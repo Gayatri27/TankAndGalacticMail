@@ -8,6 +8,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
@@ -19,26 +21,48 @@ import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
 
+import static java.lang.Integer.decode;
+
 public class World extends JPanel implements Observer {
 
 	private static final long serialVersionUID = -7437242000932772800L;
-	// private GameEvents gameEvents;
 
-	protected final int MAIN_WIDTH = 2400;
+  private final int DEFAULT_FONT_SIZE = 14;
+  private final Font DEFAULT_FONT =  new Font(Font.SANS_SERIF, Font.BOLD, DEFAULT_FONT_SIZE);
+
+  final Color[] HEALTH_COLORS = new Color[]{
+          new Color(182, 66, 1),
+          new Color(219, 130, 0),
+          new Color(243, 184, 0),
+          new Color(158, 142, 1),
+          new Color(80, 129, 4)
+  };
+
+  private final int BORDER_THICKNESS = 4;
+  private final int BOTTOM_BAR_THICKNESS = 25;
+  private final int BOTTOM_BAR_MARGIN = 5;
+
+  private final int HEALTH_BAR_WIDTH = 150;
+  private final int HEALTH_BAR_HEIGHT = BOTTOM_BAR_THICKNESS - 10;
+
+  protected final int MAIN_WIDTH = 2400;
 	protected final int MAIN_HEIGHT = 2400;
 
-	protected final int MINI_MAP_WIDTH = 200;
+  protected int windowWidth = 800;
+  protected int windowHeight = 600;
+
+
+  protected final int MINI_MAP_WIDTH = 200;
 	protected final int MINI_MAP_HEIGHT = 200;
 
-	protected final int STEP = 10;
 	protected final String BACKGROUND_IMAGE = "resources/background_tile.png";
-	protected final String TANK_IMAGE = "resources/Tank_grey_basic.png";
 
 	private BufferedImage main_bimg;
 	private BufferedImage bimg;
-	private BufferedImage bg_buffer;
+  private BufferedImage bg_buffer;
+  private BufferedImage frame_buffer;
 
-	protected Dimension dimension;
+	// protected Dimension dimension;
 	protected SpriteTank tank1;
 	protected SpriteTank tank2;
 
@@ -49,6 +73,10 @@ public class World extends JPanel implements Observer {
 	ArrayList<Obstacle> obstacles;
 
 	public CollisionTracker collisionTracker;
+	private GameFrame frame;
+
+
+
 
 	public World(GameFrame frame) {
 
@@ -78,6 +106,7 @@ public class World extends JPanel implements Observer {
 			tank1 = new SpriteTank(tankSprite1, 1000, 150, 0, this);
 			tank2 = new SpriteTank(tankSprite2, 1350, 200, 1, this);
 
+			this.frame = frame;
 			frame.keyEvents.addObserver(tank1);
 			frame.keyEvents.addObserver(tank2);
 
@@ -96,7 +125,7 @@ public class World extends JPanel implements Observer {
 		//gameEvents.addObserver(tank1);
 		//gameEvents.addObserver(tank2);
 
-		this.dimension = new Dimension(WIDTH, HEIGHT);
+		//this.dimension = new Dimension(WIDTH, HEIGHT);
 
 		bullets = new ArrayList<>();
 
@@ -104,19 +133,45 @@ public class World extends JPanel implements Observer {
 
 		clock = new Clock();
 		clock.addObserver(this);
-		//clock.addObserver(tank1);
-		//clock.addObserver(tank2);
+		clock.addObserver(tank1);
+		clock.addObserver(tank2);
 		clock.start();
+
+
+
 
 	}
 
+  public void endGame() {
+    clock.deleteObservers();
+    String resultText;
+    if(tank1.getHealth() <= 0){
+      resultText = "Player 2 won!";
+    }else{
+      resultText = "Player 1 won!";
+    }
+    frame.startEndGameMenu(resultText);
+  }
+
+
+    public void updateWindowSize(){
+	  Dimension windowSize = getSize();
+    windowWidth = (int) windowSize.getWidth();
+    windowHeight = (int) windowSize.getHeight();
+	}
+
+
+
+
   public void addBullet(TankBullet bullet) {
+		new Audio().play();
     bullets.add(bullet);
     clock.addObserver(bullet);
 
   }
 
   public void removeBullet(TankBullet bullet) {
+		new Audio().play();
     bullets.remove(bullet);
     clock.deleteObserver(bullet);
   }
@@ -136,64 +191,51 @@ public class World extends JPanel implements Observer {
 	@Override
 	public void paint(Graphics g) {
 
-		// create the main image
-		Graphics2D main_g2 = createGraphics2D(MAIN_WIDTH, MAIN_HEIGHT);
+    updateWindowSize();
 
-		// if(players.size()!=0)
-		// clock.tick();
+    Graphics2D main_g2 = createGraphics2D(MAIN_WIDTH, MAIN_HEIGHT);
 
-		Dimension windowSize = getSize();
 		drawFrame(MAIN_WIDTH, MAIN_HEIGHT, main_g2);
 
 		main_g2.dispose();
 
-		bimg = (BufferedImage) createImage(windowSize.width, windowSize.height);
+		bimg = (BufferedImage) createImage(windowWidth, windowHeight);
 
 		Graphics2D g2 = bimg.createGraphics();
 
-		// 64 is tank width and height
-		int tank1_x = tank1.getX() - windowSize.width / 4 + 64 / 2;
+		//TODO will move somehwere else
+    int playerWindowHeight = windowHeight - BOTTOM_BAR_THICKNESS - BORDER_THICKNESS;
+    int playerWindowWidth = windowWidth / 2  - BORDER_THICKNESS;
+
+    int tank1_x = tank1.getX() - playerWindowWidth / 2 + tank1.getWidth() / 2;
 		if (tank1_x < 0)
 			tank1_x = 0;
-		if (tank1_x + windowSize.width / 2 > MAIN_WIDTH)
-			tank1_x = MAIN_WIDTH - windowSize.width / 2;
+		if (tank1_x + playerWindowWidth > MAIN_WIDTH)
+			tank1_x = MAIN_WIDTH - playerWindowWidth;
 
-		int tank1_y = tank1.getY() - windowSize.height / 2 + 64 / 2;
+		int tank1_y = tank1.getY() - playerWindowHeight / 2  + tank1.getHeight() / 2;
 		if (tank1_y < 0)
 			tank1_y = 0;
-		if (tank1_y + windowSize.height > MAIN_HEIGHT)
-			tank1_y = MAIN_HEIGHT - windowSize.height;
+		if (tank1_y + playerWindowHeight > MAIN_HEIGHT)
+			tank1_y = MAIN_HEIGHT - playerWindowHeight;
 
-		int tank2_x = tank2.getX() - windowSize.width / 4 + 64 / 2;
+
+
+		int tank2_x = tank2.getX() - playerWindowWidth / 2 + tank2.getWidth() / 2;
 		if (tank2_x < 0)
 			tank2_x = 0;
-		if (tank2_x + windowSize.width / 2 > MAIN_WIDTH)
-			tank2_x = MAIN_WIDTH - windowSize.width / 2;
+		if (tank2_x + playerWindowWidth > MAIN_WIDTH)
+			tank2_x = MAIN_WIDTH - playerWindowWidth;
 
-		int tank2_y = tank2.getY() - windowSize.height / 2 + 64 / 2;
-		if (tank2_y < 0)
-			tank2_y = 0;
-		if (tank2_y + windowSize.height > MAIN_HEIGHT)
-			tank2_y = MAIN_HEIGHT - windowSize.height;
+    int tank2_y = tank2.getY() - playerWindowHeight / 2  + tank2.getHeight() / 2;
+    if (tank2_y < 0)
+      tank2_y = 0;
+    if (tank2_y + playerWindowHeight > MAIN_HEIGHT)
+      tank2_y = MAIN_HEIGHT - playerWindowHeight;
 
-		/*
-		 *
-		 * int tank1_x = tank1.getTankCenterX() - windowSize.width / 4 ; if(tank1_x < 0)
-		 * tank1_x = 0; int tank1_y = tank1.getTankCenterY() - windowSize.height;
-		 * if(tank1_y < 0) tank1_y = 0;
-		 *
-		 * int tank2_x = tank2.getTankCenterX() - windowSize.width / 4 ; if(tank2_x < 0)
-		 * tank2_x = 0;
-		 *
-		 * int tank2_y = tank2.getTankCenterY() - windowSize.height; if(tank2_y < 0)
-		 * tank2_y = 0;
-		 */
+		BufferedImage player_1_window = main_bimg.getSubimage(tank1_x, tank1_y,playerWindowWidth, playerWindowHeight);
 
-		BufferedImage player_1_window = main_bimg.getSubimage(tank1_x, tank1_y, windowSize.width / 2,
-				windowSize.height);
-
-		BufferedImage player_2_window = main_bimg.getSubimage(tank2_x, tank2_y, windowSize.width / 2,
-				windowSize.height);
+		BufferedImage player_2_window = main_bimg.getSubimage(tank2_x, tank2_y,playerWindowWidth, playerWindowHeight);
 
 		BufferedImage miniMap = (BufferedImage) createImage(MINI_MAP_WIDTH, MINI_MAP_HEIGHT);
 		Graphics2D miniMapG = miniMap.createGraphics();
@@ -203,52 +245,68 @@ public class World extends JPanel implements Observer {
 		miniMapG.drawImage(main_bimg, 0, 0, MINI_MAP_WIDTH, MINI_MAP_HEIGHT, 0, 0, MAIN_WIDTH, MAIN_HEIGHT, null);
 		miniMapG.dispose();
 
-		g2.drawImage(player_1_window, 0, 0, this);
-		g2.drawImage(player_2_window, windowSize.width / 2, 0, this);
+		g2.drawImage(player_1_window, BORDER_THICKNESS, BORDER_THICKNESS, this);
+		g2.drawImage(player_2_window, windowWidth / 2 + BORDER_THICKNESS/2, BORDER_THICKNESS, this);
 
-		g2.setColor(Color.green);
-	  g2.fillRect(20, windowSize.height - 40, 2 * tank1.getHealth(), 20);
-		g2.fillRect(windowSize.width - 220, windowSize.height - 40, 2 * tank2.getHealth(), 20);
-	  g2.setColor(Color.black);
-	  g2.drawRect(20, windowSize.height - 40, 200, 20);
-		g2.drawRect(windowSize.width - 220, windowSize.height - 40, 200, 20);
+    g.drawImage(bimg, 0, 0, this);
 
-		g.drawImage(bimg, 0, 0, this);
+    int miniMapX = windowWidth/ 2 - MINI_MAP_WIDTH / 2;
+		int miniMapY = windowHeight - MINI_MAP_HEIGHT;
 
-		int miniMapX = windowSize.width / 2 - MINI_MAP_WIDTH / 2;
-		int miniMapY = windowSize.height - MINI_MAP_HEIGHT;
+    g.drawImage(miniMap, miniMapX, miniMapY, this);
 
-		g.drawImage(miniMap, miniMapX, miniMapY, this);
+    g.drawImage(frame_buffer, 0, 0, this);
 
-		// System.out.println(MAIN_WIDTH/2 - MINI_MAP_WIDTH/2);
-		// System.out.println(MAIN_HEIGHT-MINI_MAP_HEIGHT);
-		g.drawImage(miniMap, 1125, 2250, this);
+    //Health Bars
+    int healthBarY = windowHeight - HEALTH_BAR_HEIGHT - (BOTTOM_BAR_THICKNESS - HEALTH_BAR_HEIGHT)/2;
 
+    // Health Tank 1
+    g.setColor( HEALTH_COLORS[(int)( (double)tank1.getHealth()/100*(HEALTH_COLORS.length-1) )] );
+    g.fillRect((HEALTH_BAR_WIDTH - (int)((double)tank1.getHealth()/100*(double)HEALTH_BAR_WIDTH)) + miniMapX - BOTTOM_BAR_MARGIN - HEALTH_BAR_WIDTH,healthBarY, (int)((double)tank1.getHealth()/100*(double)HEALTH_BAR_WIDTH), HEALTH_BAR_HEIGHT);
+
+    // Health Tank 2
+    // g.setColor( HEALTH_COLORS[ (tank2.getHealth()-1)/20] );
+    g.setColor( HEALTH_COLORS[(int)( (double)tank2.getHealth()/100*(HEALTH_COLORS.length-1))] );
+    g.fillRect(miniMapX + BOTTOM_BAR_MARGIN + MINI_MAP_WIDTH  ,healthBarY,(int)((double)tank2.getHealth()/100*(double)HEALTH_BAR_WIDTH), HEALTH_BAR_HEIGHT);
 	}
 
 	public void drawFrame(int w, int h, Graphics2D graphics) {
 		obstacles.clear();
-		if (bg_buffer == null)
-			drawBackground();
-		graphics.drawImage(bg_buffer, 0, 0, this);
+    if (bg_buffer == null){
+      drawBackground();
+    }
 
-		if(tank1.getHealth() > 0)
-			tank1.draw(this, graphics);
-		if(tank2.getHealth() > 0)
-			tank2.draw(this, graphics);
+    if (frame_buffer == null){
+       drawNames();
+    }
 
-    //graphics.drawRect (tank1.getX(), tank1.getY(), 64, 64);
-
-    boolean noTankCollision = GameUtil.noCollision(tank1, tank2);
-		boolean noTankCollisionNextMove = GameUtil.noCollisionNextMove(tank1, tank2);
-		boolean noTank1WallCollision = true;
-		boolean noTank1WallCollisionNextMove = true;
-		boolean noTank2WallCollision = true;
-		boolean noTank2WallCollisionNextMove = true;
+    graphics.drawImage(bg_buffer, 0, 0, this);
 
     for (Wall wall : walls) {
       wall.draw(this, graphics);
     }
+
+    for (AbstractBullet bullet : bullets) {
+      bullet.draw(this, graphics);
+    }
+
+    tank1.draw(this, graphics);
+    tank2.draw(this, graphics);
+
+//    if(tank1.getHealth() > 0)
+//			tank1.draw(this, graphics);
+//		if(tank2.getHealth() > 0)
+//			tank2.draw(this, graphics);
+
+//    graphics.drawRect (tank1.getX(), tank1.getY(), 64, 64);
+//    boolean noTankCollision = GameUtil.noCollision(tank1, tank2);
+//		boolean noTankCollisionNextMove = GameUtil.noCollisionNextMove(tank1, tank2);
+//		boolean noTank1WallCollision = true;
+//		boolean noTank1WallCollisionNextMove = true;
+//		boolean noTank2WallCollision = true;
+//		boolean noTank2WallCollisionNextMove = true;
+
+
 
 		/*
 		for (Wall wall : walls) {
@@ -275,20 +333,18 @@ public class World extends JPanel implements Observer {
 		*/
 
 		//if (noTankCollision && noTank1WallCollision) {
-			tank1.updateMove();
+			//tank1.updateMove();
 		//} else if (noTankCollisionNextMove && noTank1WallCollisionNextMove) {
 		//	tank1.updateMove();
 		//}
 
 		//if (noTankCollision && noTank2WallCollision) {
-			tank2.updateMove();
+			//tank2.updateMove();
 		//} else if (noTankCollisionNextMove && noTank2WallCollisionNextMove) {
 		//	tank2.updateMove();
 		//}
 
-    for (AbstractBullet bullet : bullets) {
-      bullet.draw(this, graphics);
-    }
+
 
 /*
 
@@ -349,16 +405,90 @@ public class World extends JPanel implements Observer {
 	 * tank1.updateMove(); tank2.updateMove(); }
 	 */
 
+//	public void drawNames(Graphics g2){
+public void drawNames(){
+
+  frame_buffer = new BufferedImage(windowWidth, windowHeight, BufferedImage.TYPE_INT_ARGB);
+  Graphics2D g2 = frame_buffer.createGraphics();
+
+  setRendingHints(g2);
+
+  g2.setColor(Color.black);
+
+  //Left border
+  g2.fillRect(0,0,BORDER_THICKNESS,windowHeight);
+
+  //Top border
+  g2.fillRect(0,0, windowWidth, BORDER_THICKNESS);
+
+  //Right border
+  g2.fillRect(windowWidth - BORDER_THICKNESS,0, BORDER_THICKNESS, windowHeight);
+
+
+  //Middle Separator
+  g2.fillRect(windowWidth/2 - BORDER_THICKNESS/2 ,0, BORDER_THICKNESS , windowHeight - MINI_MAP_HEIGHT);
+
+  int miniMapFrameX = windowWidth / 2 - MINI_MAP_WIDTH / 2;
+  int miniMapFrameY = windowHeight - MINI_MAP_HEIGHT;
+
+  // MiniMap Frame
+  g2.fillRect(miniMapFrameX,miniMapFrameY, MINI_MAP_WIDTH, BORDER_THICKNESS);
+  g2.fillRect(miniMapFrameX,miniMapFrameY, BORDER_THICKNESS, MINI_MAP_HEIGHT);
+  g2.fillRect(miniMapFrameX+MINI_MAP_WIDTH-BORDER_THICKNESS ,miniMapFrameY, BORDER_THICKNESS, MINI_MAP_HEIGHT);
+  g2.fillRect(miniMapFrameX, miniMapFrameY+MINI_MAP_HEIGHT-BORDER_THICKNESS, MINI_MAP_WIDTH, BORDER_THICKNESS);
+
+  //Bottom border
+  g2.fillRect(0,windowHeight - BOTTOM_BAR_THICKNESS, miniMapFrameX, BOTTOM_BAR_THICKNESS);
+  g2.fillRect(miniMapFrameX + MINI_MAP_WIDTH,windowHeight - BOTTOM_BAR_THICKNESS, miniMapFrameX, BOTTOM_BAR_THICKNESS);
+
+  // Player Names
+  g2.setColor(Color.white);
+
+
+  g2.setFont(DEFAULT_FONT);
+  FontMetrics fontMetrics = g2.getFontMetrics();
+  int playerTextY = windowHeight - (BOTTOM_BAR_THICKNESS/3);
+  g2.drawString("Player 1", BORDER_THICKNESS + BOTTOM_BAR_MARGIN, playerTextY);
+  g2.drawString("Player 2", windowWidth - BORDER_THICKNESS - BOTTOM_BAR_MARGIN - fontMetrics.stringWidth("Player 2"), playerTextY);
+
+
+      /*
+
+
+    g2.setColor(OVAL_FILL_COLOR);
+    g2.drawOval( x, y, NODE_W, NODE_H );
+
+    g2.setColor(TEXT_COLOR);
+
+
+
+
+    g2.setColor(STROKE_COLOR);
+    int lineStartX = x + NODE_W / 2;
+    int lineStartY = y + NODE_H;
+    for (AST kid : t.getKids()) {
+      int lineEndX = startXPosition(kid) + NODE_W/2;
+      int lineEndY = y + NODE_H + Y_SEPARATOR;
+      g2.drawLine( lineStartX, lineStartY, lineEndX, lineEndY );
+    }
+
+
+
+
+       */
+  }
+
 	public void drawBackground() {
 		try {
 			bg_buffer = (BufferedImage) createImage(MAIN_WIDTH, MAIN_HEIGHT);
 
 			Graphics2D bg_g2 = bg_buffer.createGraphics();
-
+      setRendingHints(bg_g2);
 			BufferedImage bg = ImageIO.read(new File(BACKGROUND_IMAGE));
 			TexturePaint paint = new TexturePaint(bg, new Rectangle(bg.getWidth(), bg.getHeight()));
 			bg_g2.setPaint(paint);
 			bg_g2.fillRect(0, 0, MAIN_WIDTH, MAIN_HEIGHT);
+
 
 			// File outputfile = new File("resources/ooo.jpg");
 			// ImageIO.write(bg_buffer, "jpg", outputfile);
@@ -375,10 +505,10 @@ public class World extends JPanel implements Observer {
 		}
 	}
 
-	@Override
-	public Dimension getPreferredSize() {
-		return this.dimension;
-	}
+//	@Override
+//	public Dimension getPreferredSize() {
+//		return this.dimension;
+//	}
 
 	@Override
 	public void update(Observable o, Object arg) {
@@ -506,6 +636,13 @@ public class World extends JPanel implements Observer {
 
 
 	}
+	private void setRendingHints(Graphics2D g2){
+    g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY );
+    g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+    g2.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+  }
 
 
 	public CollisionTracker getCollisionTracker(){

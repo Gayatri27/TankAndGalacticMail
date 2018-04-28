@@ -25,7 +25,7 @@ public class Menu extends JPanel implements KeyListener {
 
     mainMenu.addMenuItem("Start Game", "startGame");
     mainMenu.addMenuItem("Exit Game", "exitGame");
-    mainMenu.addMenuItem("Credits", "showCredits");
+    mainMenu.addMenuItem("How to play", "showGuide");
     mainMenu.populate(this);
 
 
@@ -37,16 +37,16 @@ public class Menu extends JPanel implements KeyListener {
   }
 
   public void startGame(){
-    System.out.println("staring the game");
     gameFrame.startGame();
   }
 
   public void exitGame(){
-    System.out.println("exiting the game");
+    System.exit(0);
+
   }
 
-  public void showCredits(){
-    System.out.println("showing credits");
+  public void showGuide(){
+    System.out.println("showing how to play");
   }
 
   public void paintComponent(Graphics g){

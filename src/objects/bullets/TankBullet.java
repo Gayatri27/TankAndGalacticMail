@@ -23,10 +23,14 @@ public class TankBullet extends AbstractBullet {
 
 	private final int SPEED = 15;
   private final int DAMAGE = 10;
-  private final double DISTANCE_FACTOR = 1.4;
+  private final double DISTANCE_FACTOR = 1.6;
+
+  private final String SPRITE_FILE = "resources/Shell_basic_strip60.png";
+  private final int SPRITE_TILE_SIZE = 24;
+  private final int SPRITE_NUM_IMAGES = 60;
 
 
-	private final int ANGLE_STEP_SIZE = 6;
+  private final int ANGLE_STEP_SIZE = 6;
 
 	int angle;
 
@@ -38,8 +42,7 @@ public class TankBullet extends AbstractBullet {
   public TankBullet(GameObject tank, World world) {
 
     try {
-      sprite = new Sprite("resources/Shell_light_strip60.png", 24);
-      image = sprite.getFrame(10);
+      sprite = new Sprite(SPRITE_FILE, SPRITE_TILE_SIZE);
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
@@ -61,8 +64,8 @@ public class TankBullet extends AbstractBullet {
 	}
 
 	public void draw(ImageObserver obs, Graphics2D g) {
-		g.drawImage(image, ((int) x), ((int) y), obs);
-	}
+    g.drawImage(sprite.getFrame((angle/(360/SPRITE_NUM_IMAGES))), ((int) x), ((int) y),obs);
+  }
 
 	@Override
 	public void update(Observable o, Object arg) {

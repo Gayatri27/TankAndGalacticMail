@@ -14,13 +14,13 @@ public class EndGameMenu extends JPanel implements KeyListener {
   private MainMenu mainMenu;
   private GameFrame gameFrame;
 
-  EndGameMenu(GameFrame gameFrame){
+  EndGameMenu(GameFrame gameFrame, String resultText){
 
     this.gameFrame = gameFrame;
 
     mainMenu = new MainMenu();
 
-    mainMenu.addMenuItem("Player 1 Won!", "");
+    mainMenu.addMenuItem(resultText, "");
     mainMenu.addMenuItem("Play Again", "startGame");
     mainMenu.addMenuItem("Exit Game", "exitGame");
     mainMenu.populate(this);
@@ -34,12 +34,11 @@ public class EndGameMenu extends JPanel implements KeyListener {
   }
 
   public void startGame(){
-    System.out.println("staring the game");
     gameFrame.startGame();
   }
 
   public void exitGame(){
-    System.out.println("exiting the game");
+    System.exit(0);
   }
 
   public void paintComponent(Graphics g){
