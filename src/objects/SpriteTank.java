@@ -97,7 +97,6 @@ public  class SpriteTank extends GameObject implements Destroyable {
 
 
   public void draw(ImageObserver obs, Graphics2D g) {
-
     g.drawImage(sprite.getFrame((int)(angle/6)), ((int) x), ((int) y),obs);
   }
 
@@ -166,7 +165,6 @@ public  class SpriteTank extends GameObject implements Destroyable {
   }
 
   public void moveTheTank(double dx, double dy){
-
     if(collisionTracker.collides(this, dx, dy) == null){
       x += dx;
       y += dy;
@@ -175,30 +173,15 @@ public  class SpriteTank extends GameObject implements Destroyable {
 
   }
 
-  public Rectangle getTankRectangle() {
-    return new Rectangle((int)x, (int)y, sprite.getTileSize(), sprite.getTileSize());
-  }
-
-
-  public Rectangle getAdjustedTankRectangleForBullets() {
-    int adjustedWidth = sprite.getTileSize() - 1;
-    int adjustedHeight = sprite.getTileSize() - 1;
-    return new Rectangle((int)x, (int)y, adjustedWidth, adjustedHeight);
-  }
-
-  public Rectangle getNextMoveTankRectangle() { //TODO fix nextY nextX
-    return new Rectangle((int)x, (int)y, sprite.getTileSize(), sprite.getTileSize());
-  }
-
-
+  @Override
   public int getWidth() {
     return sprite.getTileSize();
   }
 
+  @Override
   public int getHeight() {
     return sprite.getTileSize();
   }
-
 
   @Override
   public void setHealth(int amount) {

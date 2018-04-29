@@ -33,8 +33,6 @@ public class TankBullet extends AbstractBullet {
 
 	int dx, dy;
 
-  private static CollisionTracker collisionTracker;
-
 
   public TankBullet(GameObject tank, World world) {
 
@@ -60,6 +58,7 @@ public class TankBullet extends AbstractBullet {
 
 	}
 
+  @Override
 	public void draw(ImageObserver obs, Graphics2D g) {
     g.drawImage(sprite.getFrame((angle/(360/SPRITE_NUM_IMAGES))), ((int) x), ((int) y),obs);
   }
@@ -98,8 +97,4 @@ public class TankBullet extends AbstractBullet {
   public int getHeight() {
     return sprite.getTileSize();
   }
-
-	public GameObject getTank() {
-		return this.tank;
-	}
 }

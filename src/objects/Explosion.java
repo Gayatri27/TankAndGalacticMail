@@ -24,7 +24,7 @@ public class Explosion extends GameObject {
 
   	@Override
   	public void update(Observable observable, Object arg) {
-  		if (currentFrame < 6) {
+  		if (currentFrame < 4) {
   			currentFrame++;
   		} else {
   			world.removeExplosion(this);

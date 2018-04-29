@@ -11,25 +11,11 @@ import java.util.Observer;
 public class GameObject implements Observer {
 
   protected double x, y;
-
-	public int angle;
-
-	//public int health;
+  public int angle;
 	private Rectangle rectangle;
-
 	public Image image;
-	private ImageObserver observer;
 
 	public GameObject() {
-	}
-
-
-	public GameObject(String resourceLocation, ImageObserver observer) throws IOException {
-		x = 0;
-		y = 0;
-
-		image = ImageIO.read(new File(resourceLocation));
-		this.observer = observer;
 	}
 
 	public void setX(int x) {
@@ -52,17 +38,6 @@ public class GameObject implements Observer {
 		return this.angle;
 	}
 
-
-	/*
-	public int getHealth() {
-		return this.health;
-	}
-  public void setHealth(int health) {
-    this.health = health;
-  }
-*/
-
-
   public int getWidth() {
 		return image.getWidth(null);
 	}
@@ -71,22 +46,11 @@ public class GameObject implements Observer {
 		return image.getHeight(null);
 	}
 
-	public void setImage(Image image) {
-		this.image = image;
-	}
-
-	public void repaint(Graphics graphics) {
-		// graphics.drawImage(image, x, y, observer);
-	}
-
 	@Override
-	public void update(Observable o, Object arg) {
-
-	}
+	public void update(Observable o, Object arg) { }
 
 	public void draw(ImageObserver observer, Graphics2D g) {
 		g.drawImage(image, (int) x,  (int) y, observer);
-
 	}
 
   public Rectangle getRectangle(){
@@ -96,21 +60,4 @@ public class GameObject implements Observer {
   public void setRectangle(Rectangle rectangle){
     this.rectangle = rectangle;
   }
-
-	public Rectangle getTankRectangle() {
-		return new Rectangle((int)x, (int)y, image.getWidth(null), image.getHeight(null));
-	}
-
-	public Rectangle getNextMoveTankRectangle() { //TODO fix nextY nextX
-		return new Rectangle((int)x, (int)y, image.getWidth(null), image.getHeight(null));
-	}
-
-
-	public Rectangle getAdjustedTankRectangleForBullets() {
-		int adjustedWidth = image.getWidth(null);
-		int adjustedHeight = image.getWidth(null);
-		return new Rectangle((int)x, (int)y, adjustedWidth, adjustedHeight);
-	}
-
-
 }

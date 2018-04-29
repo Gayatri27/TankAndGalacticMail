@@ -10,7 +10,6 @@ public class DestructibleWall extends Wall implements Destroyable {
 
   private int health = 30;
 
-
   public DestructibleWall(int x, int y, World world) {
     try {
       image = ImageIO.read(new File("resources/wall.png"));

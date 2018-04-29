@@ -9,8 +9,7 @@ import java.io.File;
 public class Wall extends GameObject{
 
   World world;
-  Wall(){ // why do we need this? giving error on destructable wall
-  }
+  Wall(){ }
 
 	public Wall(int x, int y, World world) {
 		try {

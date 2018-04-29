@@ -40,12 +40,10 @@ public class World extends JPanel implements Observer {
   public CollisionTracker collisionTracker;
   protected int windowWidth = 800;
   protected int windowHeight = 600;
-  // protected Dimension dimension;
   protected SpriteTank tank1;
   protected SpriteTank tank2;
   protected ArrayList<TankBullet> bullets;
   ArrayList<Wall> walls;
-  ArrayList<Obstacle> obstacles;
   CopyOnWriteArrayList<Explosion> explosions;
   private BufferedImage main_bimg;
   private BufferedImage bimg;
@@ -69,13 +67,11 @@ public class World extends JPanel implements Observer {
 
       tank1 = new SpriteTank(tankSprite1, 1000, 150, 0, this);
       tank2 = new SpriteTank(tankSprite2, 1350, 200, 1, this);
-      explosionSprite = new Sprite(EXPLOSION_SPRITE_FILE, 24);
+      explosionSprite = new Sprite(EXPLOSION_SPRITE_FILE, 32);
 
       this.frame = frame;
       frame.keyEvents.addObserver(tank1);
       frame.keyEvents.addObserver(tank2);
-
-      obstacles = new ArrayList<>();
 
       makeWalls();
 
@@ -236,7 +232,6 @@ public class World extends JPanel implements Observer {
   }
 
   public void drawFrame(int w, int h, Graphics2D graphics) {
-    obstacles.clear();
     if (bg_buffer == null) {
       drawBackground();
     }
