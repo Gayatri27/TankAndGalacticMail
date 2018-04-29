@@ -1,10 +1,13 @@
 # term-project-team-b
 
+
 Compiling Instructions: -
 
-Javac src/Main.java
+javac src/Main.java
 
-Java src/Main
+java src/Main
+
+
 
 Drive your Tank against the enemy and blast them off.
 
