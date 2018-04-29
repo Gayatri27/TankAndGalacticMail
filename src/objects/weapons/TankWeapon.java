@@ -2,14 +2,13 @@ package objects.weapons;
 
 import application.World;
 import objects.GameObject;
-import objects.Tank;
 import objects.bullets.TankBullet;
 
 public class TankWeapon extends AbstractWeapon {
 
 	private GameObject tank;
 	private World world;
-	int reloadSpeed = 10;
+	int reloadSpeed = 5;
 	int reloadCounter = 0;
 
 
@@ -21,14 +20,16 @@ public class TankWeapon extends AbstractWeapon {
 	}
 
 	public void shoot() {
-    reloadCounter ++;
-    if(reloadCounter >= reloadSpeed){
-      reloadCounter = 0;
-      //TankBullet bullet = new TankBullet(tank, tank.getTankCenterX(), tank.getTankCenterY(), tank.getAngle());
-      TankBullet bullet = new TankBullet(tank, world);
-      world.addBullet(bullet);
+		reloadCounter ++;
+		if(reloadCounter >= reloadSpeed){
+			reloadCounter = 0;
+			//TankBullet bullet = new TankBullet(tank, tank.getTankCenterX(), tank.getTankCenterY(), tank.getAngle());
+			TankBullet bullet = new TankBullet(tank, world);
+			world.addBullet(bullet);
 			// collisionTracker.addMovingObject(bullet);
-    }
+		}
 	}
+
+
 
 }

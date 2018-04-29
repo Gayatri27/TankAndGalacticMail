@@ -21,6 +21,11 @@ public class Clock extends Observable implements Runnable {
   public void run() {
 
     while (true) {
+
+      if (Thread.interrupted()) {
+        break;
+      }
+
       try {
         sleep(DURATION);
 
@@ -32,4 +37,9 @@ public class Clock extends Observable implements Runnable {
       }
     }
   }
+
+  public void stop(){
+    thread.interrupt();
+  }
+
 }

@@ -32,7 +32,7 @@ public class DestructibleWall extends Wall implements Destroyable {
 
   @Override
   public void reduceHealth(int amount) {
-    new Audio().play();
+
     health -= amount;
     if(health <= 0){
       world.removeWall(this);

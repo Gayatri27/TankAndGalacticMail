@@ -5,6 +5,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/*
+
+Code used from sample games provided bt JRob.
+
+ */
 public class Sprite {
 
   private int tileSize;

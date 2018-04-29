@@ -23,16 +23,6 @@ public class GameObject implements Observer {
 	public GameObject() {
 	}
 
-	public GameObject(String resourceLocation) throws IOException {
-		this(resourceLocation, null);
-	}
-
-	public GameObject(Image image, double x, double y, int forwardKey, int backKey, int leftKey, int rightKey, int fireKey)
-			throws IOException {
-		this.x = x;
-		this.y = y;
-		this.image = image;
-	}
 
 	public GameObject(String resourceLocation, ImageObserver observer) throws IOException {
 		x = 0;

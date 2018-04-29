@@ -2,10 +2,7 @@ package objects.bullets;
 
 import application.CollisionTracker;
 import application.World;
-import objects.Destroyable;
-import objects.GameObject;
-import objects.Sprite;
-import objects.Tank;
+import objects.*;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -88,6 +85,11 @@ public class TankBullet extends AbstractBullet {
       if(collidedWith instanceof Destroyable){
         ((Destroyable) collidedWith).reduceHealth(DAMAGE);
       }
+
+      if(collidedWith instanceof Wall || collidedWith instanceof SpriteTank){
+        world.addExplosion(getX() + (int) dx, getY() + (int) dy);
+      }
+
       world.removeBullet(this);
     }
   }

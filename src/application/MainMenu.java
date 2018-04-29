@@ -2,102 +2,73 @@ package application;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.function.Function;
 
-public class MainMenu {
+public class MainMenu extends JPanel implements Observer {
 
-  private ArrayList<SimpleMenuItem> menuItems;
-  private int selectedIndex = 0;
-  private Color textColor = Color.WHITE;
-  private Color textColorSelected = Color.RED;
+  ListMenu listMenu;
+  GameFrame gameFrame;
 
-  private int fontSize = 50;
-  private Font font =   new Font("Monospaced", Font.PLAIN, fontSize);
+  MainMenu(GameFrame gameFrame){
 
-  public MainMenu(){
-    menuItems = new ArrayList<SimpleMenuItem>();
+    this.gameFrame = gameFrame;
 
+    listMenu = new ListMenu();
+
+    listMenu.addMenuItem("Start Game", "startGame");
+    listMenu.addMenuItem("How to play", "showGuide");
+    listMenu.addMenuItem("Exit Game", "exitGame");
+    listMenu.populate(this);
+
+
+    GridLayout experimentLayout = new GridLayout(0,1);
+    setBorder(BorderFactory.createEmptyBorder(50,50,50,50));
+    setLayout(experimentLayout);
+
+    setBackground(Color.BLACK);
   }
 
-  public void populate(JPanel panel){
-
-    for(SimpleMenuItem menuItem : menuItems){
-      menuItem.label = new JLabel(menuItem.displayText, JLabel.CENTER);
-      menuItem.label.setForeground(textColor);
-      menuItem.label.setFont(font);
-      panel.add(menuItem.label);
-    }
-
-    if(! menuItems.get(selectedIndex).hasAction) next();
-
-    reColor();
-
+  public void startGame(){
+    gameFrame.startGame();
   }
 
-  public void addMenuItem(String displayText, String functionName ){
-    SimpleMenuItem menuItem = new SimpleMenuItem();
-
-    menuItem.displayText = displayText;
-    menuItem.functionName = functionName;
-
-    if(menuItem.functionName == "" ){
-      menuItem.hasAction = false;
-    }
-
-    menuItems.add(menuItem);
+  public void exitGame(){
+    System.exit(0);
   }
 
-  public void next(){
-    selectedIndex++;
-    if(selectedIndex >= menuItems.size() ){
-      selectedIndex = 0;
-    }
-    if(! menuItems.get(selectedIndex).hasAction) next();
-    reColor();
+  public void showGuide(){
+    gameFrame.showGameGuide();
   }
 
-  public void previous(){
-    selectedIndex--;
-    if(selectedIndex <= -1 ){
-      selectedIndex = menuItems.size() - 1;
-    }
+  @Override
+  public void update(Observable observable, Object arg) {
 
-    if(! menuItems.get(selectedIndex).hasAction) previous();
+    if(observable instanceof KeyEvents){
 
-    reColor();
-  }
+      KeyEvent keyEvent = (KeyEvent) arg;
 
-  public void menuSelected(JPanel panel){
+      if (keyEvent.getID() == KeyEvent.KEY_PRESSED) {
+        switch(keyEvent.getKeyCode()) {
+          case KeyEvent.VK_UP:
+            listMenu.previous();
+            break;
 
-    String functionName = menuItems.get(selectedIndex).functionName;
+          case KeyEvent.VK_DOWN:
+            listMenu.next();
+            break;
 
-    try{
-      panel.getClass().getMethod(functionName).invoke(panel);
+          case KeyEvent.VK_ENTER:
+            listMenu.menuSelected(this);
+            break;
+        }
 
-    }catch(Exception e){
-      System.out.println(e.getMessage());
-    }
-
-  }
-
-  private void reColor(){
-    for(int i = 0; i < menuItems.size(); i++){
-      if(selectedIndex == i){
-        menuItems.get(i).label.setForeground(textColorSelected);
-      }else{
-        menuItems.get(i).label.setForeground(textColor);
+        this.repaint();
       }
     }
   }
-
-
-  private class SimpleMenuItem{
-    String displayText;
-    String functionName;
-    JLabel label;
-    boolean hasAction = true;
-  }
-
-
-
 }

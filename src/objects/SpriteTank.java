@@ -112,17 +112,15 @@ public  class SpriteTank extends GameObject implements Destroyable {
 
       if (e.getID() == KeyEvent.KEY_PRESSED) {
         keyStates.replace(e.getKeyCode(), true);
-      }else{
+      }
+
+      if (e.getID() == KeyEvent.KEY_RELEASED) {
         keyStates.replace(e.getKeyCode(), false);
       }
 
     } else if(observable instanceof Clock){
-
       updateMove();
-
     }
-
-
   }
 
   public void updateMove() {
@@ -214,7 +212,7 @@ public  class SpriteTank extends GameObject implements Destroyable {
 
   @Override
   public void reduceHealth(int amount) {
-    new Audio().play();
+
     health -= amount;
 
     if(health <= 0){

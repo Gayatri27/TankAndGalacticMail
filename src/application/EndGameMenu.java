@@ -5,25 +5,27 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.function.Function;
 
-public class EndGameMenu extends JPanel implements KeyListener {
+public class EndGameMenu extends JPanel implements Observer {
 
   JLabel l1,l2,l3;
 
-  private MainMenu mainMenu;
+  private ListMenu listMenu;
   private GameFrame gameFrame;
 
   EndGameMenu(GameFrame gameFrame, String resultText){
 
     this.gameFrame = gameFrame;
 
-    mainMenu = new MainMenu();
+    listMenu = new ListMenu();
 
-    mainMenu.addMenuItem(resultText, "");
-    mainMenu.addMenuItem("Play Again", "startGame");
-    mainMenu.addMenuItem("Exit Game", "exitGame");
-    mainMenu.populate(this);
+    listMenu.addMenuItem(resultText, "");
+    listMenu.addMenuItem("Play Again", "startGame");
+    listMenu.addMenuItem("Exit Game", "exitGame");
+    listMenu.populate(this);
 
 
     GridLayout experimentLayout = new GridLayout(0,1);
@@ -47,33 +49,34 @@ public class EndGameMenu extends JPanel implements KeyListener {
 
   }
 
-  @Override
-  public void keyTyped(KeyEvent e) {
-
-  }
 
   @Override
-  public void keyPressed(KeyEvent e) {
+  public void update(Observable observable, Object arg) {
 
-    switch(e.getKeyCode()) {
-      case KeyEvent.VK_UP:
-        mainMenu.previous();
-        break;
-      case KeyEvent.VK_DOWN:
-        mainMenu.next();
-        break;
+    if(observable instanceof KeyEvents){
 
-      case KeyEvent.VK_ENTER:
-        mainMenu.menuSelected(this);
-        break;
+      KeyEvent keyEvent = (KeyEvent) arg;
+
+      if (keyEvent.getID() == KeyEvent.KEY_PRESSED) {
+
+        switch(keyEvent.getKeyCode()) {
+          case KeyEvent.VK_UP:
+            listMenu.previous();
+            break;
+          case KeyEvent.VK_DOWN:
+            listMenu.next();
+            break;
+
+          case KeyEvent.VK_ENTER:
+            listMenu.menuSelected(this);
+            break;
+        }
+
+        this.repaint();
+
+      }
     }
-
-    this.repaint();
   }
 
-  @Override
-  public void keyReleased(KeyEvent e) {
-
-  }
 
 }
