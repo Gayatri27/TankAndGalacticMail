@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class World extends JPanel implements Observer {
 
@@ -45,7 +46,7 @@ public class World extends JPanel implements Observer {
   protected ArrayList<TankBullet> bullets;
   ArrayList<Wall> walls;
   ArrayList<Obstacle> obstacles;
-  ArrayList<Explosion> explosions;
+  CopyOnWriteArrayList<Explosion> explosions;
   private BufferedImage main_bimg;
   private BufferedImage bimg;
   private BufferedImage bg_buffer;
@@ -53,7 +54,8 @@ public class World extends JPanel implements Observer {
   private Clock clock;
   private GameFrame frame;
   private Audio gunSound;
-
+  private final String EXPLOSION_SPRITE_FILE = "resources/Explosion_small_strip6.png";
+	private Sprite explosionSprite;
 
   public World(GameFrame frame) {
 
@@ -67,6 +69,7 @@ public class World extends JPanel implements Observer {
 
       tank1 = new SpriteTank(tankSprite1, 1000, 150, 0, this);
       tank2 = new SpriteTank(tankSprite2, 1350, 200, 1, this);
+      explosionSprite = new Sprite(EXPLOSION_SPRITE_FILE, 24);
 
       this.frame = frame;
       frame.keyEvents.addObserver(tank1);
@@ -82,6 +85,7 @@ public class World extends JPanel implements Observer {
     }
 
     bullets = new ArrayList<>();
+    explosions = new CopyOnWriteArrayList<>();
 
     this.setFocusable(true);
 
@@ -120,7 +124,6 @@ public class World extends JPanel implements Observer {
     gunSound.play();
     bullets.add(bullet);
     clock.addObserver(bullet);
-
   }
 
   public void removeBullet(TankBullet bullet) {
@@ -129,17 +132,16 @@ public class World extends JPanel implements Observer {
     clock.deleteObserver(bullet);
   }
 
-
   public void addExplosion(int x, int y) {
-    //Explosion explosion = new Explosion();
-    //explosions.add(explosion);
-    //clock.addObserver(explosion);
-  }
+		Explosion explosion = new Explosion(explosionSprite, this, x, y);
+		explosions.add(explosion);
+		clock.addObserver(explosion);
+	}
 
-  public void removeExplosion(Explosion explosion) {
-    explosions.remove(explosion);
-    clock.deleteObserver(explosion);
-  }
+	public void removeExplosion(Explosion explosion) {
+		explosions.remove(explosion);
+		clock.deleteObserver(explosion);
+	}
 
   public Graphics2D createGraphics2D(int w, int h) {
     Graphics2D g2 = null;
@@ -253,8 +255,11 @@ public class World extends JPanel implements Observer {
       bullet.draw(this, graphics);
     }
 
-    tank1.draw(this, graphics);
+    for (Explosion explosion : explosions) {
+			explosion.draw(this, graphics);
+		}
 
+    tank1.draw(this, graphics);
     tank2.draw(this, graphics);
   }
 

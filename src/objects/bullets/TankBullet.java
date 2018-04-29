@@ -86,16 +86,10 @@ public class TankBullet extends AbstractBullet {
         ((Destroyable) collidedWith).reduceHealth(DAMAGE);
       }
 
-      if(collidedWith instanceof Wall || collidedWith instanceof SpriteTank){
-        world.addExplosion(getX() + (int) dx, getY() + (int) dy);
-      }
-
+			world.addExplosion((int) (x + dx), (int) (y + dy));
       world.removeBullet(this);
     }
   }
-
-
-
 
   public int getWidth() {
     return sprite.getTileSize();
