@@ -1,5 +1,8 @@
 package objects;
 
+import application.TanksWorld;
+import application.World;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.ImageObserver;
@@ -8,12 +11,15 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
-public class GameObject implements Observer {
+public abstract class GameObject implements Observer {
 
-  protected double x, y;
-  public int angle;
-	private Rectangle rectangle;
-	public Image image;
+	protected World world;
+	protected double x, y;
+  protected int angle;
+	protected Rectangle rectangle;
+	protected Image image;
+	protected Sprite sprite;
+
 
 	public GameObject() {
 	}

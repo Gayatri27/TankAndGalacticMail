@@ -1,16 +1,10 @@
 package objects.bullets;
 
+import objects.Movable;
 import application.CollisionTracker;
-import objects.GameObject;
-
-import java.awt.*;
-import java.awt.image.ImageObserver;
-import java.util.Observable;
-import java.util.Observer;
-
-public abstract class AbstractBullet extends GameObject  implements Observer {
-
-  static CollisionTracker collisionTracker;
 
 
+public abstract class AbstractBullet extends Movable {
+  protected int damage;
+  protected double distanceFactor;
 }

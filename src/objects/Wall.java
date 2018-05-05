@@ -1,6 +1,6 @@
 package objects;
 
-import application.World;
+import application.TanksWorld;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -8,10 +8,9 @@ import java.io.File;
 
 public class Wall extends GameObject{
 
-  World world;
   Wall(){ }
 
-	public Wall(int x, int y, World world) {
+	public Wall(int x, int y, TanksWorld world) {
 		try {
 			image = ImageIO.read(new File("resources/wall_indestructible.png"));
       initialize(image, x, y, world);
@@ -20,7 +19,7 @@ public class Wall extends GameObject{
 		}
 	}
 
-	void initialize(Image image, int x, int y, World world) {
+	void initialize(Image image, int x, int y, TanksWorld world) {
       this.image = image;
       this.x = x;
       this.y = y;

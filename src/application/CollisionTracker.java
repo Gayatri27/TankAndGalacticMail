@@ -19,10 +19,6 @@ public class CollisionTracker {
 
   public GameObject collides(GameObject object, double dx, double dy){
 
-//    if(object instanceof TankBullet){
-//      System.out.println( object.getX() + " " + object.getY() + " " + object.getHeight() + " " + object.getWidth() + " " );
-//    }
-
     Rectangle projection = new Rectangle(object.getX()+(int)dx, (int)object.getY()+(int)dy, object.getHeight(), object.getWidth());
 
     for(GameObject staticObject: staticObjects){
@@ -34,7 +30,6 @@ public class CollisionTracker {
     for(GameObject movingObject: movingObjects){
       if(movingObject != object){
         if( movingObject.getRectangle().intersects(projection)){
-          //System.out.println("returnign true from moving objects");
           return movingObject;
         }
       }

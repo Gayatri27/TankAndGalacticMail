@@ -31,7 +31,7 @@ public class GameFrame extends JFrame {
   }
 
   public void startGame(){
-    addPanel( new World(this) );
+    addPanel( new TanksWorld(this) );
   }
 
   public void startEndGameMenu(String resultText){
@@ -51,7 +51,7 @@ public class GameFrame extends JFrame {
     revalidate();
     currentPanel = panel;
 
-    if(!(panel instanceof World))
+    if(!(panel instanceof TanksWorld))
       keyEvents.addObserver((Observer) panel);
   }
 

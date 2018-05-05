@@ -1,9 +1,6 @@
 package objects;
 
-import application.Clock;
-import application.CollisionTracker;
-import application.KeyEvents;
-import application.World;
+import application.*;
 import objects.weapons.TankWeapon;
 
 import java.awt.*;
@@ -15,31 +12,21 @@ import java.util.Observable;
 import java.util.Observer;
 
 
-public  class SpriteTank extends GameObject implements Destroyable {
+public  class SpriteTank extends Controllable implements Destroyable {
 
   private int KEY_FORWARD, KEY_BACK, KEY_RIGHT, KEY_LEFT, KEY_FIRE;
-
-  private int angle = 0;
-  private final int SPEED_MOVING = 8;
-  private final int SPEED_TURNING = 6;
-  private static CollisionTracker collisionTracker;
   private int health = 100;
-  private World world;
-
-  HashMap<Integer, Boolean> keyStates  = new HashMap<>(5);
-
-
-  private Sprite sprite;
   TankWeapon weapon;
 
-  public SpriteTank(Sprite sprite, int x, int y, int keyScheme, World world){
+  public SpriteTank(Sprite sprite, int x, int y, int keyScheme, TanksWorld world){
     this.sprite = sprite;
-    setKeyScheme(keyScheme);
     this.x = x;
     this.y = y;
 
-    setRectangle(new Rectangle(x,y,sprite.getTileSize(), sprite.getTileSize()));
+    speed_moving = 8;
+    speed_turning = 6;
 
+    setRectangle(new Rectangle(x,y,sprite.getTileSize(), sprite.getTileSize()));
 
     weapon = new TankWeapon(this, world);
 
@@ -47,17 +34,11 @@ public  class SpriteTank extends GameObject implements Destroyable {
     collisionTracker.addMovingObject(this);
     this.world = world;
 
-    keyStates.put(KEY_FORWARD, false);
-    keyStates.put(KEY_BACK, false);
-    keyStates.put(KEY_RIGHT, false);
-    keyStates.put(KEY_LEFT, false);
-    keyStates.put(KEY_FIRE, false);
+    setKeyScheme(keyScheme);
+    initializeKeyStates();
   }
 
-  public int getAngle(){
-    return angle;
-  }
-
+  @Override
   public void setKeyScheme(int scheme){
     switch(scheme){
       case 0:
@@ -87,12 +68,13 @@ public  class SpriteTank extends GameObject implements Destroyable {
     }
   }
 
-  public void setKeyScheme(int forward, int back, int right, int left, int fire) {
-    KEY_FORWARD = forward;
-    KEY_BACK = back;
-    KEY_RIGHT = right;
-    KEY_LEFT = left;
-    KEY_FIRE = fire;
+  @Override
+  void initializeKeyStates() {
+    keyStates.put(KEY_FORWARD, false);
+    keyStates.put(KEY_BACK, false);
+    keyStates.put(KEY_RIGHT, false);
+    keyStates.put(KEY_LEFT, false);
+    keyStates.put(KEY_FIRE, false);
   }
 
 
@@ -100,23 +82,10 @@ public  class SpriteTank extends GameObject implements Destroyable {
     g.drawImage(sprite.getFrame((int)(angle/6)), ((int) x), ((int) y),obs);
   }
 
-
-
   @Override
   public void update(Observable observable, Object arg) {
-
     if(observable instanceof KeyEvents){
-
-      KeyEvent e = (KeyEvent) arg;
-
-      if (e.getID() == KeyEvent.KEY_PRESSED) {
-        keyStates.replace(e.getKeyCode(), true);
-      }
-
-      if (e.getID() == KeyEvent.KEY_RELEASED) {
-        keyStates.replace(e.getKeyCode(), false);
-      }
-
+      updateKeyStates( (KeyEvent) arg );
     } else if(observable instanceof Clock){
       updateMove();
     }
@@ -126,49 +95,31 @@ public  class SpriteTank extends GameObject implements Destroyable {
 
 
     if (keyStates.get(KEY_RIGHT)) {
-      if(angle - SPEED_TURNING <= 0){
-        angle = 359;
-      }else{
-        angle -= SPEED_TURNING;
-      }
+      rotateRight();
     }
 
     if (keyStates.get(KEY_LEFT)) {
-      if(angle + SPEED_TURNING >= 360){
-        angle = 0;
-      }else{
-        angle += SPEED_TURNING;
-      }
+      rotateLeft();
     }
 
     double dx = 0, dy = 0;
 
     if (keyStates.get(KEY_FORWARD)) {
-
-      dx += 1 * SPEED_MOVING * Math.cos(Math.toRadians(angle));
-      dy += -1 * SPEED_MOVING * Math.sin(Math.toRadians(angle));
+      dx += getDx();
+      dy += getDy();
     }
 
     if (keyStates.get(KEY_BACK)) {
-      dx -= 1 * SPEED_MOVING * Math.cos(Math.toRadians(angle));
-      dy -= -1 * SPEED_MOVING * Math.sin(Math.toRadians(angle));
+      dx -= getDx();
+      dy -= getDy();
     }
 
     if(dx !=0 || dy != 0){
-      moveTheTank(dx, dy);
+      move(dx, dy);
     }
 
     if (keyStates.get(KEY_FIRE)) {
       weapon.shoot();
-    }
-
-  }
-
-  public void moveTheTank(double dx, double dy){
-    if(collisionTracker.collides(this, dx, dy) == null){
-      x += dx;
-      y += dy;
-      setRectangle(new Rectangle((int)x, (int)y, sprite.getTileSize(), sprite.getTileSize()));
     }
 
   }

@@ -1,6 +1,7 @@
 package objects.bullets;
 
 import application.CollisionTracker;
+import application.TanksWorld;
 import application.World;
 import objects.*;
 
@@ -14,44 +15,34 @@ import java.util.Observable;
 
 public class TankBullet extends AbstractBullet {
 
-	Sprite sprite;
-	GameObject tank;
-	World world;
+	private Sprite sprite;
 
-	private final int SPEED = 15;
-  private final int DAMAGE = 10;
-  private final double DISTANCE_FACTOR = 1.6;
 
   private final String SPRITE_FILE = "resources/Shell_basic_strip60.png";
   private final int SPRITE_TILE_SIZE = 24;
   private final int SPRITE_NUM_IMAGES = 60;
 
+  public TankBullet(GameObject tank, TanksWorld world) {
 
-  private final int ANGLE_STEP_SIZE = 6;
-
-	int angle;
-
-	int dx, dy;
-
-
-  public TankBullet(GameObject tank, World world) {
+    speed_moving = 15;
+    damage = 10;
+    distanceFactor = 1.6;
 
     try {
       sprite = new Sprite(SPRITE_FILE, SPRITE_TILE_SIZE);
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
-    this.tank = tank;
 
 		this.angle = tank.getAngle();
 
     this.x = tank.getX() + tank.getWidth()/2
             - sprite.getTileSize()/2
-            + DISTANCE_FACTOR * tank.getWidth()/2 * Math.cos(Math.toRadians(tank.getAngle())) ;
+            + distanceFactor * tank.getWidth()/2 * Math.cos(Math.toRadians(tank.getAngle())) ;
 
     this.y = tank.getY() + tank.getHeight()/2
             - sprite.getTileSize()/2
-            -  DISTANCE_FACTOR * tank.getHeight()/2 * Math.sin(Math.toRadians(tank.getAngle()));
+            -  distanceFactor * tank.getHeight()/2 * Math.sin(Math.toRadians(tank.getAngle()));
 
     this.world = world;
     collisionTracker = world.getCollisionTracker();
@@ -65,28 +56,27 @@ public class TankBullet extends AbstractBullet {
 
 	@Override
 	public void update(Observable o, Object arg) {
+    move(getDx(), getDy());
 
-    moveBullet(1 * SPEED * Math.cos(Math.toRadians(angle)) ,
-            -1 * SPEED * Math.sin(Math.toRadians(angle)));
+    //move(1 * speed_moving * Math.cos(Math.toRadians(angle)) ,
+      //      -1 * speed_moving * Math.sin(Math.toRadians(angle)));
+
+
 	}
 
-
-  public void moveBullet(double dx, double dy){
+	@Override
+  public void move(double dx, double dy){
     GameObject collidedWith = collisionTracker.collides(this, dx, dy);
 
     if(collidedWith == null){
-      // System.out.println("Moving bullet");
       x += dx;
       y += dy;
-
-      //setRectangle(new Rectangle((int)x, (int)y, sprite.getTileSize(), sprite.getTileSize()));
     } else {
       if(collidedWith instanceof Destroyable){
-        ((Destroyable) collidedWith).reduceHealth(DAMAGE);
+        ((Destroyable) collidedWith).reduceHealth(damage);
       }
-
-			world.addExplosion((int) (x + dx), (int) (y + dy));
-      world.removeBullet(this);
+      ((TanksWorld) world).addExplosion((int) (x + dx), (int) (y + dy));
+      ((TanksWorld) world).removeBullet(this);
     }
   }
 
