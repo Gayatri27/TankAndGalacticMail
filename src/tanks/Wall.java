@@ -1,18 +1,19 @@
-package objects;
+package tanks;
 
-import application.TanksWorld;
+import objects.GameObject;
+import tanks.TanksWorld;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 
-public class Wall extends GameObject{
+public class Wall extends GameObject {
 
   Wall(){ }
 
 	public Wall(int x, int y, TanksWorld world) {
 		try {
-			image = ImageIO.read(new File("resources/wall_indestructible.png"));
+			image = ImageIO.read(new File("tanks/resources/wall_indestructible.png"));
       initialize(image, x, y, world);
 		} catch (Exception e) {
 			System.out.println("Exception while creating new wall object.");

@@ -5,14 +5,14 @@ import java.util.HashMap;
 
 public abstract class Controllable extends Movable {
 
-  HashMap<Integer, Boolean> keyStates  = new HashMap<>();
+  protected HashMap<Integer, Boolean> keyStates  = new HashMap<>();
 
-  abstract void setKeyScheme(int scheme);
+  public abstract void setKeyScheme(int scheme);
 
-  abstract void initializeKeyStates();
+  protected abstract void initializeKeyStates();
 
 
-  void updateKeyStates(KeyEvent keyevent){
+  public void updateKeyStates(KeyEvent keyevent){
 
     if (keyevent.getID() == KeyEvent.KEY_PRESSED) {
       keyStates.replace(keyevent.getKeyCode(), true);

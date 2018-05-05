@@ -10,13 +10,11 @@ public class GameGuide extends JPanel implements Observer {
 
   GameFrame gameFrame;
 
-  GameGuide(GameFrame gameFrame){
+  GameGuide(GameFrame gameFrame, String gameGuideText){
 
     this.gameFrame = gameFrame;
 
-    JLabel guideText = new JLabel("<html>Drive your Tank against the enemy and blast them off. <br><br>" +
-            "Player 1 keys:<br> A: turn left  S: move backward D: turn right W: move forward  Space: Fire <br><br>" +
-            "Player 2 keys:<br> J: turn left  K: move backward L: turn right I: move forward  Enter: Fire </html>", JLabel.LEFT);
+    JLabel guideText = new JLabel(gameGuideText, JLabel.LEFT);
     guideText.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
     guideText.setForeground(Color.WHITE);
     add(guideText);

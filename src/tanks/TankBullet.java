@@ -1,16 +1,10 @@
-package objects.bullets;
+package tanks;
 
-import application.CollisionTracker;
-import application.TanksWorld;
-import application.World;
+import objects.AbstractBullet;
 import objects.*;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.ImageObserver;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.Observable;
 
 public class TankBullet extends AbstractBullet {
@@ -18,7 +12,7 @@ public class TankBullet extends AbstractBullet {
 	private Sprite sprite;
 
 
-  private final String SPRITE_FILE = "resources/Shell_basic_strip60.png";
+  private final String SPRITE_FILE = "tanks/resources/Shell_basic_strip60.png";
   private final int SPRITE_TILE_SIZE = 24;
   private final int SPRITE_NUM_IMAGES = 60;
 

@@ -1,7 +1,6 @@
-package objects;
+package tanks;
 
-import application.TanksWorld;
-import objects.weapons.TankWeapon;
+import objects.Destroyable;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -12,7 +11,7 @@ public class DestructibleWall extends Wall implements Destroyable {
 
   public DestructibleWall(int x, int y, TanksWorld world) {
     try {
-      image = ImageIO.read(new File("resources/wall.png"));
+      image = ImageIO.read(new File("tanks/resources/wall.png"));
       initialize(image, x, y, world);
     } catch (Exception e) {
       System.out.println("Exception while creating new wall object.");

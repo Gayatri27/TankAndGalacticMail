@@ -1,9 +1,7 @@
-package objects.weapons;
+package tanks;
 
-import application.TanksWorld;
-import application.World;
+import objects.AbstractWeapon;
 import objects.GameObject;
-import objects.bullets.TankBullet;
 
 public class TankWeapon extends AbstractWeapon {
 
@@ -17,7 +15,7 @@ public class TankWeapon extends AbstractWeapon {
 
 		this.tank = tank;
 		this.world = world;
-		collisionTracker = world.getCollisionTracker();
+		setcollisionTracker( world.getCollisionTracker() );
 	}
 
 	public void shoot() {

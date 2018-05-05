@@ -1,15 +1,16 @@
-package objects;
+package tanks;
 
 import application.*;
-import objects.weapons.TankWeapon;
+import objects.Controllable;
+import objects.Destroyable;
+import objects.Sprite;
+import tanks.TankWeapon;
+import tanks.TanksWorld;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.ImageObserver;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Observable;
-import java.util.Observer;
 
 
 public  class SpriteTank extends Controllable implements Destroyable {
@@ -36,6 +37,10 @@ public  class SpriteTank extends Controllable implements Destroyable {
 
     setKeyScheme(keyScheme);
     initializeKeyStates();
+  }
+
+  public void draw(ImageObserver obs, Graphics2D g) {
+    g.drawImage(sprite.getFrame((int)(angle/6)), ((int) x), ((int) y),obs);
   }
 
   @Override
@@ -69,7 +74,7 @@ public  class SpriteTank extends Controllable implements Destroyable {
   }
 
   @Override
-  void initializeKeyStates() {
+  protected void initializeKeyStates() {
     keyStates.put(KEY_FORWARD, false);
     keyStates.put(KEY_BACK, false);
     keyStates.put(KEY_RIGHT, false);
@@ -77,10 +82,6 @@ public  class SpriteTank extends Controllable implements Destroyable {
     keyStates.put(KEY_FIRE, false);
   }
 
-
-  public void draw(ImageObserver obs, Graphics2D g) {
-    g.drawImage(sprite.getFrame((int)(angle/6)), ((int) x), ((int) y),obs);
-  }
 
   @Override
   public void update(Observable observable, Object arg) {
@@ -90,6 +91,8 @@ public  class SpriteTank extends Controllable implements Destroyable {
       updateMove();
     }
   }
+
+
 
   public void updateMove() {
 

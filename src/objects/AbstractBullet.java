@@ -1,4 +1,4 @@
-package objects.bullets;
+package objects;
 
 import objects.Movable;
 import application.CollisionTracker;
