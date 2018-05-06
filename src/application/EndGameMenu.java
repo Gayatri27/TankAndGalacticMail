@@ -11,8 +11,6 @@ import java.util.function.Function;
 
 public class EndGameMenu extends JPanel implements Observer {
 
-  JLabel l1,l2,l3;
-
   private ListMenu listMenu;
   private GameFrame gameFrame;
 

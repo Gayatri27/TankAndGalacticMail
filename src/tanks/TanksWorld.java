@@ -1,18 +1,17 @@
-package application;
+package tanks;
 
+import application.Audio;
+import application.GameFrame;
+import application.World;
 import objects.*;
-import objects.bullets.AbstractBullet;
-import objects.bullets.TankBullet;
+import objects.AbstractBullet;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class TanksWorld extends World {
@@ -21,7 +20,7 @@ public class TanksWorld extends World {
   protected final int MINI_MAP_WIDTH = 200;
   protected final int MINI_MAP_HEIGHT = 200;
 
-  protected final String BACKGROUND_IMAGE = "resources/background_tile.png";
+  protected final String BACKGROUND_IMAGE = "tanks/resources/background_tile.png";
   final Color[] HEALTH_COLORS = new Color[]{
           new Color(182, 66, 1),
           new Color(219, 130, 0),
@@ -48,10 +47,10 @@ public class TanksWorld extends World {
   private BufferedImage frame_buffer;
   private GameFrame frame;
   private Audio gunSound;
-  private final String EXPLOSION_SPRITE_FILE = "resources/Explosion_small_strip6.png";
+  private final String EXPLOSION_SPRITE_FILE = "tanks/resources/Explosion_small_strip6.png";
   private Sprite explosionSprite;
 
-  TanksWorld(GameFrame frame) {
+  public TanksWorld(GameFrame frame) {
 
 
     super(2400,2400);
@@ -60,8 +59,8 @@ public class TanksWorld extends World {
     windowHeight = 600;
 
     try {
-      Sprite tankSprite1 = new Sprite("resources/Tank_blue_basic_strip60.png", 64);
-      Sprite tankSprite2 = new Sprite("resources/Tank_red_basic_strip60.png", 64);
+      Sprite tankSprite1 = new Sprite("tanks/resources/Tank_blue_basic_strip60.png", 64);
+      Sprite tankSprite2 = new Sprite("tanks/resources/Tank_red_basic_strip60.png", 64);
 
       tank1 = new SpriteTank(tankSprite1, 1000, 150, 0, this);
       tank2 = new SpriteTank(tankSprite2, 1350, 200, 1, this);
@@ -73,7 +72,7 @@ public class TanksWorld extends World {
 
       makeWalls();
 
-      gunSound = new Audio("resources/turret.wav");
+      gunSound = new Audio("tanks/resources/turret.wav");
 
     } catch (IOException exception) {
       System.err.println("Failed to load sprite.");
@@ -305,7 +304,7 @@ public class TanksWorld extends World {
 
     walls = new ArrayList<>();
 
-    Image wallImage = ImageIO.read(new File("resources/wall.png"));
+    Image wallImage = ImageIO.read(new File("tanks/resources/wall.png"));
 
     int wall_height = wallImage.getHeight(this);
     int wall_length = wallImage.getWidth(this);

@@ -1,6 +1,5 @@
 package objects;
 
-import application.TanksWorld;
 import application.World;
 
 import java.awt.Graphics2D;
@@ -10,7 +9,7 @@ import java.util.Observable;
 public class Explosion extends GameObject {
   private int currentFrame = 0;
 
-	public Explosion(Sprite sprite, TanksWorld world, int x, int y) {
+	public Explosion(Sprite sprite, World world, int x, int y) {
 		this.sprite = sprite;
 		this.world = world;
 		this.x = x;
@@ -26,7 +25,7 @@ public class Explosion extends GameObject {
 		if (currentFrame < 4) {
 			currentFrame++;
 		} else {
-			((TanksWorld) world).removeExplosion(this);
+			world.removeExplosion(this);
 		}
 	}
 }

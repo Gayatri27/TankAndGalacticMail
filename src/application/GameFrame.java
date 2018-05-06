@@ -1,5 +1,9 @@
 package application;
 
+import galactic.GalacticWorld;
+import javafx.application.Application;
+import tanks.TanksWorld;
+
 import javax.swing.*;
 import java.util.Observer;
 
@@ -7,14 +11,16 @@ public class GameFrame extends JFrame {
 
   JPanel currentPanel;
   public KeyEvents keyEvents;
+  GameApplication gameApplication;
 
-  public GameFrame() {
+  public GameFrame(GameApplication gameApplication) {
 
-    setTitle( "Tank Game" );
+    this.gameApplication = gameApplication;
+    setTitle(gameApplication.getTitle());
     setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
     setVisible( true );
     setResizable( true );
-    setSize(800,600);
+    setSize(gameApplication.getFrameWidth(), gameApplication.getFrameHeight());
 
     keyEvents = new KeyEvents();
     this.addKeyListener(keyEvents);
@@ -23,15 +29,15 @@ public class GameFrame extends JFrame {
   }
 
   public void showMainMenu(){
-    addPanel( new MainMenu(this) );
+    addPanel(new MainMenu(this) );
   }
 
   public void showGameGuide(){
-    addPanel( new GameGuide(this) );
+    addPanel(new GameGuide(this, gameApplication.getGameGuide() )) ;
   }
 
   public void startGame(){
-    addPanel( new TanksWorld(this) );
+    addPanel( gameApplication.getWorld() );
   }
 
   public void startEndGameMenu(String resultText){
@@ -44,16 +50,14 @@ public class GameFrame extends JFrame {
       remove(currentPanel);
       keyEvents.deleteObserver((Observer) currentPanel);
       currentPanel = null;
-
     }
 
     add(panel);
     revalidate();
     currentPanel = panel;
 
-    if(!(panel instanceof TanksWorld))
+    if(!(panel instanceof GalacticWorld))
       keyEvents.addObserver((Observer) panel);
   }
-
 
 }

@@ -1,21 +1,13 @@
 package application;
 
-import objects.*;
-import objects.bullets.AbstractBullet;
-import objects.bullets.TankBullet;
+import objects.Explosion;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.concurrent.CopyOnWriteArrayList;
 
-public class World extends JPanel implements Observer {
+public abstract class World extends JPanel implements Observer {
 
   protected Clock clock;
 
@@ -25,11 +17,9 @@ public class World extends JPanel implements Observer {
   protected int windowWidth;
   protected int windowHeight;
 
-
   protected CollisionTracker collisionTracker;
 
-
-  World(int main_width, int main_height){
+  public World(int main_width, int main_height){
     MAIN_WIDTH = main_width;
     MAIN_HEIGHT = main_height;
 
@@ -40,15 +30,17 @@ public class World extends JPanel implements Observer {
 
   }
 
+
   public CollisionTracker getCollisionTracker() {
     return collisionTracker;
   }
-
 
   public void endGame() {
     clock.stop();
     clock.deleteObservers();
   }
+
+  public abstract void removeExplosion(Explosion explosion);
 
   @Override
   public void update(Observable o, Object arg) {
@@ -68,6 +60,5 @@ public class World extends JPanel implements Observer {
     g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
     g2.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
   }
-
 
 }
