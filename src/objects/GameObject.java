@@ -40,12 +40,21 @@ public abstract class GameObject implements Observer {
 		return this.angle;
 	}
 
-  public int getWidth() {
-		return image.getWidth(null);
+
+	public int getWidth() {
+		if(sprite!=null){
+			return sprite.getTileSize();
+		}else{
+			return image.getWidth(null);
+		}
 	}
 
 	public int getHeight() {
-		return image.getHeight(null);
+		if(sprite!=null){
+			return sprite.getTileSize();
+		}else{
+			return image.getHeight(null);
+		}
 	}
 
 	@Override
@@ -59,7 +68,11 @@ public abstract class GameObject implements Observer {
     return rectangle;
   }
 
-  public void setRectangle(Rectangle rectangle){
-    this.rectangle = rectangle;
-  }
+	public void setRectangle(Rectangle rectangle){
+		this.rectangle = rectangle;
+	}
+
+	public void updateRectangle(){
+		this.rectangle = new Rectangle((int) x, (int) y, getWidth(), getHeight());
+	}
 }

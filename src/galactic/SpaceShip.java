@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.ImageObserver;
 import java.util.Observable;
 
+
 public class SpaceShip extends Controllable implements Destroyable {
 
 
@@ -21,7 +22,15 @@ public class SpaceShip extends Controllable implements Destroyable {
   private int KEY_RIGHT, KEY_LEFT, KEY_LAUNCH;
   private int health = 1;
 
-  final int TILE_SIZE = 48;
+  private final int TILE_SIZE = 48;
+  private final int MIN_OVERLAP_TO_LAND = 60;
+  private final int DEFAULT_SPEED_MOVING = 8;
+  private final int DEFAULT_SPEED_TURNING = 6;
+
+  private Planet lastLandedOn;
+  private int landedTimestamp = 0;
+
+
 
 
   public SpaceShip(int x, int y, int keyScheme, GalacticWorld world){
@@ -36,8 +45,8 @@ public class SpaceShip extends Controllable implements Destroyable {
     this.x = x;
     this.y = y;
 
-    speed_moving = 8;
-    speed_turning = 6;
+    speed_moving = DEFAULT_SPEED_MOVING;
+    speed_turning = DEFAULT_SPEED_TURNING;
 
     setRectangle(new Rectangle(x,y,sprite.getTileSize(), sprite.getTileSize()));
 
@@ -103,8 +112,10 @@ public class SpaceShip extends Controllable implements Destroyable {
 
     move(getDx(), getDy());
 
-    if (keyStates.get(KEY_LAUNCH)) {
 
+
+    if (keyStates.get(KEY_LAUNCH)) {
+      speed_moving = DEFAULT_SPEED_MOVING;
     }
 
   }
@@ -117,17 +128,24 @@ public class SpaceShip extends Controllable implements Destroyable {
 
     GameObject collidedWith = collisionTracker.collides(this, dx, dy);
 
+    if(collidedWith != lastLandedOn && lastLandedOn != null){
+      ((GalacticWorld) world).removePlanet(lastLandedOn);
+      lastLandedOn = null;
+      landedTimestamp = 0;
+    }
+
 
     if(collidedWith == null){
       x += dx;
       y += dy;
+
+
+
     } else {
-      if( collidedWith instanceof Planet ){
+      if( collidedWith instanceof Planet){
 
 
         /*
-
-
         Compute the area of the intersection, which is a rectangle too:
 
         SI = Max(0, Min(XA2, XB2) - Max(XA1, XB1)) * Max(0, Min(YA2, YB2) - Max(YA1, YB1))
@@ -138,38 +156,68 @@ public class SpaceShip extends Controllable implements Destroyable {
 
         SI / SU
         (100% in case of a perfect overlap, down to 0%).
-
-
-
          */
 
+        x += dx;
+        y += dy;
 
+        int XA1 = collidedWith.getX();
+        int XA2 = collidedWith.getX() + collidedWith.getWidth();
 
+        int YA1 = collidedWith.getY();
+        int YA2 = collidedWith.getY() + collidedWith.getHeight();
 
+        int SA = collidedWith.getWidth() * collidedWith.getHeight();
 
+        int XB1 = (int)x;
+        int XB2 = (int)x+ getWidth();
 
+        int YB1 = (int)y;
+        int YB2 = (int)y + getHeight();
 
+        int SB = getWidth() * getHeight();
 
+        double SI = Math.max(0, Math.min(XA2, XB2) - Math.max(XA1, XB1)) * Math.max(0, Math.min(YA2, YB2) - Math.max(YA1, YB1));
 
-        System.out.println("Landing on planet");
+        double SU = SA + SB - SI;
+
+        int intersection = (int) (SI / SU * 100);
+
+        if(intersection > MIN_OVERLAP_TO_LAND && lastLandedOn != collidedWith ){
+          lastLandedOn = (Planet) collidedWith;
+          speed_moving = 0;
+          ((GalacticWorld) world).countScorePlanet();
+        }
+
       }else if(collidedWith instanceof Asteroid){
         world.endGame();
       }
+
+      if(speed_moving == 0){
+        int currentTimestamp = (int) (System.currentTimeMillis() / 1000L);
+        if(landedTimestamp == 0){
+          landedTimestamp = currentTimestamp;
+        }else if( landedTimestamp != 0 && landedTimestamp != currentTimestamp){
+          ((GalacticWorld) world).countScoreIdle(currentTimestamp - landedTimestamp);
+          landedTimestamp = currentTimestamp;
+        }
+      }
+
     }
 
 
 
     if(x + TILE_SIZE < 0){
-      x = world.getWidth();
+      x = ((GalacticWorld)world).getEFFECTIVE_WIDTH();
     }
     if(y + TILE_SIZE < 0){
-      y = world.getHeight();
+      y = ((GalacticWorld)world).getEFFECTIVE_HEIGHT();
     }
 
-    if(x > world.getWidth()){
+    if(x > ((GalacticWorld)world).getEFFECTIVE_WIDTH() ){
       x = - TILE_SIZE;
     }
-    if(y > world.getHeight()){
+    if(y >((GalacticWorld)world).getEFFECTIVE_HEIGHT()){
       y = - TILE_SIZE ;
     }
 

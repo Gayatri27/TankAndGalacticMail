@@ -13,6 +13,7 @@ import tanks.Wall;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +33,8 @@ public class GalacticWorld  extends World {
   private final int HEALTH_BAR_WIDTH = 150;
   private final int HEALTH_BAR_HEIGHT = BOTTOM_BAR_THICKNESS - 10;
 
+  private final int PLANET_MARGIN = 80;
+
 
 
   protected SpaceShip spaceShip;
@@ -50,7 +53,12 @@ public class GalacticWorld  extends World {
   private GameFrame frame;
 
 
-  private  int score = 0;
+  private int score = 0;
+  private final int SCORE_PLANET = 100;
+  private final int SCORE_IDLE_PER_SECONDS = -2;
+
+  protected final int EFFECTIVE_WIDTH;
+  protected final int EFFECTIVE_HEIGHT;
 
 
   public GalacticWorld(GameFrame frame) {
@@ -58,6 +66,8 @@ public class GalacticWorld  extends World {
 
     super(800,600);
 
+    EFFECTIVE_WIDTH = MAIN_WIDTH;
+    EFFECTIVE_HEIGHT = MAIN_HEIGHT - BOTTOM_BAR_THICKNESS;
 
     try{
       explosionSprite = new Sprite("galactic/resources/Explosion_small_strip6.png", 32);
@@ -65,19 +75,19 @@ public class GalacticWorld  extends World {
 
     }
 
-    windowWidth = 800;
-    windowHeight = 600;
+
     spaceShip = new SpaceShip(50,100, 0,this);
 
+    addPlanets(8);
 
-    planets.add( new Planet(700,200, 0, this) );
-    planets.add( new Planet(600,500, 1, this) );
-    planets.add( new Planet(300,400, 2, this) );
-    planets.add( new Planet(400,100, 3, this) );
-    planets.add( new Planet(500,100, 4, this) );
-    planets.add( new Planet(300,100, 5, this) );
-    planets.add( new Planet(300,200, 6, this) );
-    planets.add( new Planet(250,300, 7, this) );
+//    planets.add( new Planet(700,200, 0, this) );
+//    planets.add( new Planet(600,500, 1, this) );
+//    planets.add( new Planet(300,400, 2, this) );
+//    planets.add( new Planet(400,100, 3, this) );
+//    planets.add( new Planet(500,100, 4, this) );
+//    planets.add( new Planet(300,100, 5, this) );
+//    planets.add( new Planet(300,200, 6, this) );
+//    planets.add( new Planet(250,300, 7, this) );
 
 
     Asteroid asteroid1 = new Asteroid(200,600,  this);
@@ -113,6 +123,29 @@ public class GalacticWorld  extends World {
     explosions = new CopyOnWriteArrayList<>();
     clock.addObserver(tank2);
     */
+  }
+
+
+  private void addPlanets(int num){
+
+    for(int i = 0; i<num; i++){
+      Planet planet = new Planet(0,0, i, this);
+
+      do{
+        int random_y = (int) (Math.random()*(EFFECTIVE_HEIGHT-2*PLANET_MARGIN)) + PLANET_MARGIN;
+        int random_x = (int) (Math.random()*(EFFECTIVE_WIDTH-2*PLANET_MARGIN)) + PLANET_MARGIN;
+        planet.setX(random_x);
+        planet.setY(random_y);
+        planet.updateRectangle();
+      }while( collisionTracker.collides(planet,0, 0) != null);
+
+      planets.add( planet );
+
+
+    }
+
+
+
   }
 
   @Override
@@ -168,7 +201,7 @@ public class GalacticWorld  extends World {
     }
 
     if (frame_buffer == null) {
-    //  drawFrameBuffer();
+     // drawFrameBuffer();
     }
 
     graphics.drawImage(bg_buffer, 0, 0, this);
@@ -196,28 +229,80 @@ public class GalacticWorld  extends World {
     */
 
     spaceShip.draw(this, graphics);
+
+
+
+    graphics.setColor(Color.black);
+
+    graphics.fillRect(0, MAIN_HEIGHT - BOTTOM_BAR_THICKNESS, MAIN_WIDTH, BOTTOM_BAR_THICKNESS);
+
+    // Player Names
+    graphics.setColor(Color.white);
+
+    graphics.setFont(DEFAULT_FONT);
+    int scoreTextY = MAIN_HEIGHT - (BOTTOM_BAR_THICKNESS / 3);
+    graphics.drawString("Your Score: " + score, BORDER_THICKNESS + BOTTOM_BAR_MARGIN, scoreTextY);
+
+
   }
 
   public void drawBackground() {
     try {
+      BufferedImage bg = ImageIO.read(new File(BACKGROUND_IMAGE));
       bg_buffer = (BufferedImage) createImage(MAIN_WIDTH, MAIN_HEIGHT);
-
       Graphics2D bg_g2 = bg_buffer.createGraphics();
       setRendingHints(bg_g2);
-      BufferedImage bg = ImageIO.read(new File(BACKGROUND_IMAGE));
-      TexturePaint paint = new TexturePaint(bg, new Rectangle(bg.getWidth(), bg.getHeight()));
-      bg_g2.setPaint(paint);
-      bg_g2.fillRect(0, 0, MAIN_WIDTH, MAIN_HEIGHT);
+      bg_g2.drawImage(bg, 0, 0, MAIN_WIDTH, MAIN_HEIGHT, null);
+
+      /*
+      //Left border
+      g2.fillRect(0, 0, BORDER_THICKNESS, windowHeight);
+
+      //Top border
+      g2.fillRect(0, 0, windowWidth, BORDER_THICKNESS);
+
+      //Right border
+      g2.fillRect(windowWidth - BORDER_THICKNESS, 0, BORDER_THICKNESS, windowHeight);
+
+
+      //Middle Separator
+      g2.fillRect(windowWidth / 2 - BORDER_THICKNESS / 2, 0, BORDER_THICKNESS, windowHeight - MINI_MAP_HEIGHT);
+
+      int miniMapFrameX = windowWidth / 2 - MINI_MAP_WIDTH / 2;
+      int miniMapFrameY = windowHeight - MINI_MAP_HEIGHT;
+
+      // MiniMap Frame
+      g2.fillRect(miniMapFrameX, miniMapFrameY, MINI_MAP_WIDTH, BORDER_THICKNESS);
+      g2.fillRect(miniMapFrameX, miniMapFrameY, BORDER_THICKNESS, MINI_MAP_HEIGHT);
+      g2.fillRect(miniMapFrameX + MINI_MAP_WIDTH - BORDER_THICKNESS, miniMapFrameY, BORDER_THICKNESS, MINI_MAP_HEIGHT);
+      g2.fillRect(miniMapFrameX, miniMapFrameY + MINI_MAP_HEIGHT - BORDER_THICKNESS, MINI_MAP_WIDTH, BORDER_THICKNESS);
+
+      //Bottom border
+      bg_g2.fillRect(0, windowHeight - BOTTOM_BAR_THICKNESS, miniMapFrameX, BOTTOM_BAR_THICKNESS);
+      bg_g2.fillRect(miniMapFrameX + MINI_MAP_WIDTH, windowHeight - BOTTOM_BAR_THICKNESS, miniMapFrameX, BOTTOM_BAR_THICKNESS);
+
+      // Player Names
+      g2.setColor(Color.white);
+
+      g2.setFont(DEFAULT_FONT);
+      FontMetrics fontMetrics = g2.getFontMetrics();
+      int playerTextY = windowHeight - (BOTTOM_BAR_THICKNESS / 3);
+      g2.drawString("Player 1", BORDER_THICKNESS + BOTTOM_BAR_MARGIN, playerTextY);
+      g2.drawString("Player 2", windowWidth - BORDER_THICKNESS - BOTTOM_BAR_MARGIN - fontMetrics.stringWidth("Player 2"), playerTextY);
+      */
+
+
+
+
+
+
+
 
     } catch (Exception e) {
-
       e.getStackTrace();
       System.out.println(e.getMessage());
     }
   }
-
-
-
 
   public void addExplosion(int x, int y) {
     Explosion explosion = new Explosion(explosionSprite, this, x, y);
@@ -235,6 +320,27 @@ public class GalacticWorld  extends World {
     clock.deleteObserver(asteroid);
   }
 
+  public void removePlanet(Planet planet) {
+    planets.remove(planet);
+    clock.deleteObserver(planet);
+  }
+
+  public void countScorePlanet() {
+    score += SCORE_PLANET;
+  }
+
+  public void countScoreIdle(int seconds) {
+    score += SCORE_IDLE_PER_SECONDS * seconds;
+  }
+
+
+  public int getEFFECTIVE_WIDTH(){
+    return EFFECTIVE_WIDTH;
+  }
+
+  public int getEFFECTIVE_HEIGHT(){
+    return EFFECTIVE_HEIGHT;
+  }
 
   /*
 
@@ -261,6 +367,7 @@ public class GalacticWorld  extends World {
 
 
   public void drawFrameBuffer() {
+
 
     frame_buffer = new BufferedImage(windowWidth, windowHeight, BufferedImage.TYPE_INT_ARGB);
     Graphics2D g2 = frame_buffer.createGraphics();

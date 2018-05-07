@@ -5,6 +5,7 @@ import javafx.application.Application;
 import tanks.TanksWorld;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.Observer;
 
 public class GameFrame extends JFrame {
@@ -20,7 +21,10 @@ public class GameFrame extends JFrame {
     setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
     setVisible( true );
     setResizable( true );
-    setSize(gameApplication.getFrameWidth(), gameApplication.getFrameHeight());
+    //setSize(gameApplication.getFrameWidth(), gameApplication.getFrameHeight());
+    getContentPane().setPreferredSize(new Dimension(gameApplication.getFrameWidth(), gameApplication.getFrameHeight()));
+    pack();
+
 
     keyEvents = new KeyEvents();
     this.addKeyListener(keyEvents);

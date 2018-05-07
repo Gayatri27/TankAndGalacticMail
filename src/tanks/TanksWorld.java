@@ -28,6 +28,7 @@ public class TanksWorld extends World {
           new Color(158, 142, 1),
           new Color(80, 129, 4)
   };
+
   private final int DEFAULT_FONT_SIZE = 14;
   private final Font DEFAULT_FONT = new Font(Font.SANS_SERIF, Font.BOLD, DEFAULT_FONT_SIZE);
   private final int BORDER_THICKNESS = 4;

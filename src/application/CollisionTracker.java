@@ -21,16 +21,14 @@ public class CollisionTracker {
     Rectangle projection = new Rectangle(object.getX()+(int)dx, (int)object.getY()+(int)dy, object.getHeight(), object.getWidth());
 
     for(GameObject staticObject: staticObjects){
-      if( staticObject.getRectangle().intersects(projection)){
+      if(staticObject != object && staticObject.getRectangle().intersects(projection)){
         return staticObject;
       }
     }
 
     for(GameObject movingObject: movingObjects){
-      if(movingObject != object){
-        if( movingObject.getRectangle().intersects(projection)){
-          return movingObject;
-        }
+      if(movingObject != object && movingObject.getRectangle().intersects(projection)){
+        return movingObject;
       }
     }
 

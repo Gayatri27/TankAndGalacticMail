@@ -67,16 +67,16 @@ public class Asteroid extends Movable {
     */
 
     if(x + TILE_SIZE < 0){
-      x = world.getWidth();
+      x = ((GalacticWorld)world).getEFFECTIVE_WIDTH();
     }
     if(y + TILE_SIZE < 0){
-      y = world.getHeight();
+      y = ((GalacticWorld)world).getEFFECTIVE_HEIGHT();
     }
 
-    if(x > world.getWidth()){
+    if(x > ((GalacticWorld)world).getEFFECTIVE_WIDTH() ){
       x = - TILE_SIZE;
     }
-    if(y > world.getHeight()){
+    if(y >((GalacticWorld)world).getEFFECTIVE_HEIGHT()){
       y = - TILE_SIZE ;
     }
 
