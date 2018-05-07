@@ -40,7 +40,7 @@ public class Sprite {
     return this.tileSize;
   }
 
-  public int frameCount() {
+  public int getFrameCount() {
     return this.images.length;
   }
 }

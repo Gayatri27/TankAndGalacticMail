@@ -75,40 +75,10 @@ public class GalacticWorld  extends World {
 
     }
 
-
-    spaceShip = new SpaceShip(50,100, 0,this);
-
     addPlanets(8);
+    addAsteroids(1);
 
-//    planets.add( new Planet(700,200, 0, this) );
-//    planets.add( new Planet(600,500, 1, this) );
-//    planets.add( new Planet(300,400, 2, this) );
-//    planets.add( new Planet(400,100, 3, this) );
-//    planets.add( new Planet(500,100, 4, this) );
-//    planets.add( new Planet(300,100, 5, this) );
-//    planets.add( new Planet(300,200, 6, this) );
-//    planets.add( new Planet(250,300, 7, this) );
-
-
-    Asteroid asteroid1 = new Asteroid(200,600,  this);
-    clock.addObserver(asteroid1);
-    asteroids.add(asteroid1);
-
-    Asteroid asteroid2 = new Asteroid(300,500,  this);
-    clock.addObserver(asteroid2);
-    asteroids.add(asteroid2);
-
-
-    Asteroid asteroid3 = new Asteroid(400,400,  this);
-    clock.addObserver(asteroid3);
-    asteroids.add(asteroid3);
-
-
-    Asteroid asteroid4 = new Asteroid(500,300,  this);
-    clock.addObserver(asteroid4);
-    asteroids.add(asteroid4);
-
-
+    spaceShip = new SpaceShip(planets.get(0).getX(),planets.get(0).getY(), 0,this);
 
     clock.addObserver(this);
     clock.addObserver(spaceShip);
@@ -127,7 +97,6 @@ public class GalacticWorld  extends World {
 
 
   private void addPlanets(int num){
-
     for(int i = 0; i<num; i++){
       Planet planet = new Planet(0,0, i, this);
 
@@ -137,18 +106,46 @@ public class GalacticWorld  extends World {
         planet.setX(random_x);
         planet.setY(random_y);
         planet.updateRectangle();
-      }while( collisionTracker.collides(planet,0, 0) != null);
+      }while( collisionTracker.collides(planet,0, 0) != null ||
+              collisionTracker.collides(planet,planet.getWidth(), planet.getHeight()) != null ||
+              collisionTracker.collides(planet,-planet.getWidth(), -planet.getHeight()) != null ||
+              collisionTracker.collides(planet,-planet.getWidth(), planet.getHeight()) != null ||
+              collisionTracker.collides(planet,planet.getWidth(), -planet.getHeight()) != null ||
+              collisionTracker.collides(planet,planet.getWidth(), 0) != null ||
+              collisionTracker.collides(planet,-planet.getWidth(), 0) != null ||
+              collisionTracker.collides(planet,0, planet.getHeight()) != null ||
+              collisionTracker.collides(planet,0, -planet.getHeight()) != null );
 
-      planets.add( planet );
-
-
+      // TODO: make new method to take radius for collision
+      planets.add(planet);
+      collisionTracker.addStaticObject(planet);
     }
-
-
-
   }
 
-  @Override
+  private void addAsteroids(int num) {
+
+    for(int i = 0; i<num; i++){
+
+      int random_angle = (int) (Math.random()*(360));
+
+      Asteroid asteroid = new Asteroid(0,0, random_angle, this);
+
+      do{
+        int random_y = (int) (Math.random()*(EFFECTIVE_HEIGHT-2*PLANET_MARGIN)) + PLANET_MARGIN;
+        int random_x = (int) (Math.random()*(EFFECTIVE_WIDTH-2*PLANET_MARGIN)) + PLANET_MARGIN;
+        asteroid.setX(random_x);
+        asteroid.setY(random_y);
+        asteroid.updateRectangle();
+      }while( collisionTracker.collides(asteroid,0, 0) != null);
+
+      asteroids.add(asteroid);
+      collisionTracker.addMovingObject(asteroid);
+      clock.addObserver(asteroid);
+    }
+  }
+
+
+    @Override
   public void endGame() {
     super.endGame();
 
@@ -318,11 +315,14 @@ public class GalacticWorld  extends World {
   public void removeAsteroid(Asteroid asteroid) {
     asteroids.remove(asteroid);
     clock.deleteObserver(asteroid);
+    collisionTracker.removeMovingObject(asteroid);
   }
 
   public void removePlanet(Planet planet) {
     planets.remove(planet);
     clock.deleteObserver(planet);
+    collisionTracker.removeStaticObject(planet);
+
   }
 
   public void countScorePlanet() {

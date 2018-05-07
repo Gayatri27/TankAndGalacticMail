@@ -20,7 +20,6 @@ public class Planet extends GameObject {
     this.x = x;
     this.y = y;
     this.world = world;
-    world.getCollisionTracker().addStaticObject(this);
 
     try {
       sprite = new Sprite("galactic/resources/Planetoids_strip8.png", TILE_SIZE);

@@ -13,17 +13,24 @@ import java.util.Observable;
 public class Asteroid extends Movable {
 
 
-  final int TILE_SIZE = 48;
+  final int TILE_SIZE = 50;
   final int SPRITE_NUM_IMAGES = 180;
+  int frame;
+  final double NEXT_FRAME_CHANCE = 0.5;
+  final int TURNING_DIRECTION;
   int damage = 1;
 
-  public Asteroid(int x, int y, GalacticWorld world) {
+  public Asteroid(int x, int y, int angle, GalacticWorld world) {
 
-    angle = 100;
+    this.angle = angle;
     this.x = x;
     this.y = y;
     this.world = world;
-    world.getCollisionTracker().addMovingObject(this);
+
+    frame = (int) Math.random()*180;
+
+    TURNING_DIRECTION = (Math.random() > 0.5) ? 1 : -1;
+
 
     try {
       sprite = new Sprite("galactic/resources/Asteroid_strip180.png", TILE_SIZE);
@@ -36,7 +43,16 @@ public class Asteroid extends Movable {
 
   @Override
   public void draw(ImageObserver obs, Graphics2D g) {
-    g.drawImage(sprite.getFrame((angle/(360/SPRITE_NUM_IMAGES))), ((int) x), ((int) y),obs);
+    if( Math.random() < NEXT_FRAME_CHANCE) {
+      frame += TURNING_DIRECTION;
+    }
+    if(frame >= SPRITE_NUM_IMAGES){
+      frame = 0;
+    }else if(frame <= 0){
+      frame = SPRITE_NUM_IMAGES -1;
+    }
+
+    g.drawImage(sprite.getFrame(frame), ((int) x), ((int) y), obs);
   }
 
   @Override

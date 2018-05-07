@@ -7,15 +7,12 @@ import objects.Destroyable;
 import objects.GameObject;
 import objects.Sprite;
 
-
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.ImageObserver;
 import java.util.Observable;
 
-
 public class SpaceShip extends Controllable implements Destroyable {
-
 
   private Sprite spriteFlying;
 
@@ -30,9 +27,6 @@ public class SpaceShip extends Controllable implements Destroyable {
   private Planet lastLandedOn;
   private int landedTimestamp = 0;
 
-
-
-
   public SpaceShip(int x, int y, int keyScheme, GalacticWorld world){
 
     try{
@@ -45,7 +39,7 @@ public class SpaceShip extends Controllable implements Destroyable {
     this.x = x;
     this.y = y;
 
-    speed_moving = DEFAULT_SPEED_MOVING;
+    speed_moving = 0;
     speed_turning = DEFAULT_SPEED_TURNING;
 
     setRectangle(new Rectangle(x,y,sprite.getTileSize(), sprite.getTileSize()));
@@ -60,7 +54,11 @@ public class SpaceShip extends Controllable implements Destroyable {
   }
 
   public void draw(ImageObserver obs, Graphics2D g) {
-    g.drawImage(sprite.getFrame((int)(angle/5)), ((int) x), ((int) y),obs);
+    if(speed_moving == 0){
+      g.drawImage(sprite.getFrame((int)(angle/5)), ((int) x), ((int) y),obs);
+    }else{
+      g.drawImage(spriteFlying.getFrame((int)(angle/5)), ((int) x), ((int) y),obs);
+    }
   }
 
   @Override
