@@ -3,27 +3,21 @@ package galactic;
 import application.Audio;
 import application.GameFrame;
 import application.World;
-import objects.AbstractBullet;
-import objects.Explosion;
 import objects.Sprite;
-import tanks.DestructibleWall;
-import tanks.SpriteTank;
-import tanks.TankBullet;
-import tanks.Wall;
+import sun.jvm.hotspot.memory.Space;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class GalacticWorld  extends World {
 
   protected final String BACKGROUND_IMAGE = "galactic/resources/Background.png";
+
+  private Audio gameMusic;
 
   private final int DEFAULT_FONT_SIZE = 14;
   private final Font DEFAULT_FONT = new Font(Font.SANS_SERIF, Font.BOLD, DEFAULT_FONT_SIZE);
@@ -35,9 +29,7 @@ public class GalacticWorld  extends World {
 
   private final int PLANET_MARGIN = 80;
 
-
-
-  protected SpaceShip spaceShip;
+  protected ArrayList<SpaceShip> spaceships = new ArrayList<>();
   protected ArrayList<Planet> planets = new ArrayList<>();
   protected ArrayList<Asteroid> asteroids  = new ArrayList<>();
   protected ArrayList<Explosion> explosions  = new ArrayList<>();
@@ -47,11 +39,7 @@ public class GalacticWorld  extends World {
   private BufferedImage bg_buffer;
   private BufferedImage frame_buffer;
 
-  private Sprite explosionSprite;
-
-
   private GameFrame frame;
-
 
   private int score = 0;
   private final int SCORE_PLANET = 100;
@@ -62,37 +50,23 @@ public class GalacticWorld  extends World {
 
 
   public GalacticWorld(GameFrame frame) {
-
-
     super(800,600);
 
     EFFECTIVE_WIDTH = MAIN_WIDTH;
     EFFECTIVE_HEIGHT = MAIN_HEIGHT - BOTTOM_BAR_THICKNESS;
 
-    try{
-      explosionSprite = new Sprite("galactic/resources/Explosion_small_strip6.png", 32);
-    }catch (Exception e){
+    this.frame = frame;
 
-    }
-
-    addPlanets(8);
-    addAsteroids(1);
-
-    spaceShip = new SpaceShip(planets.get(0).getX(),planets.get(0).getY(), 0,this);
+    addPlanets(1);
+    addAsteroids(6);
+    addSpaceship(planets.get(0).getX(),planets.get(0).getY());
 
     clock.addObserver(this);
-    clock.addObserver(spaceShip);
 
-    this.frame = frame;
-    frame.keyEvents.addObserver(spaceShip);
+    gameMusic = new Audio("galactic/resources/Music.mid");
+    gameMusic.play();
 
     this.setFocusable(true);
-
-    /*
-    bullets = new ArrayList<>();
-    explosions = new CopyOnWriteArrayList<>();
-    clock.addObserver(tank2);
-    */
   }
 
 
@@ -148,17 +122,7 @@ public class GalacticWorld  extends World {
     @Override
   public void endGame() {
     super.endGame();
-
-    String resultText;
-//    if (tank1.getHealth() <= 0) {
-//      resultText = "Player 2 won!";
-//    } else {
-//      resultText = "Player 1 won!";
-//    }
-//
-    resultText = "Your Score: " + score;
-
-    frame.startEndGameMenu(resultText);
+    frame.startEndGameMenu("Your Score: " + score);
   }
 
 
@@ -203,10 +167,14 @@ public class GalacticWorld  extends World {
 
     graphics.drawImage(bg_buffer, 0, 0, this);
 
+    if(planets.size() == 0){
+      endGame();
+    }
 
     for (Planet planet : planets) {
       planet.draw(this, graphics);
     }
+
 
     for (Asteroid asteroid : asteroids) {
       asteroid.draw(this, graphics);
@@ -220,14 +188,17 @@ public class GalacticWorld  extends World {
       bullet.draw(this, graphics);
     }
 
+
+    */
+
     for (Explosion explosion : explosions) {
       explosion.draw(this, graphics);
     }
-    */
-
-    spaceShip.draw(this, graphics);
 
 
+    for (SpaceShip spaceship : spaceships) {
+      spaceship.draw(this, graphics);
+    }
 
     graphics.setColor(Color.black);
 
@@ -302,7 +273,7 @@ public class GalacticWorld  extends World {
   }
 
   public void addExplosion(int x, int y) {
-    Explosion explosion = new Explosion(explosionSprite, this, x, y);
+    Explosion explosion = new Explosion(this, x, y);
     explosions.add(explosion);
     clock.addObserver(explosion);
   }
@@ -322,6 +293,21 @@ public class GalacticWorld  extends World {
     planets.remove(planet);
     clock.deleteObserver(planet);
     collisionTracker.removeStaticObject(planet);
+
+  }
+
+  public void addSpaceship(int x, int y) {
+    SpaceShip spaceship = new SpaceShip(x,y,0,this);
+    spaceships.add(spaceship);
+    clock.addObserver(spaceship);
+    frame.keyEvents.addObserver(spaceship);
+  }
+
+  public void removeSpaceship(SpaceShip spaceship) {
+    spaceships.remove(spaceship);
+    clock.deleteObserver(spaceship);
+    collisionTracker.removeMovingObject(spaceship);
+    frame.keyEvents.deleteObserver(spaceship);
 
   }
 

@@ -33,6 +33,13 @@ public abstract class Movable extends GameObject {
     return -1 * speed_moving * Math.sin(Math.toRadians(angle));
   }
 
+  public void setSpeedMoving(int speed){
+    speed_moving = speed;
+  }
+  public void setSpeedTurning(int turning){
+    speed_moving = turning;
+  }
+
 
   public void move(double dx, double dy){
     if(collisionTracker.collides(this, dx, dy) == null){

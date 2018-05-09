@@ -44,7 +44,6 @@ public class SpaceShip extends Controllable implements Destroyable {
 
     setRectangle(new Rectangle(x,y,sprite.getTileSize(), sprite.getTileSize()));
 
-
     collisionTracker = world.getCollisionTracker();
     //collisionTracker.addMovingObject(this);
     this.world = world;
@@ -188,7 +187,12 @@ public class SpaceShip extends Controllable implements Destroyable {
         }
 
       }else if(collidedWith instanceof Asteroid){
-        world.endGame();
+        ((GalacticWorld) world).addExplosion((int) (x + dx), (int) (y + dy));
+        speed_moving = 0;
+        ((Asteroid) collidedWith).setSpeedMoving(0);
+        ((GalacticWorld) world).removeSpaceship(this);
+
+        //world.endGame();
       }
 
       if(speed_moving == 0){

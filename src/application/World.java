@@ -1,7 +1,5 @@
 package application;
 
-import objects.Explosion;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.Observable;
@@ -27,20 +25,16 @@ public abstract class World extends JPanel implements Observer {
 
     clock = new Clock();
     clock.start();
-
   }
-
 
   public CollisionTracker getCollisionTracker() {
     return collisionTracker;
   }
 
   public void endGame() {
-    clock.stop();
     clock.deleteObservers();
+    clock.stop();
   }
-
-  public abstract void removeExplosion(Explosion explosion);
 
   @Override
   public void update(Observable o, Object arg) {
