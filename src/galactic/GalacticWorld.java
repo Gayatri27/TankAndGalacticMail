@@ -57,7 +57,7 @@ public class GalacticWorld  extends World {
 
     this.frame = frame;
 
-    addPlanets(1);
+    addPlanets(8);
     addAsteroids(6);
     addSpaceship(planets.get(0).getX(),planets.get(0).getY());
 
@@ -317,6 +317,7 @@ public class GalacticWorld  extends World {
 
   public void countScoreIdle(int seconds) {
     score += SCORE_IDLE_PER_SECONDS * seconds;
+    if (score < 0) score = 0;
   }
 
 
