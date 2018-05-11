@@ -59,8 +59,8 @@ public class GalacticWorld extends World {
 
     clock.addObserver(this);
 
-    gameMusic = new Audio("galactic/resources/Music.mid");
-    gameMusic.play();
+    //gameMusic = new Audio("galactic/resources/Music.mid");
+    //gameMusic.play();
 
     this.setFocusable(true);
   }

@@ -53,6 +53,37 @@ public class CollisionTracker {
     return null;
   }
 
+
+  // formula ref: https://stackoverflow.com/a/9325084
+  public int calculateIntersection(GameObject A, GameObject B){
+
+    int XA1 = A.getX();
+    int XA2 = A.getX() + A.getWidth();
+
+    int YA1 = A.getY();
+    int YA2 = A.getY() + A.getHeight();
+
+    int SA = A.getWidth() * A.getHeight();
+
+
+    int XB1 = B.getX();
+    int XB2 = B.getX() + B.getWidth();
+
+    int YB1 = B.getY();
+    int YB2 = B.getY() + B.getHeight();
+
+    int SB = B.getWidth() * B.getHeight();
+
+    double SI = Math.max(0, Math.min(XA2, XB2) - Math.max(XA1, XB1)) * Math.max(0, Math.min(YA2, YB2) - Math.max(YA1, YB1));
+
+    double SU = SA + SB - SI;
+
+    int intersection = (int) (SI / SU * 100);
+
+    return intersection;
+
+  }
+
   public void removeStaticObject(GameObject object) {
     staticObjects.remove(object);
   }

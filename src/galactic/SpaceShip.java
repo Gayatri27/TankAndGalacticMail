@@ -20,6 +20,8 @@ public class SpaceShip extends Controllable implements Destroyable {
   private int health = 1;
 
   private final int TILE_SIZE = 48;
+  private final int FRAMES_IN_SPRITE = 72;
+
   private final int MIN_OVERLAP_TO_LAND = 60;
   private final int DEFAULT_SPEED_MOVING = 8;
   private final int DEFAULT_SPEED_TURNING = 6;
@@ -54,9 +56,9 @@ public class SpaceShip extends Controllable implements Destroyable {
 
   public void draw(ImageObserver obs, Graphics2D g) {
     if (speed_moving == 0) {
-      g.drawImage(sprite.getFrame((int) (angle / 5)), ((int) x), ((int) y), obs);
+      g.drawImage(sprite.getFrame((int) (angle / (360 / FRAMES_IN_SPRITE))), ((int) x), ((int) y), obs);
     } else {
-      g.drawImage(spriteFlying.getFrame((int) (angle / 5)), ((int) x), ((int) y), obs);
+      g.drawImage(spriteFlying.getFrame((int) (angle / (360 / FRAMES_IN_SPRITE))), ((int) x), ((int) y), obs);
     }
   }
 
@@ -138,49 +140,13 @@ public class SpaceShip extends Controllable implements Destroyable {
     if (collidedWith == null) {
       x += dx;
       y += dy;
-
-
     } else {
       if (collidedWith instanceof Planet) {
-
-
-        /*
-        Compute the area of the intersection, which is a rectangle too:
-
-        SI = Max(0, Min(XA2, XB2) - Max(XA1, XB1)) * Max(0, Min(YA2, YB2) - Max(YA1, YB1))
-        From there you compute the area of the union:
-
-        SU = SA + SB - SI
-        And you can consider the ratio
-
-        SI / SU
-        (100% in case of a perfect overlap, down to 0%).
-         */
 
         x += dx;
         y += dy;
 
-        int XA1 = collidedWith.getX();
-        int XA2 = collidedWith.getX() + collidedWith.getWidth();
-
-        int YA1 = collidedWith.getY();
-        int YA2 = collidedWith.getY() + collidedWith.getHeight();
-
-        int SA = collidedWith.getWidth() * collidedWith.getHeight();
-
-        int XB1 = (int) x;
-        int XB2 = (int) x + getWidth();
-
-        int YB1 = (int) y;
-        int YB2 = (int) y + getHeight();
-
-        int SB = getWidth() * getHeight();
-
-        double SI = Math.max(0, Math.min(XA2, XB2) - Math.max(XA1, XB1)) * Math.max(0, Math.min(YA2, YB2) - Math.max(YA1, YB1));
-
-        double SU = SA + SB - SI;
-
-        int intersection = (int) (SI / SU * 100);
+        int intersection = collisionTracker.calculateIntersection(this, collidedWith);
 
         if (intersection > MIN_OVERLAP_TO_LAND && lastLandedOn != collidedWith) {
           lastLandedOn = (Planet) collidedWith;
@@ -188,13 +154,12 @@ public class SpaceShip extends Controllable implements Destroyable {
           ((GalacticWorld) world).countScorePlanet();
         }
 
-      } else if (collidedWith instanceof Asteroid) {
+      }
+      if (speed_moving != 0 && collidedWith instanceof Asteroid) {
         ((GalacticWorld) world).addExplosion((int) (x + dx), (int) (y + dy));
         speed_moving = 0;
         ((Asteroid) collidedWith).setSpeedMoving(0);
         ((GalacticWorld) world).removeSpaceship(this);
-
-        //world.endGame();
       }
 
       if (speed_moving == 0) {
