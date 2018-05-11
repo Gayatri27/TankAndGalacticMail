@@ -3,8 +3,6 @@ package galactic;
 import application.Audio;
 import application.GameFrame;
 import application.World;
-import objects.Sprite;
-import sun.jvm.hotspot.memory.Space;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -24,8 +22,7 @@ public class GalacticWorld  extends World {
   private final int BORDER_THICKNESS = 4;
   private final int BOTTOM_BAR_THICKNESS = 25;
   private final int BOTTOM_BAR_MARGIN = 5;
-  private final int HEALTH_BAR_WIDTH = 150;
-  private final int HEALTH_BAR_HEIGHT = BOTTOM_BAR_THICKNESS - 10;
+
 
   private final int PLANET_MARGIN = 80;
 
@@ -35,9 +32,7 @@ public class GalacticWorld  extends World {
   protected ArrayList<Explosion> explosions  = new ArrayList<>();
 
   private BufferedImage main_bimg;
-  private BufferedImage bimg;
   private BufferedImage bg_buffer;
-  private BufferedImage frame_buffer;
 
   private GameFrame frame;
 
@@ -118,14 +113,11 @@ public class GalacticWorld  extends World {
     }
   }
 
-
-    @Override
+  @Override
   public void endGame() {
     super.endGame();
     frame.startEndGameMenu("Your Score: " + score);
   }
-
-
 
   @Override
   public void paint(Graphics g) {
@@ -146,23 +138,11 @@ public class GalacticWorld  extends World {
 
 
     g.drawImage(main_bimg, 0, 0, this);
-
-
-
-    // g.drawImage(frame_buffer, 0, 0, this);
-
   }
-
-
-
 
   public void drawFrame(Graphics2D graphics) {
     if (bg_buffer == null) {
       drawBackground();
-    }
-
-    if (frame_buffer == null) {
-     // drawFrameBuffer();
     }
 
     graphics.drawImage(bg_buffer, 0, 0, this);
@@ -180,38 +160,20 @@ public class GalacticWorld  extends World {
       asteroid.draw(this, graphics);
     }
 
-
-
-    /*
-
-    for (AbstractBullet bullet : bullets) {
-      bullet.draw(this, graphics);
-    }
-
-
-    */
-
     for (Explosion explosion : explosions) {
       explosion.draw(this, graphics);
     }
-
 
     for (SpaceShip spaceship : spaceships) {
       spaceship.draw(this, graphics);
     }
 
     graphics.setColor(Color.black);
-
     graphics.fillRect(0, MAIN_HEIGHT - BOTTOM_BAR_THICKNESS, MAIN_WIDTH, BOTTOM_BAR_THICKNESS);
-
-    // Player Names
     graphics.setColor(Color.white);
-
     graphics.setFont(DEFAULT_FONT);
     int scoreTextY = MAIN_HEIGHT - (BOTTOM_BAR_THICKNESS / 3);
     graphics.drawString("Your Score: " + score, BORDER_THICKNESS + BOTTOM_BAR_MARGIN, scoreTextY);
-
-
   }
 
   public void drawBackground() {
@@ -221,51 +183,6 @@ public class GalacticWorld  extends World {
       Graphics2D bg_g2 = bg_buffer.createGraphics();
       setRendingHints(bg_g2);
       bg_g2.drawImage(bg, 0, 0, MAIN_WIDTH, MAIN_HEIGHT, null);
-
-      /*
-      //Left border
-      g2.fillRect(0, 0, BORDER_THICKNESS, windowHeight);
-
-      //Top border
-      g2.fillRect(0, 0, windowWidth, BORDER_THICKNESS);
-
-      //Right border
-      g2.fillRect(windowWidth - BORDER_THICKNESS, 0, BORDER_THICKNESS, windowHeight);
-
-
-      //Middle Separator
-      g2.fillRect(windowWidth / 2 - BORDER_THICKNESS / 2, 0, BORDER_THICKNESS, windowHeight - MINI_MAP_HEIGHT);
-
-      int miniMapFrameX = windowWidth / 2 - MINI_MAP_WIDTH / 2;
-      int miniMapFrameY = windowHeight - MINI_MAP_HEIGHT;
-
-      // MiniMap Frame
-      g2.fillRect(miniMapFrameX, miniMapFrameY, MINI_MAP_WIDTH, BORDER_THICKNESS);
-      g2.fillRect(miniMapFrameX, miniMapFrameY, BORDER_THICKNESS, MINI_MAP_HEIGHT);
-      g2.fillRect(miniMapFrameX + MINI_MAP_WIDTH - BORDER_THICKNESS, miniMapFrameY, BORDER_THICKNESS, MINI_MAP_HEIGHT);
-      g2.fillRect(miniMapFrameX, miniMapFrameY + MINI_MAP_HEIGHT - BORDER_THICKNESS, MINI_MAP_WIDTH, BORDER_THICKNESS);
-
-      //Bottom border
-      bg_g2.fillRect(0, windowHeight - BOTTOM_BAR_THICKNESS, miniMapFrameX, BOTTOM_BAR_THICKNESS);
-      bg_g2.fillRect(miniMapFrameX + MINI_MAP_WIDTH, windowHeight - BOTTOM_BAR_THICKNESS, miniMapFrameX, BOTTOM_BAR_THICKNESS);
-
-      // Player Names
-      g2.setColor(Color.white);
-
-      g2.setFont(DEFAULT_FONT);
-      FontMetrics fontMetrics = g2.getFontMetrics();
-      int playerTextY = windowHeight - (BOTTOM_BAR_THICKNESS / 3);
-      g2.drawString("Player 1", BORDER_THICKNESS + BOTTOM_BAR_MARGIN, playerTextY);
-      g2.drawString("Player 2", windowWidth - BORDER_THICKNESS - BOTTOM_BAR_MARGIN - fontMetrics.stringWidth("Player 2"), playerTextY);
-      */
-
-
-
-
-
-
-
-
     } catch (Exception e) {
       e.getStackTrace();
       System.out.println(e.getMessage());
@@ -328,110 +245,4 @@ public class GalacticWorld  extends World {
   public int getEFFECTIVE_HEIGHT(){
     return EFFECTIVE_HEIGHT;
   }
-
-  /*
-
-
-  private BufferedImage getPlayerWindow(SpriteTank tank){
-    int playerWindowHeight = windowHeight - BOTTOM_BAR_THICKNESS - BORDER_THICKNESS;
-    int playerWindowWidth = windowWidth / 2 - BORDER_THICKNESS;
-
-    int tank_x = tank.getX() - playerWindowWidth / 2 + tank.getWidth() / 2;
-    if (tank_x < 0)
-      tank_x = 0;
-    if (tank_x + playerWindowWidth > MAIN_WIDTH)
-      tank_x = MAIN_WIDTH - playerWindowWidth;
-
-    int tank_y = tank.getY() - playerWindowHeight / 2 + tank.getHeight() / 2;
-    if (tank_y < 0)
-      tank_y = 0;
-    if (tank_y + playerWindowHeight > MAIN_HEIGHT)
-      tank_y = MAIN_HEIGHT - playerWindowHeight;
-
-    return main_bimg.getSubimage(tank_x, tank_y, playerWindowWidth, playerWindowHeight);
-  }
-
-
-
-  public void drawFrameBuffer() {
-
-
-    frame_buffer = new BufferedImage(windowWidth, windowHeight, BufferedImage.TYPE_INT_ARGB);
-    Graphics2D g2 = frame_buffer.createGraphics();
-
-    setRendingHints(g2);
-
-    g2.setColor(Color.black);
-
-    //Left border
-    g2.fillRect(0, 0, BORDER_THICKNESS, windowHeight);
-
-    //Top border
-    g2.fillRect(0, 0, windowWidth, BORDER_THICKNESS);
-
-    //Right border
-    g2.fillRect(windowWidth - BORDER_THICKNESS, 0, BORDER_THICKNESS, windowHeight);
-
-
-    //Middle Separator
-    g2.fillRect(windowWidth / 2 - BORDER_THICKNESS / 2, 0, BORDER_THICKNESS, windowHeight - MINI_MAP_HEIGHT);
-
-    int miniMapFrameX = windowWidth / 2 - MINI_MAP_WIDTH / 2;
-    int miniMapFrameY = windowHeight - MINI_MAP_HEIGHT;
-
-    // MiniMap Frame
-    g2.fillRect(miniMapFrameX, miniMapFrameY, MINI_MAP_WIDTH, BORDER_THICKNESS);
-    g2.fillRect(miniMapFrameX, miniMapFrameY, BORDER_THICKNESS, MINI_MAP_HEIGHT);
-    g2.fillRect(miniMapFrameX + MINI_MAP_WIDTH - BORDER_THICKNESS, miniMapFrameY, BORDER_THICKNESS, MINI_MAP_HEIGHT);
-    g2.fillRect(miniMapFrameX, miniMapFrameY + MINI_MAP_HEIGHT - BORDER_THICKNESS, MINI_MAP_WIDTH, BORDER_THICKNESS);
-
-    //Bottom border
-    g2.fillRect(0, windowHeight - BOTTOM_BAR_THICKNESS, miniMapFrameX, BOTTOM_BAR_THICKNESS);
-    g2.fillRect(miniMapFrameX + MINI_MAP_WIDTH, windowHeight - BOTTOM_BAR_THICKNESS, miniMapFrameX, BOTTOM_BAR_THICKNESS);
-
-    // Player Names
-    g2.setColor(Color.white);
-
-    g2.setFont(DEFAULT_FONT);
-    FontMetrics fontMetrics = g2.getFontMetrics();
-    int playerTextY = windowHeight - (BOTTOM_BAR_THICKNESS / 3);
-    g2.drawString("Player 1", BORDER_THICKNESS + BOTTOM_BAR_MARGIN, playerTextY);
-    g2.drawString("Player 2", windowWidth - BORDER_THICKNESS - BOTTOM_BAR_MARGIN - fontMetrics.stringWidth("Player 2"), playerTextY);
-  }
-
-
-  */
-
-
-  /*
-  public void addBullet(TankBullet bullet) {
-    gunSound.play();
-    bullets.add(bullet);
-    clock.addObserver(bullet);
-  }
-
-  public void removeBullet(TankBullet bullet) {
-    gunSound.play();
-    bullets.remove(bullet);
-    clock.deleteObserver(bullet);
-  }
-
-  public void addExplosion(int x, int y) {
-    Explosion explosion = new Explosion(explosionSprite, this, x, y);
-    explosions.add(explosion);
-    clock.addObserver(explosion);
-  }
-
-  public void removeExplosion(Explosion explosion) {
-    explosions.remove(explosion);
-    clock.deleteObserver(explosion);
-  }
-
-  public void removeWall(Wall wall) {
-    walls.remove(wall);
-  }
-  */
-
-
-
 }
