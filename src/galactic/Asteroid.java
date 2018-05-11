@@ -1,10 +1,7 @@
 package galactic;
 
-import objects.Destroyable;
-import objects.GameObject;
 import objects.Movable;
 import objects.Sprite;
-import tanks.TanksWorld;
 
 import java.awt.*;
 import java.awt.image.ImageObserver;
@@ -27,7 +24,7 @@ public class Asteroid extends Movable {
     this.y = y;
     this.world = world;
 
-    frame = (int) Math.random()*180;
+    frame = (int) Math.random() * 180;
 
     TURNING_DIRECTION = (Math.random() > 0.5) ? 1 : -1;
 
@@ -43,13 +40,13 @@ public class Asteroid extends Movable {
 
   @Override
   public void draw(ImageObserver obs, Graphics2D g) {
-    if( Math.random() < NEXT_FRAME_CHANCE) {
+    if (Math.random() < NEXT_FRAME_CHANCE) {
       frame += TURNING_DIRECTION;
     }
-    if(frame >= SPRITE_NUM_IMAGES){
+    if (frame >= SPRITE_NUM_IMAGES) {
       frame = 0;
-    }else if(frame <= 0){
-      frame = SPRITE_NUM_IMAGES -1;
+    } else if (frame <= 0) {
+      frame = SPRITE_NUM_IMAGES - 1;
     }
 
     g.drawImage(sprite.getFrame(frame), ((int) x), ((int) y), obs);
@@ -61,7 +58,7 @@ public class Asteroid extends Movable {
   }
 
   @Override
-  public void move(double dx, double dy){
+  public void move(double dx, double dy) {
 
     x += dx;
     y += dy;
@@ -82,23 +79,22 @@ public class Asteroid extends Movable {
 
     */
 
-    if(x + TILE_SIZE < 0){
-      x = ((GalacticWorld)world).getEFFECTIVE_WIDTH();
+    if (x + TILE_SIZE < 0) {
+      x = ((GalacticWorld) world).getEFFECTIVE_WIDTH();
     }
-    if(y + TILE_SIZE < 0){
-      y = ((GalacticWorld)world).getEFFECTIVE_HEIGHT();
-    }
-
-    if(x > ((GalacticWorld)world).getEFFECTIVE_WIDTH() ){
-      x = - TILE_SIZE;
-    }
-    if(y >((GalacticWorld)world).getEFFECTIVE_HEIGHT()){
-      y = - TILE_SIZE ;
+    if (y + TILE_SIZE < 0) {
+      y = ((GalacticWorld) world).getEFFECTIVE_HEIGHT();
     }
 
+    if (x > ((GalacticWorld) world).getEFFECTIVE_WIDTH()) {
+      x = -TILE_SIZE;
+    }
+    if (y > ((GalacticWorld) world).getEFFECTIVE_HEIGHT()) {
+      y = -TILE_SIZE;
+    }
 
-    setRectangle(new Rectangle((int)x, (int)y, TILE_SIZE, TILE_SIZE));
 
+    setRectangle(new Rectangle((int) x, (int) y, TILE_SIZE, TILE_SIZE));
 
 
   }

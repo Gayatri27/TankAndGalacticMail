@@ -1,8 +1,6 @@
 package application;
 
 import galactic.GalacticWorld;
-import javafx.application.Application;
-import tanks.TanksWorld;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,9 +16,9 @@ public class GameFrame extends JFrame {
 
     this.gameApplication = gameApplication;
     setTitle(gameApplication.getTitle());
-    setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-    setVisible( true );
-    setResizable( true );
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setVisible(true);
+    setResizable(true);
     //setSize(gameApplication.getFrameWidth(), gameApplication.getFrameHeight());
     getContentPane().setPreferredSize(new Dimension(gameApplication.getFrameWidth(), gameApplication.getFrameHeight()));
     pack();
@@ -32,25 +30,25 @@ public class GameFrame extends JFrame {
     showMainMenu();
   }
 
-  public void showMainMenu(){
-    addPanel(new MainMenu(this) );
+  public void showMainMenu() {
+    addPanel(new MainMenu(this));
   }
 
-  public void showGameGuide(){
-    addPanel(new GameGuide(this, gameApplication.getGameGuide() )) ;
+  public void showGameGuide() {
+    addPanel(new GameGuide(this, gameApplication.getGameGuide()));
   }
 
-  public void startGame(){
-    addPanel( gameApplication.getWorld() );
+  public void startGame() {
+    addPanel(gameApplication.getWorld());
   }
 
-  public void startEndGameMenu(String resultText){
-    addPanel( new EndGameMenu(this, resultText) );
+  public void startEndGameMenu(String resultText) {
+    addPanel(new EndGameMenu(this, resultText));
   }
 
-  private void addPanel(JPanel panel){
+  private void addPanel(JPanel panel) {
 
-    if(currentPanel != null){
+    if (currentPanel != null) {
       remove(currentPanel);
       keyEvents.deleteObserver((Observer) currentPanel);
       currentPanel = null;
@@ -60,7 +58,7 @@ public class GameFrame extends JFrame {
     revalidate();
     currentPanel = panel;
 
-    if(!(panel instanceof GalacticWorld))
+    if (!(panel instanceof GalacticWorld))
       keyEvents.addObserver((Observer) panel);
   }
 

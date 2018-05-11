@@ -8,7 +8,7 @@ public abstract class AbstractWeapon {
 
   public abstract void shoot();
 
-  public void setcollisionTracker(CollisionTracker collisionTracker){
+  public void setcollisionTracker(CollisionTracker collisionTracker) {
     this.collisionTracker = collisionTracker;
   }
 

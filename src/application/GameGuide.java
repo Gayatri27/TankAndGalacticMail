@@ -10,7 +10,7 @@ public class GameGuide extends JPanel implements Observer {
 
   GameFrame gameFrame;
 
-  GameGuide(GameFrame gameFrame, String gameGuideText){
+  GameGuide(GameFrame gameFrame, String gameGuideText) {
 
     this.gameFrame = gameFrame;
 
@@ -26,19 +26,18 @@ public class GameGuide extends JPanel implements Observer {
     continueText.setVerticalTextPosition(JLabel.CENTER);
     add(continueText);
 
-    GridLayout experimentLayout = new GridLayout(0,1);
-    setBorder(BorderFactory.createEmptyBorder(50,50,50,50));
+    GridLayout experimentLayout = new GridLayout(0, 1);
+    setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
     setLayout(experimentLayout);
 
     setBackground(Color.BLACK);
   }
 
 
-
   @Override
   public void update(Observable observable, Object arg) {
 
-    if(observable instanceof KeyEvents){
+    if (observable instanceof KeyEvents) {
       KeyEvent keyEvent = (KeyEvent) arg;
       if (keyEvent.getKeyCode() == KeyEvent.VK_SPACE) {
         gameFrame.showMainMenu();

@@ -3,18 +3,15 @@ package application;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.function.Function;
 
 public class MainMenu extends JPanel implements Observer {
 
   ListMenu listMenu;
   GameFrame gameFrame;
 
-  MainMenu(GameFrame gameFrame){
+  MainMenu(GameFrame gameFrame) {
 
     this.gameFrame = gameFrame;
 
@@ -26,34 +23,34 @@ public class MainMenu extends JPanel implements Observer {
     listMenu.populate(this);
 
 
-    GridLayout experimentLayout = new GridLayout(0,1);
-    setBorder(BorderFactory.createEmptyBorder(50,50,50,50));
+    GridLayout experimentLayout = new GridLayout(0, 1);
+    setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
     setLayout(experimentLayout);
 
     setBackground(Color.BLACK);
   }
 
-  public void startGame(){
+  public void startGame() {
     gameFrame.startGame();
   }
 
-  public void exitGame(){
+  public void exitGame() {
     System.exit(0);
   }
 
-  public void showGuide(){
+  public void showGuide() {
     gameFrame.showGameGuide();
   }
 
   @Override
   public void update(Observable observable, Object arg) {
 
-    if(observable instanceof KeyEvents){
+    if (observable instanceof KeyEvents) {
 
       KeyEvent keyEvent = (KeyEvent) arg;
 
       if (keyEvent.getID() == KeyEvent.KEY_PRESSED) {
-        switch(keyEvent.getKeyCode()) {
+        switch (keyEvent.getKeyCode()) {
           case KeyEvent.VK_UP:
             listMenu.previous();
             break;

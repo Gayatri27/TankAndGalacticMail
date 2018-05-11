@@ -1,8 +1,5 @@
 package application;
 
-import galactic.Galactic;
-import galactic.GalacticWorld;
-
 public abstract class GameApplication {
 
 
@@ -29,7 +26,7 @@ public abstract class GameApplication {
     return gameGuide;
   }
 
-  public void start(){
+  public void start() {
     gameFrame = new GameFrame(this);
   }
 

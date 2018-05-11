@@ -2,12 +2,9 @@ package galactic;
 
 import objects.GameObject;
 import objects.Sprite;
-import tanks.TanksWorld;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.ImageObserver;
-import java.io.File;
 
 public class Planet extends GameObject {
 
@@ -33,11 +30,8 @@ public class Planet extends GameObject {
 
 
   public void draw(ImageObserver obs, Graphics2D g) {
-    g.drawImage(sprite.getFrame(PLANET), ((int) x), ((int) y),obs);
+    g.drawImage(sprite.getFrame(PLANET), ((int) x), ((int) y), obs);
   }
-
-
-
 
 
 }

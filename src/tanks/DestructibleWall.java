@@ -31,7 +31,7 @@ public class DestructibleWall extends Wall implements Destroyable {
   @Override
   public void reduceHealth(int amount) {
     health -= amount;
-    if(health <= 0){
+    if (health <= 0) {
       ((TanksWorld) world).removeWall(this);
       world.getCollisionTracker().removeStaticObject(this);
     }

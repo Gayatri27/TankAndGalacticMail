@@ -11,7 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 
-public class GalacticWorld  extends World {
+public class GalacticWorld extends World {
 
   protected final String BACKGROUND_IMAGE = "galactic/resources/Background.png";
 
@@ -28,8 +28,8 @@ public class GalacticWorld  extends World {
 
   protected ArrayList<SpaceShip> spaceships = new ArrayList<>();
   protected ArrayList<Planet> planets = new ArrayList<>();
-  protected ArrayList<Asteroid> asteroids  = new ArrayList<>();
-  protected ArrayList<Explosion> explosions  = new ArrayList<>();
+  protected ArrayList<Asteroid> asteroids = new ArrayList<>();
+  protected ArrayList<Explosion> explosions = new ArrayList<>();
 
   private BufferedImage main_bimg;
   private BufferedImage bg_buffer;
@@ -45,7 +45,7 @@ public class GalacticWorld  extends World {
 
 
   public GalacticWorld(GameFrame frame) {
-    super(800,600);
+    super(800, 600);
 
     EFFECTIVE_WIDTH = MAIN_WIDTH;
     EFFECTIVE_HEIGHT = MAIN_HEIGHT - BOTTOM_BAR_THICKNESS;
@@ -53,8 +53,9 @@ public class GalacticWorld  extends World {
     this.frame = frame;
 
     addPlanets(8);
+
     addAsteroids(6);
-    addSpaceship(planets.get(0).getX(),planets.get(0).getY());
+    addSpaceship(planets.get(0).getX(), planets.get(0).getY());
 
     clock.addObserver(this);
 
@@ -65,17 +66,21 @@ public class GalacticWorld  extends World {
   }
 
 
-  private void addPlanets(int num){
-    for(int i = 0; i<num; i++){
-      Planet planet = new Planet(0,0, i, this);
+  private void addPlanets(int num) {
+    for (int i = 0; i < num; i++) {
+      Planet planet = new Planet(0, 0, i, this);
 
-      do{
-        int random_y = (int) (Math.random()*(EFFECTIVE_HEIGHT-2*PLANET_MARGIN)) + PLANET_MARGIN;
-        int random_x = (int) (Math.random()*(EFFECTIVE_WIDTH-2*PLANET_MARGIN)) + PLANET_MARGIN;
+      do {
+        int random_y = (int) (Math.random() * (EFFECTIVE_HEIGHT - 2 * PLANET_MARGIN)) + PLANET_MARGIN;
+        int random_x = (int) (Math.random() * (EFFECTIVE_WIDTH - 2 * PLANET_MARGIN)) + PLANET_MARGIN;
         planet.setX(random_x);
         planet.setY(random_y);
         planet.updateRectangle();
-      }while( collisionTracker.collides(planet,0, 0) != null ||
+      } while (collisionTracker.collides(planet, planet.getWidth()) != null);
+
+      /*
+
+       ||
               collisionTracker.collides(planet,planet.getWidth(), planet.getHeight()) != null ||
               collisionTracker.collides(planet,-planet.getWidth(), -planet.getHeight()) != null ||
               collisionTracker.collides(planet,-planet.getWidth(), planet.getHeight()) != null ||
@@ -83,7 +88,9 @@ public class GalacticWorld  extends World {
               collisionTracker.collides(planet,planet.getWidth(), 0) != null ||
               collisionTracker.collides(planet,-planet.getWidth(), 0) != null ||
               collisionTracker.collides(planet,0, planet.getHeight()) != null ||
-              collisionTracker.collides(planet,0, -planet.getHeight()) != null );
+              collisionTracker.collides(planet,0, -planet.getHeight()) != null
+
+       */
 
       // TODO: make new method to take radius for collision
       planets.add(planet);
@@ -93,19 +100,19 @@ public class GalacticWorld  extends World {
 
   private void addAsteroids(int num) {
 
-    for(int i = 0; i<num; i++){
+    for (int i = 0; i < num; i++) {
 
-      int random_angle = (int) (Math.random()*(360));
+      int random_angle = (int) (Math.random() * (360));
 
-      Asteroid asteroid = new Asteroid(0,0, random_angle, this);
+      Asteroid asteroid = new Asteroid(0, 0, random_angle, this);
 
-      do{
-        int random_y = (int) (Math.random()*(EFFECTIVE_HEIGHT-2*PLANET_MARGIN)) + PLANET_MARGIN;
-        int random_x = (int) (Math.random()*(EFFECTIVE_WIDTH-2*PLANET_MARGIN)) + PLANET_MARGIN;
+      do {
+        int random_y = (int) (Math.random() * (EFFECTIVE_HEIGHT - 2 * PLANET_MARGIN)) + PLANET_MARGIN;
+        int random_x = (int) (Math.random() * (EFFECTIVE_WIDTH - 2 * PLANET_MARGIN)) + PLANET_MARGIN;
         asteroid.setX(random_x);
         asteroid.setY(random_y);
         asteroid.updateRectangle();
-      }while( collisionTracker.collides(asteroid,0, 0) != null);
+      } while (collisionTracker.collides(asteroid, 0, 0) != null);
 
       asteroids.add(asteroid);
       collisionTracker.addMovingObject(asteroid);
@@ -147,7 +154,7 @@ public class GalacticWorld  extends World {
 
     graphics.drawImage(bg_buffer, 0, 0, this);
 
-    if(planets.size() == 0){
+    if (planets.size() == 0) {
       endGame();
     }
 
@@ -214,7 +221,7 @@ public class GalacticWorld  extends World {
   }
 
   public void addSpaceship(int x, int y) {
-    SpaceShip spaceship = new SpaceShip(x,y,0,this);
+    SpaceShip spaceship = new SpaceShip(x, y, 0, this);
     spaceships.add(spaceship);
     clock.addObserver(spaceship);
     frame.keyEvents.addObserver(spaceship);
@@ -238,11 +245,11 @@ public class GalacticWorld  extends World {
   }
 
 
-  public int getEFFECTIVE_WIDTH(){
+  public int getEFFECTIVE_WIDTH() {
     return EFFECTIVE_WIDTH;
   }
 
-  public int getEFFECTIVE_HEIGHT(){
+  public int getEFFECTIVE_HEIGHT() {
     return EFFECTIVE_HEIGHT;
   }
 }

@@ -9,11 +9,11 @@ public class Clock extends Observable implements Runnable {
   private final int DURATION = 45; // testing
   private Thread thread;
 
-  Clock(){
+  Clock() {
     thread = new Thread(this);
   }
 
-  void start(){
+  void start() {
     thread.start();
   }
 
@@ -33,12 +33,12 @@ public class Clock extends Observable implements Runnable {
         notifyObservers();
 
       } catch (InterruptedException e) {
-        e.printStackTrace();
+        break;
       }
     }
   }
 
-  public void stop(){
+  public void stop() {
     thread.interrupt();
   }
 

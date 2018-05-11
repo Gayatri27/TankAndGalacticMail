@@ -27,12 +27,12 @@ public class SpaceShip extends Controllable implements Destroyable {
   private Planet lastLandedOn;
   private int landedTimestamp = 0;
 
-  public SpaceShip(int x, int y, int keyScheme, GalacticWorld world){
+  public SpaceShip(int x, int y, int keyScheme, GalacticWorld world) {
 
-    try{
+    try {
       sprite = new Sprite("galactic/resources/Landed_strip72.png", TILE_SIZE);
       spriteFlying = new Sprite("galactic/resources/Flying_strip72.png", TILE_SIZE);
-    }catch(Exception e){
+    } catch (Exception e) {
       System.out.println("Error creating space ship sprite.");
     }
 
@@ -42,7 +42,7 @@ public class SpaceShip extends Controllable implements Destroyable {
     speed_moving = 0;
     speed_turning = DEFAULT_SPEED_TURNING;
 
-    setRectangle(new Rectangle(x,y,sprite.getTileSize(), sprite.getTileSize()));
+    setRectangle(new Rectangle(x, y, sprite.getTileSize(), sprite.getTileSize()));
 
     collisionTracker = world.getCollisionTracker();
     //collisionTracker.addMovingObject(this);
@@ -53,26 +53,32 @@ public class SpaceShip extends Controllable implements Destroyable {
   }
 
   public void draw(ImageObserver obs, Graphics2D g) {
-    if(speed_moving == 0){
-      g.drawImage(sprite.getFrame((int)(angle/5)), ((int) x), ((int) y),obs);
-    }else{
-      g.drawImage(spriteFlying.getFrame((int)(angle/5)), ((int) x), ((int) y),obs);
+    if (speed_moving == 0) {
+      g.drawImage(sprite.getFrame((int) (angle / 5)), ((int) x), ((int) y), obs);
+    } else {
+      g.drawImage(spriteFlying.getFrame((int) (angle / 5)), ((int) x), ((int) y), obs);
     }
   }
 
   @Override
   public void setKeyScheme(int scheme) {
-    switch(scheme){
+    switch (scheme) {
       case 0:
-        KEY_RIGHT = KeyEvent.VK_D;;
-        KEY_LEFT = KeyEvent.VK_A;;
-        KEY_LAUNCH = KeyEvent.VK_SPACE;;
+        KEY_RIGHT = KeyEvent.VK_D;
+        ;
+        KEY_LEFT = KeyEvent.VK_A;
+        ;
+        KEY_LAUNCH = KeyEvent.VK_SPACE;
+        ;
         break;
 
       case 1:
-        KEY_RIGHT = KeyEvent.VK_RIGHT;;
-        KEY_LEFT = KeyEvent.VK_LEFT;;
-        KEY_LAUNCH = KeyEvent.VK_SPACE;;
+        KEY_RIGHT = KeyEvent.VK_RIGHT;
+        ;
+        KEY_LEFT = KeyEvent.VK_LEFT;
+        ;
+        KEY_LAUNCH = KeyEvent.VK_SPACE;
+        ;
         break;
     }
   }
@@ -87,13 +93,12 @@ public class SpaceShip extends Controllable implements Destroyable {
 
   @Override
   public void update(Observable observable, Object arg) {
-    if(observable instanceof KeyEvents){
-      updateKeyStates( (KeyEvent) arg );
-    } else if(observable instanceof Clock){
+    if (observable instanceof KeyEvents) {
+      updateKeyStates((KeyEvent) arg);
+    } else if (observable instanceof Clock) {
       updateMove();
     }
   }
-
 
 
   public void updateMove() {
@@ -110,7 +115,6 @@ public class SpaceShip extends Controllable implements Destroyable {
     move(getDx(), getDy());
 
 
-
     if (keyStates.get(KEY_LAUNCH)) {
       speed_moving = DEFAULT_SPEED_MOVING;
     }
@@ -119,27 +123,25 @@ public class SpaceShip extends Controllable implements Destroyable {
 
 
   @Override
-  public void move(double dx, double dy){
-
+  public void move(double dx, double dy) {
 
 
     GameObject collidedWith = collisionTracker.collides(this, dx, dy);
 
-    if(collidedWith != lastLandedOn && lastLandedOn != null){
+    if (collidedWith != lastLandedOn && lastLandedOn != null) {
       ((GalacticWorld) world).removePlanet(lastLandedOn);
       lastLandedOn = null;
       landedTimestamp = 0;
     }
 
 
-    if(collidedWith == null){
+    if (collidedWith == null) {
       x += dx;
       y += dy;
 
 
-
     } else {
-      if( collidedWith instanceof Planet){
+      if (collidedWith instanceof Planet) {
 
 
         /*
@@ -166,11 +168,11 @@ public class SpaceShip extends Controllable implements Destroyable {
 
         int SA = collidedWith.getWidth() * collidedWith.getHeight();
 
-        int XB1 = (int)x;
-        int XB2 = (int)x+ getWidth();
+        int XB1 = (int) x;
+        int XB2 = (int) x + getWidth();
 
-        int YB1 = (int)y;
-        int YB2 = (int)y + getHeight();
+        int YB1 = (int) y;
+        int YB2 = (int) y + getHeight();
 
         int SB = getWidth() * getHeight();
 
@@ -180,13 +182,13 @@ public class SpaceShip extends Controllable implements Destroyable {
 
         int intersection = (int) (SI / SU * 100);
 
-        if(intersection > MIN_OVERLAP_TO_LAND && lastLandedOn != collidedWith ){
+        if (intersection > MIN_OVERLAP_TO_LAND && lastLandedOn != collidedWith) {
           lastLandedOn = (Planet) collidedWith;
           speed_moving = 0;
           ((GalacticWorld) world).countScorePlanet();
         }
 
-      }else if(collidedWith instanceof Asteroid){
+      } else if (collidedWith instanceof Asteroid) {
         ((GalacticWorld) world).addExplosion((int) (x + dx), (int) (y + dy));
         speed_moving = 0;
         ((Asteroid) collidedWith).setSpeedMoving(0);
@@ -195,11 +197,11 @@ public class SpaceShip extends Controllable implements Destroyable {
         //world.endGame();
       }
 
-      if(speed_moving == 0){
+      if (speed_moving == 0) {
         int currentTimestamp = (int) (System.currentTimeMillis() / 1000L);
-        if(landedTimestamp == 0){
+        if (landedTimestamp == 0) {
           landedTimestamp = currentTimestamp;
-        }else if( landedTimestamp != 0 && landedTimestamp != currentTimestamp){
+        } else if (landedTimestamp != 0 && landedTimestamp != currentTimestamp) {
           ((GalacticWorld) world).countScoreIdle(currentTimestamp - landedTimestamp);
           landedTimestamp = currentTimestamp;
         }
@@ -208,23 +210,21 @@ public class SpaceShip extends Controllable implements Destroyable {
     }
 
 
+    if (x + TILE_SIZE < 0) {
+      x = ((GalacticWorld) world).getEFFECTIVE_WIDTH();
+    }
+    if (y + TILE_SIZE < 0) {
+      y = ((GalacticWorld) world).getEFFECTIVE_HEIGHT();
+    }
 
-    if(x + TILE_SIZE < 0){
-      x = ((GalacticWorld)world).getEFFECTIVE_WIDTH();
+    if (x > ((GalacticWorld) world).getEFFECTIVE_WIDTH()) {
+      x = -TILE_SIZE;
     }
-    if(y + TILE_SIZE < 0){
-      y = ((GalacticWorld)world).getEFFECTIVE_HEIGHT();
-    }
-
-    if(x > ((GalacticWorld)world).getEFFECTIVE_WIDTH() ){
-      x = - TILE_SIZE;
-    }
-    if(y >((GalacticWorld)world).getEFFECTIVE_HEIGHT()){
-      y = - TILE_SIZE ;
+    if (y > ((GalacticWorld) world).getEFFECTIVE_HEIGHT()) {
+      y = -TILE_SIZE;
     }
 
   }
-
 
 
   @Override
@@ -251,7 +251,7 @@ public class SpaceShip extends Controllable implements Destroyable {
   public void reduceHealth(int amount) {
     health -= amount;
 
-    if(health <= 0){
+    if (health <= 0) {
       world.endGame();
     }
   }

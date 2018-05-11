@@ -19,16 +19,16 @@ public class Explosion extends GameObject {
   private static Audio audio;
 
   Explosion(World world, int x, int y) {
-    try{
+    try {
       this.sprite = new Sprite(SPRITE_FILE, SPRITE_TILE_SIZE);
       this.world = world;
       this.x = x;
       this.y = y;
-    }catch (Exception e){
+    } catch (Exception e) {
       System.out.println("Error occurred while trying to create explosion.");
     }
 
-    if(audio == null){
+    if (audio == null) {
       audio = new Audio("galactic/resources/Explosion.wav");
     }
     audio.play();
@@ -41,10 +41,10 @@ public class Explosion extends GameObject {
 
   @Override
   public void update(Observable observable, Object arg) {
-    if (currentFrame < SPRITE_NUM_IMAGES-1) {
+    if (currentFrame < SPRITE_NUM_IMAGES - 1) {
       currentFrame++;
     } else {
-      ((GalacticWorld)world).removeExplosion(this);
+      ((GalacticWorld) world).removeExplosion(this);
       world.endGame();
     }
   }

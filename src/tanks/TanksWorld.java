@@ -3,8 +3,8 @@ package tanks;
 import application.Audio;
 import application.GameFrame;
 import application.World;
-import objects.*;
 import objects.AbstractBullet;
+import objects.Sprite;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -22,11 +22,11 @@ public class TanksWorld extends World {
 
   protected final String BACKGROUND_IMAGE = "tanks/resources/background_tile.png";
   final Color[] HEALTH_COLORS = new Color[]{
-          new Color(182, 66, 1),
-          new Color(219, 130, 0),
-          new Color(243, 184, 0),
-          new Color(158, 142, 1),
-          new Color(80, 129, 4)
+      new Color(182, 66, 1),
+      new Color(219, 130, 0),
+      new Color(243, 184, 0),
+      new Color(158, 142, 1),
+      new Color(80, 129, 4)
   };
 
   private final int DEFAULT_FONT_SIZE = 14;
@@ -54,7 +54,7 @@ public class TanksWorld extends World {
   public TanksWorld(GameFrame frame) {
 
 
-    super(2400,2400);
+    super(2400, 2400);
 
     windowWidth = 800;
     windowHeight = 600;
@@ -161,8 +161,7 @@ public class TanksWorld extends World {
   }
 
 
-
-  private BufferedImage getPlayerWindow(SpriteTank tank){
+  private BufferedImage getPlayerWindow(SpriteTank tank) {
     int playerWindowHeight = windowHeight - BOTTOM_BAR_THICKNESS - BORDER_THICKNESS;
     int playerWindowWidth = windowWidth / 2 - BORDER_THICKNESS;
 
@@ -180,7 +179,6 @@ public class TanksWorld extends World {
 
     return main_bimg.getSubimage(tank_x, tank_y, playerWindowWidth, playerWindowHeight);
   }
-
 
 
   public void drawFrame(Graphics2D graphics) {

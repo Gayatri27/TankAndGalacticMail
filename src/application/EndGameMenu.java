@@ -3,18 +3,15 @@ package application;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.function.Function;
 
 public class EndGameMenu extends JPanel implements Observer {
 
   private ListMenu listMenu;
   private GameFrame gameFrame;
 
-  EndGameMenu(GameFrame gameFrame, String resultText){
+  EndGameMenu(GameFrame gameFrame, String resultText) {
 
     this.gameFrame = gameFrame;
 
@@ -26,22 +23,22 @@ public class EndGameMenu extends JPanel implements Observer {
     listMenu.populate(this);
 
 
-    GridLayout experimentLayout = new GridLayout(0,1);
-    setBorder(BorderFactory.createEmptyBorder(50,50,50,50));
+    GridLayout experimentLayout = new GridLayout(0, 1);
+    setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
     setLayout(experimentLayout);
 
     setBackground(Color.BLACK);
   }
 
-  public void startGame(){
+  public void startGame() {
     gameFrame.startGame();
   }
 
-  public void exitGame(){
+  public void exitGame() {
     System.exit(0);
   }
 
-  public void paintComponent(Graphics g){
+  public void paintComponent(Graphics g) {
     super.paintComponent(g);
     g.setColor(Color.red);
 
@@ -51,13 +48,13 @@ public class EndGameMenu extends JPanel implements Observer {
   @Override
   public void update(Observable observable, Object arg) {
 
-    if(observable instanceof KeyEvents){
+    if (observable instanceof KeyEvents) {
 
       KeyEvent keyEvent = (KeyEvent) arg;
 
       if (keyEvent.getID() == KeyEvent.KEY_PRESSED) {
 
-        switch(keyEvent.getKeyCode()) {
+        switch (keyEvent.getKeyCode()) {
           case KeyEvent.VK_UP:
             listMenu.previous();
             break;

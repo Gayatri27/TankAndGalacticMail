@@ -17,7 +17,7 @@ public abstract class World extends JPanel implements Observer {
 
   protected CollisionTracker collisionTracker;
 
-  public World(int main_width, int main_height){
+  public World(int main_width, int main_height) {
     MAIN_WIDTH = main_width;
     MAIN_HEIGHT = main_height;
 
