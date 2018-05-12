@@ -7,6 +7,7 @@ Compiling Instructions: -
 1. For tank Game
 
 
+
 javac src/tanks/Main.java
 java src/tanks/Main
 
@@ -17,7 +18,9 @@ Player 1 keys: A: turn left  S: move backward D: turn right W: move forward  Spa
 Player 2 keys: J: turn left  K: move backward L: turn right I: move forward  Enter: Fire
 
 
+
 2. For Galactic Mail
+
 
 
 javac src/galactic/Main.java
