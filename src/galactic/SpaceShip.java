@@ -146,7 +146,7 @@ public class SpaceShip extends Controllable implements Destroyable {
         x += dx;
         y += dy;
 
-        int intersection = collisionTracker.calculateIntersection(this, collidedWith);
+        int intersection = collisionTracker.calculateIntersectionPercent(this, collidedWith);
 
         if (intersection > MIN_OVERLAP_TO_LAND && lastLandedOn != collidedWith) {
           lastLandedOn = (Planet) collidedWith;

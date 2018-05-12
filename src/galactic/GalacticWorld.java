@@ -24,7 +24,7 @@ public class GalacticWorld extends World {
   private final int BOTTOM_BAR_MARGIN = 5;
 
 
-  private final int PLANET_MARGIN = 80;
+  private final int PLANET_MARGIN = 30;
 
   protected ArrayList<SpaceShip> spaceships = new ArrayList<>();
   protected ArrayList<Planet> planets = new ArrayList<>();
@@ -53,6 +53,9 @@ public class GalacticWorld extends World {
     this.frame = frame;
 
     addPlanets(8);
+    //addPlanets(8);
+    //addPlanets(8);
+    //addPlanets(4);
 
     addAsteroids(6);
     addSpaceship(planets.get(0).getX(), planets.get(0).getY());
@@ -71,28 +74,14 @@ public class GalacticWorld extends World {
       Planet planet = new Planet(0, 0, i, this);
 
       do {
-        int random_y = (int) (Math.random() * (EFFECTIVE_HEIGHT - 2 * PLANET_MARGIN)) + PLANET_MARGIN;
-        int random_x = (int) (Math.random() * (EFFECTIVE_WIDTH - 2 * PLANET_MARGIN)) + PLANET_MARGIN;
+        int random_y = (int) (Math.random() * (EFFECTIVE_HEIGHT - planet.getHeight() - PLANET_MARGIN )) + PLANET_MARGIN/2;
+        int random_x = (int) (Math.random() * (EFFECTIVE_WIDTH - planet.getWidth() - PLANET_MARGIN)) + PLANET_MARGIN/2;
         planet.setX(random_x);
         planet.setY(random_y);
         planet.updateRectangle();
+
       } while (collisionTracker.collides(planet, planet.getWidth()) != null);
 
-      /*
-
-       ||
-              collisionTracker.collides(planet,planet.getWidth(), planet.getHeight()) != null ||
-              collisionTracker.collides(planet,-planet.getWidth(), -planet.getHeight()) != null ||
-              collisionTracker.collides(planet,-planet.getWidth(), planet.getHeight()) != null ||
-              collisionTracker.collides(planet,planet.getWidth(), -planet.getHeight()) != null ||
-              collisionTracker.collides(planet,planet.getWidth(), 0) != null ||
-              collisionTracker.collides(planet,-planet.getWidth(), 0) != null ||
-              collisionTracker.collides(planet,0, planet.getHeight()) != null ||
-              collisionTracker.collides(planet,0, -planet.getHeight()) != null
-
-       */
-
-      // TODO: make new method to take radius for collision
       planets.add(planet);
       collisionTracker.addStaticObject(planet);
     }
