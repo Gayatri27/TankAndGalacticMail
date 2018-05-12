@@ -20,4 +20,8 @@ public class Audio {
   public void play() {
     clip.play();
   }
+
+  public void stop() {
+    clip.stop();
+  }
 }

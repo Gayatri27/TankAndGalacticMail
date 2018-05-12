@@ -10,9 +10,8 @@ public class Galactic extends GameApplication {
     title = "Galactic Mail";
     frameWidth = 800;
     frameHeight = 600;
-    gameGuide = "<html>Drive your Tank against the enemy and blast them off. <br><br>" +
-        "Player 1 keys:<br> A: turn left  S: move backward D: turn right W: move forward  Space: Fire <br><br>" +
-        "Player 2 keys:<br> J: turn left  K: move backward L: turn right I: move forward  Enter: Fire </html>";
+    gameGuide = "<html>You play an intergalactic mail carrier who must deliver mail to a number of inhabited moons. You must safely steer a course from moon to moon while avoiding dangerous asteroids. <br><br>" +
+        "Player keys:<br> A: turn left D: turn right Space: Fly <br><br>";
   }
 
   @Override
@@ -20,5 +19,3 @@ public class Galactic extends GameApplication {
     return new GalacticWorld(gameFrame);
   }
 }
-
-
