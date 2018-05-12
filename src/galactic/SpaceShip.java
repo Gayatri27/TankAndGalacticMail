@@ -22,7 +22,7 @@ public class SpaceShip extends Controllable implements Destroyable {
   private final int TILE_SIZE = 48;
   private final int FRAMES_IN_SPRITE = 72;
 
-  private final int MIN_OVERLAP_TO_LAND = 60;
+  private final int MIN_OVERLAP_TO_LAND = 50;
   private final int DEFAULT_SPEED_MOVING = 8;
   private final int DEFAULT_SPEED_TURNING = 6;
 
