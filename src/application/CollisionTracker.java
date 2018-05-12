@@ -18,10 +18,18 @@ public class CollisionTracker {
 
   public GameObject collides(GameObject object, double dx, double dy) {
 
-    Rectangle projection = new Rectangle(object.getX() + (int) dx, (int) object.getY() + (int) dy, object.getHeight(), object.getWidth());
+    Rectangle projection = new Rectangle(
+        object.getX() + (int) dx,
+        object.getY() + (int) dy,
+        object.getHeight(),
+        object.getWidth()
+    );
 
     return collides(object, projection);
   }
+
+
+
 
 
   public GameObject collides(GameObject object, double buffer) {
@@ -53,9 +61,8 @@ public class CollisionTracker {
     return null;
   }
 
-
   // formula ref: https://stackoverflow.com/a/9325084
-  public int calculateIntersection(GameObject A, GameObject B){
+  public static int calculateIntersectionPercent(GameObject A, GameObject B){
 
     int XA1 = A.getX();
     int XA2 = A.getX() + A.getWidth();
@@ -81,7 +88,6 @@ public class CollisionTracker {
     int intersection = (int) (SI / SU * 100);
 
     return intersection;
-
   }
 
   public void removeStaticObject(GameObject object) {

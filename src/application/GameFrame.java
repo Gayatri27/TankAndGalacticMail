@@ -18,7 +18,7 @@ public class GameFrame extends JFrame {
     setTitle(gameApplication.getTitle());
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setVisible(true);
-    setResizable(true);
+    setResizable(false);
     //setSize(gameApplication.getFrameWidth(), gameApplication.getFrameHeight());
     getContentPane().setPreferredSize(new Dimension(gameApplication.getFrameWidth(), gameApplication.getFrameHeight()));
     pack();
